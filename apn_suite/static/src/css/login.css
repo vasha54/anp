@@ -1,0 +1,49 @@
+/* ============================================
+   OCULTAR ELEMENTOS DEL LOGIN
+   ============================================ */
+
+/* 1. OCULTAR "Log in with Odoo.com" */
+.o_login_auth,
+.o_auth_oauth_providers,
+a[href*="odoo.com"],
+a[href*="/auth_oauth/"] {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    pointer-events: none !important;
+}
+
+/* 2. OCULTAR "Login as Admin/Demo/Portal" */
+/* Ocultar los botones */
+a[data-username] {
+    display: none !important;
+}
+
+/* Ocultar el texto "Login as" */
+.small.mb-1 {
+    display: none !important;
+}
+
+/* Ocultar el contenedor completo si quedó vacío */
+.form-group.mb-3.text-center {
+    display: none !important;
+}
+
+/* 3. OCULTAR EL SEPARADOR "- or -" */
+em.d-block.text-center.text-muted,
+em:contains("- or -") {
+    display: none !important;
+}
+
+a[data-username] { display: none !important; }
+.btn-group { display: none !important; }
+.o_login_auth { display: none !important; }
+
+.bg-100 {
+    background-image: url("/apn_suite/static/src/img/background_login.png") !important;
+    background-size: cover !important;
+    background-position: center !important;
+}

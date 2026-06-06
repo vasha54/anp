@@ -1,0 +1,611 @@
+// =============================================
+//  THEME APN PILATES SUITE - COMPLETO
+//  Paleta: #EDAC2E | #676767 | #FFFFFF
+//  Odoo 18 - Sin @import (todo en un solo archivo)
+// =============================================
+
+// =============================================
+//  1. VARIABLES
+// =============================================
+
+// Colores primarios
+$apn-primary: #EDAC2E;
+$apn-secondary: #676767;
+$apn-white: #FFFFFF;
+
+// Variantes - Primary
+$apn-primary-hover: #D49A1C;
+$apn-primary-active: #BB8618;
+$apn-primary-light: #F5D78A;
+$apn-primary-lighter: #FAECC8;
+$apn-primary-dark: #C48E14;
+
+// Variantes - Secondary
+$apn-secondary-hover: #555555;
+$apn-secondary-active: #4A4A4A;
+$apn-secondary-light: #8A8A8A;
+$apn-secondary-lighter: #B0B0B0;
+$apn-secondary-dark: #3D3D3D;
+
+// Texto
+$apn-text-primary: #212529;
+$apn-text-secondary: #676767;
+$apn-text-muted: #8A8A8A;
+$apn-text-light: #FFFFFF;
+
+// Fondos
+$apn-bg-primary: #FFFFFF;
+$apn-bg-secondary: #F8F9FA;
+$apn-bg-dark: #676767;
+$apn-bg-darker: #3D3D3D;
+
+// Bordes
+$apn-border-color: #DEE2E6;
+$apn-border-radius: 0.5rem;
+
+// Sombras
+$apn-shadow-sm: 0 1px 3px rgba(103, 103, 103, 0.12);
+$apn-shadow: 0 4px 12px rgba(103, 103, 103, 0.15);
+$apn-shadow-lg: 0 8px 24px rgba(103, 103, 103, 0.20);
+
+// =============================================
+//  2. SOBRESCRIBIR VARIABLES DE ODOO
+// =============================================
+
+$o-brand-primary: $apn-primary;
+$o-brand-odoo: $apn-primary;
+$primary: $apn-primary;
+$secondary: $apn-secondary;
+$link-color: $apn-primary;
+$link-hover-color: $apn-primary-hover;
+$o-community-color: $apn-primary;
+$o-enterprise-color: $apn-primary;
+
+// =============================================
+//  3. ESTILOS GENERALES
+// =============================================
+
+// Links globales
+a:not(.btn):not(.dropdown-item):not(.o_menu_item) {
+    color: $apn-primary;
+
+    &:hover {
+        color: $apn-primary-hover;
+    }
+}
+
+// Scrollbar personalizado
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: $apn-bg-secondary;
+}
+
+::-webkit-scrollbar-thumb {
+    background: $apn-secondary-light;
+    border-radius: 4px;
+
+    &:hover {
+        background: $apn-secondary;
+    }
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: $apn-primary;
+}
+
+// =============================================
+//  4. BOTONES
+// =============================================
+
+.btn-primary {
+    background-color: $apn-primary !important;
+    border-color: $apn-primary !important;
+    color: $apn-white !important;
+
+    &:hover,
+    &:focus-visible {
+        background-color: $apn-primary-hover !important;
+        border-color: $apn-primary-hover !important;
+        color: $apn-white !important;
+    }
+
+    &:active,
+    &:focus {
+        background-color: $apn-primary-active !important;
+        border-color: $apn-primary-active !important;
+        box-shadow: 0 0 0 0.25rem rgba($apn-primary, 0.3) !important;
+    }
+
+    &:disabled {
+        background-color: $apn-primary-light !important;
+        border-color: $apn-primary-light !important;
+        opacity: 0.65;
+        color: $apn-white !important;
+    }
+}
+
+.btn-secondary {
+    background-color: $apn-secondary !important;
+    border-color: $apn-secondary !important;
+    color: $apn-white !important;
+
+    &:hover {
+        background-color: $apn-secondary-hover !important;
+        border-color: $apn-secondary-hover !important;
+    }
+}
+
+.btn-outline-primary {
+    color: $apn-primary !important;
+    border-color: $apn-primary !important;
+    background-color: transparent !important;
+
+    &:hover {
+        background-color: $apn-primary !important;
+        color: $apn-white !important;
+    }
+}
+
+.btn-link {
+    color: $apn-primary !important;
+
+    &:hover {
+        color: $apn-primary-hover !important;
+    }
+}
+
+// =============================================
+//  5. NAVBAR Y MENÚ - COMPLETO
+// =============================================
+
+// Contenedor principal del navbar
+.o_main_navbar {
+    background-color: $apn-secondary !important;
+    border-bottom: 3px solid $apn-primary !important;
+
+    // Marca / Logo
+    .o_menu_brand {
+        color: $apn-white !important;
+        font-weight: 600;
+    }
+
+    // Sección de menú
+    .o_menu_sections {
+        // Items del menú y dropdowns
+        .o_nav_entry,
+        .dropdown-toggle {
+            background: transparent !important;
+            border: 1px solid transparent !important;
+            border-bottom: 3px solid transparent !important;  // ← Borde inferior transparente por defecto
+            color: $apn-white !important;
+            border-radius: 0 !important;
+            margin-bottom: -3px !important;                    // ← Compensa el borde del navbar
+            padding-bottom: calc(0.5rem + 3px) !important;
+            transition: all 0.25s ease;
+
+            // Hover: borde inferior dorado
+            &:hover {
+                background: rgba($apn-primary, 0.1) !important;
+                border-bottom: 3px solid $apn-primary !important;
+                color: $apn-primary !important;
+            }
+
+            // Activo / Seleccionado
+            &.active,
+            &.show,
+            &[aria-expanded="true"] {
+                background: rgba($apn-primary, 0.15) !important;
+                border-bottom: 3px solid $apn-primary !important;
+                color: $apn-primary !important;
+                font-weight: 600;
+            }
+        }
+    }
+
+    // Menú de usuario
+    .o_user_menu > a {
+        color: $apn-white !important;
+
+        &:hover {
+            color: $apn-primary !important;
+        }
+    }
+
+    // Iconos del navbar
+    .o_navbar_apps_menu > button,
+    .o_menu_systray > li > a {
+        color: $apn-white !important;
+
+        &:hover {
+            color: $apn-primary !important;
+            background: rgba($apn-primary, 0.1) !important;
+        }
+    }
+}
+
+// Dropdowns del menú principal
+.o_main_navbar .o_menu_sections .dropdown-menu {
+    background-color: $apn-secondary-dark !important;
+    border: 1px solid $apn-primary !important;
+    border-top: 2px solid $apn-primary !important;
+    border-radius: 0 0 $apn-border-radius $apn-border-radius !important;
+    box-shadow: $apn-shadow-lg !important;
+    margin-top: 3px !important;
+
+    .dropdown-item {
+        color: $apn-white !important;
+        border-left: 3px solid transparent !important;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background-color: rgba($apn-primary, 0.15) !important;
+            color: $apn-primary !important;
+            border-left: 3px solid $apn-primary !important;
+        }
+
+        &.active {
+            background-color: rgba($apn-primary, 0.2) !important;
+            border-left: 3px solid $apn-primary !important;
+        }
+    }
+}
+
+// Separadores y breadcrumbs del navbar
+.o_control_panel {
+    border-bottom: 2px solid rgba($apn-primary, 0.3) !important;
+    background-color: $apn-white !important;
+}
+
+// =============================================
+//  6. PÁGINA DE LOGIN
+// =============================================
+
+.bg-100 {
+    background-image: url("/apn_theme/static/src/img/background_login.png") !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+.oe_login_form {
+//     background-color: $apn-white !important;
+//     border-radius: $apn-border-radius !important;
+//     box-shadow: $apn-shadow-lg !important;
+//     border-top: 4px solid $apn-primary !important;
+//
+//     .form-control {
+//         border-color: $apn-border-color !important;
+//         border-radius: $apn-border-radius !important;
+//
+//         &:focus {
+//             border-color: $apn-primary !important;
+//             box-shadow: 0 0 0 0.25rem rgba($apn-primary, 0.25) !important;
+//         }
+//     }
+}
+
+// =============================================
+//  7. FORMULARIOS
+// =============================================
+
+.form-control:focus,
+.o_input:focus {
+    border-color: $apn-primary !important;
+    box-shadow: 0 0 0 0.25rem rgba($apn-primary, 0.25) !important;
+}
+
+.o_form_view {
+    .o_form_label {
+        color: $apn-text-secondary !important;
+    }
+
+    .o_form_required {
+        color: $apn-primary !important;
+    }
+}
+
+.form-check-input:checked {
+    background-color: $apn-primary !important;
+    border-color: $apn-primary !important;
+}
+
+// Pestañas
+.nav-tabs .nav-link.active {
+    color: $apn-primary !important;
+    border-bottom-color: $apn-primary !important;
+}
+
+// =============================================
+//  8. BADGES Y ETIQUETAS
+// =============================================
+
+.badge-primary,
+.bg-primary {
+    background-color: $apn-primary !important;
+    color: $apn-white !important;
+}
+
+.badge-secondary,
+.bg-secondary {
+    background-color: $apn-secondary !important;
+    color: $apn-white !important;
+}
+
+.text-primary {
+    color: $apn-primary !important;
+}
+
+.text-secondary {
+    color: $apn-secondary !important;
+}
+
+// =============================================
+//  9. TABLAS (LIST VIEW)
+// =============================================
+
+.o_list_view {
+    thead {
+        background-color: $apn-secondary !important;
+        color: $apn-white !important;
+
+        th {
+            border-bottom: 2px solid $apn-primary !important;
+        }
+    }
+
+    .o_data_row:hover {
+        background-color: rgba($apn-primary, 0.06) !important;
+    }
+
+    .o_data_row.o_selected_row {
+        background-color: rgba($apn-primary, 0.12) !important;
+    }
+}
+
+// =============================================
+//  10. KANBAN
+// =============================================
+
+.o_kanban_view .o_kanban_record {
+    border-radius: $apn-border-radius !important;
+
+    &:hover {
+        box-shadow: $apn-shadow !important;
+    }
+}
+
+// =============================================
+//  11. CARDS
+// =============================================
+
+.o_card,
+.card {
+    border-radius: $apn-border-radius !important;
+//     border-left: 3px solid $apn-primary !important;
+    box-shadow: $apn-shadow-sm !important;
+}
+
+// =============================================
+//  12. BREADCRUMBS
+// =============================================
+
+.o_breadcrumb .breadcrumb-item {
+    &.active {
+        color: $apn-primary !important;
+        font-weight: 600;
+    }
+
+    a {
+        color: $apn-secondary-light !important;
+
+        &:hover {
+            color: $apn-primary !important;
+        }
+    }
+}
+
+// =============================================
+//  13. DROPDOWNS
+// =============================================
+
+.dropdown-item {
+    &:hover {
+        background-color: rgba($apn-primary, 0.1) !important;
+        color: $apn-primary-dark !important;
+    }
+
+    &.active,
+    &:active {
+        background-color: $apn-primary !important;
+        color: $apn-white !important;
+    }
+}
+
+// =============================================
+//  14. PROGRESS BAR
+// =============================================
+
+.progress-bar {
+    background-color: $apn-primary !important;
+}
+
+// =============================================
+//  15. TOOLTIPS
+// =============================================
+
+.tooltip-inner {
+    background-color: $apn-secondary !important;
+    border-radius: $apn-border-radius !important;
+}
+
+.bs-tooltip-auto[data-popper-placement^="top"] .tooltip-arrow::before,
+.bs-tooltip-top .tooltip-arrow::before {
+    border-top-color: $apn-secondary !important;
+}
+
+// =============================================
+//  16. FONDO GENERAL
+// =============================================
+
+.o_web_client {
+    background-color: $apn-bg-secondary !important;
+}
+
+// =============================================
+//  17. STATUSBAR
+// =============================================
+
+.o_statusbar_buttons > .btn.disabled {
+    background-color: $apn-primary !important;
+    color: $apn-white !important;
+    opacity: 0.85 !important;
+}
+
+// =============================================
+//  18. SPINNER DE CARGA
+// =============================================
+
+.fa-spinner,
+.o_loading_indicator {
+    color: $apn-primary !important;
+}
+
+// =============================================
+//  19. NOTIFICACIONES
+// =============================================
+
+.o_notification {
+    border-left: 4px solid $apn-primary !important;
+}
+
+// =============================================
+//  20. ACCORDION
+// =============================================
+
+.accordion-button:not(.collapsed) {
+    color: $apn-primary !important;
+    background-color: rgba($apn-primary, 0.08) !important;
+}
+
+.accordion-button:focus {
+    border-color: $apn-primary !important;
+    box-shadow: 0 0 0 0.25rem rgba($apn-primary, 0.25) !important;
+}
+
+// =============================================
+//  21. MODALES
+// =============================================
+
+.modal-header {
+    border-bottom: 2px solid $apn-primary !important;
+}
+
+// =============================================
+//  22. PAGINACIÓN
+// =============================================
+
+.page-item.active .page-link {
+    background-color: $apn-primary !important;
+    border-color: $apn-primary !important;
+    color: $apn-white !important;
+}
+
+.page-link {
+    color: $apn-primary !important;
+
+    &:hover {
+        color: $apn-primary-hover !important;
+        background-color: rgba($apn-primary, 0.08) !important;
+    }
+}
+
+// =============================================
+//  23. TOGGLE / SWITCH
+// =============================================
+
+.form-switch .form-check-input:checked {
+    background-color: $apn-primary !important;
+    border-color: $apn-primary !important;
+}
+
+// =============================================
+//  24. FECHA Y HORA (DATEPICKER)
+// =============================================
+
+.o_datepicker .o_datepicker_button {
+    color: $apn-primary !important;
+}
+
+// =============================================
+//  25. BÚSQUEDA
+// =============================================
+
+.o_searchview .o_searchview_facet .o_searchview_facet_label {
+    background-color: rgba($apn-primary, 0.1) !important;
+    border-color: $apn-primary !important;
+}
+
+// =============================================
+//  26. CORRECCIONES EXTRAS
+// =============================================
+
+// Corregir color de texto sobre fondos primarios
+.bg-primary .text-primary,
+.btn-primary .text-primary {
+    color: $apn-white !important;
+}
+
+// Estados de hover en menú contextual
+.o-dropdown--menu .o-dropdown--item-highlight {
+    background-color: $apn-primary !important;
+}
+
+// =============================================
+//  27. SOBRESCRIBIR ENTRADAS DEL MENÚ (VIOLETA → APN)
+// =============================================
+
+.o_main_navbar .o_menu_sections .o_nav_entry,
+.o_main_navbar .o_menu_sections .dropdown-toggle {
+//     background: $apn-secondary !important;        // #676767 en vez de #71639e
+    padding-top: calc(0.5rem + 5px) !important;
+    border: 1px solid transparent !important;
+    color: $apn-white !important;
+//     border-radius: $apn-border-radius !important;
+    transition: all 0.2s ease;
+
+    // Hover: se ilumina con dorado
+    &:hover {
+        background: $apn-primary !important;
+        color: $apn-white !important;
+        border-color: $apn-primary-dark !important;
+    }
+
+    // Activo / seleccionado
+    &.active,
+    &.show,
+    &[aria-expanded="true"] {
+        background: $apn-primary !important;
+        color: $apn-white !important;
+        border-color: $apn-primary-dark !important;
+        box-shadow: 0 0 8px rgba($apn-primary, 0.4) !important;
+    }
+}
+
+// Dropdown del menú
+.o_main_navbar .o_menu_sections .dropdown-menu {
+    background-color: $apn-secondary-dark !important;
+    border: 1px solid $apn-primary !important;
+
+    .dropdown-item {
+        color: $apn-white !important;
+
+        &:hover {
+            background-color: $apn-primary !important;
+            color: $apn-white !important;
+        }
+    }
+}

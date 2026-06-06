@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_frontend" inherit_id="web.layout" name="Custom Tab Browser Web">
+
+        <!-- Cambiar el favicon -->
+        <xpath expr="//link[@rel='shortcut icon']" position="replace">
+            <link rel="shortcut icon" href="/apn_suite/static/src/img/favicon.ico"/>
+        </xpath>
+
+        <xpath expr="//title" position="replace">
+            <title t-if="title and title != 'Odoo'" t-esc="title"/>
+            <title t-else="">Pilates</title>
+        </xpath>
+
+    </template>
+
+    <template id="login_custom_a" inherit_id="web.login" name="Custom Login Page">
+
+
+
+        <!-- Change the color of the "Log In" button -->
+        <xpath expr="//button[hasclass('btn-primary') and @type='submit']" position="attributes">
+            <attribute name="style">background-color: #f9bb86; border-color: #f9bb86; color: #000000;</attribute>
+        </xpath>
+
+        <!-- Remove the "Reset Password" button -->
+        <xpath expr="//button[contains(@class, 'btn-link') and contains(@class, 'btn-sm') and @type='submit' and @name='redirect']" position="replace">
+        </xpath>
+
+        <!-- OCULTAR el div completo "Log in with Odoo.com" -->
+        <xpath expr="//div[hasclass('o_login_auth')]" position="replace">
+            <!-- Reemplazado con nada = eliminado completamente -->
+        </xpath>
+
+
+
+    </template>
+
+    <template id="login_custom_b" inherit_id="web.login_layout" name="Custom Login Footer">
+
+        <!-- Custom footer for the login page -->
+        <xpath expr="//div[hasclass('login-footer') or @t-if='not disable_footer']" position="replace">
+            <div class="login-footer">
+                <p style="text-align: center; margin-bottom: 0;">
+                    Panel Administrativo <i>Pilates</i>
+                </p>
+                <p style="text-align: center; font-size: small;">
+                    Diseñado por  <a target="_blank" href="https://www.idoogroup.com">IdooGroup</a>.
+
+                </p>
+            </div>
+        </xpath>
+    </template>
+
+
+</odoo>

@@ -1,0 +1,67 @@
+# -*- coding: utf-8 -*-
+{
+    "name": "APN - Pilates Suite",
+    "summary": "",
+    "description": "",
+    "author": "IdooGroup",
+    "website": "https://www.idoogroup.com",
+    "license": "LGPL-3",
+    # Categories can be used to filter modules in modules listing
+    # Check https://github.com/odoo/odoo/blob/15.0/odoo/addons/base/data/ir_module_category_data.xml
+    # for the full list
+    "category": "",
+    "version": "18.0.0.0.0",
+    # any module necessary for this one to work correctly
+    "depends": [
+        ## MODULOS BASE
+        "base", # 1. Módulos base fundamentales
+        "web",
+        "auth_signup",# 2. Módulos de autenticación y usuarios
+        "auth_oauth",
+        "mail",# 3. Módulos de mensajería y comunicación
+        "base_geolocalize",# 4. Módulos de geolocalización
+        "contacts",# 5. Módulos de contactos
+        "product",# 6. Módulos de producto e inventario
+        "stock",
+        "sales_team",# 7. Módulos de ventas y equipos
+        "sale",
+        "sale_management",
+        "sale_stock",
+        "account",# 8. Módulos financieros
+        "loyalty",# 9. Módulos de fidelización y pagos
+        "payment",
+        "rating",# 10. Módulos de valoraciones
+
+        ## MODULOS OCA
+        "base_multi_company",# 11. Módulos multi-compañía de OCA
+        "product_multi_company",
+        "web_responsive", # 12. Módulos de interfaz
+
+        ## MODULOS IDOOGROUP
+        "apn_theme",
+    ],
+    # always loaded
+    "data": [
+        "data/system_parameter_data.xml",
+        "views/views_login.xml",
+    ],
+    "assets": {
+        "web.assets_backend": [
+            "apn_suite/static/src/js/favicon.js",
+        ],
+        "web.assets_frontend": [
+            "apn_suite/static/src/css/login.css",
+            "apn_suite/static/src/js/hide_login_elements.js",
+            "apn_suite/static/src/js/favicon.js",
+        ],
+        "web._assets_primary_variables": [],
+    },
+    # only loaded in demonstration mode
+    "demo": [],
+    "installable": True,
+    "auto_install": False,
+    "application": True,
+    "sequence": 1,
+    "post_init_hook": "post_init_hook",
+    "post_update_hook": "post_update_hook",
+}

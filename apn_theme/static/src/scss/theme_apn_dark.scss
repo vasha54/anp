@@ -1,0 +1,526 @@
+// =============================================
+//  THEME APN DARK
+//  Paleta: #F4A300 | #000000 | #FFFFFF
+//  Odoo 18
+// =============================================
+
+// =============================================
+//  1. VARIABLES
+// =============================================
+
+$apn-primary: #F4A300;
+$apn-secondary: #000000;
+$apn-white: #FFFFFF;
+
+$apn-primary-hover: #DB9200;
+$apn-primary-active: #C28100;
+$apn-primary-light: #F8C54D;
+$apn-primary-lighter: #FCE19A;
+$apn-primary-dark: #A86E00;
+
+$apn-secondary-hover: #1A1A1A;
+$apn-secondary-active: #0D0D0D;
+$apn-secondary-light: #333333;
+$apn-secondary-lighter: #666666;
+$apn-secondary-dark: #000000;
+
+$apn-text-primary: #FFFFFF;
+$apn-text-secondary: #CCCCCC;
+$apn-text-muted: #999999;
+$apn-text-light: #FFFFFF;
+
+$apn-bg-primary: #000000;
+$apn-bg-secondary: #0D0D0D;
+$apn-bg-dark: #000000;
+$apn-bg-darker: #000000;
+
+$apn-border-color: #333333;
+$apn-border-radius: 0.5rem;
+
+$apn-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+$apn-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+$apn-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+
+// =============================================
+//  2. SOBRESCRIBIR VARIABLES DE ODOO
+// =============================================
+
+$o-brand-primary: $apn-primary;
+$o-brand-odoo: $apn-primary;
+$primary: $apn-primary;
+$secondary: $apn-secondary;
+$link-color: $apn-primary;
+$link-hover-color: $apn-primary-hover;
+$o-community-color: $apn-primary;
+$o-enterprise-color: $apn-primary;
+
+// =============================================
+//  3. ESTILOS GENERALES
+// =============================================
+
+a:not(.btn):not(.dropdown-item):not(.o_menu_item) {
+    color: $apn-primary;
+    &:hover { color: $apn-primary-hover; }
+}
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: lighten($apn-secondary, 10%); }
+::-webkit-scrollbar-thumb { background: $apn-primary; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: $apn-primary-hover; }
+::-webkit-scrollbar-thumb:active { background: $apn-primary-active; }
+
+body {
+    background-color: $apn-bg-primary;
+    color: $apn-text-secondary;
+}
+
+// =============================================
+//  4. BOTONES
+// =============================================
+
+.btn-primary {
+    background-color: $apn-primary !important;
+    border-color: $apn-primary !important;
+    color: $apn-secondary !important;
+    font-weight: 600;
+    &:hover, &:focus-visible {
+        background-color: $apn-primary-hover !important;
+        border-color: $apn-primary-hover !important;
+        color: $apn-secondary !important;
+    }
+    &:active, &:focus {
+        background-color: $apn-primary-active !important;
+        border-color: $apn-primary-active !important;
+        box-shadow: 0 0 0 0.25rem rgba($apn-primary, 0.4) !important;
+    }
+    &:disabled {
+        background-color: $apn-primary-light !important;
+        border-color: $apn-primary-light !important;
+        opacity: 0.65;
+        color: $apn-secondary !important;
+    }
+}
+
+.btn-secondary {
+    background-color: $apn-secondary-light !important;
+    border-color: $apn-secondary-light !important;
+    color: $apn-white !important;
+    &:hover {
+        background-color: $apn-secondary-lighter !important;
+        border-color: $apn-secondary-lighter !important;
+    }
+}
+
+.btn-outline-primary {
+    color: $apn-primary !important;
+    border-color: $apn-primary !important;
+    background-color: transparent !important;
+    &:hover {
+        background-color: $apn-primary !important;
+        color: $apn-secondary !important;
+    }
+}
+
+.btn-link {
+    color: $apn-primary !important;
+    &:hover { color: $apn-primary-hover !important; }
+}
+
+// =============================================
+//  5. NAVBAR Y MENÚ
+// =============================================
+
+.o_main_navbar {
+    background-color: $apn-secondary !important;
+    border-bottom: 3px solid $apn-primary !important;
+
+    .o_menu_brand {
+        color: $apn-primary !important;
+        font-weight: 700;
+    }
+
+    .o_menu_sections {
+        .o_nav_entry,
+        .dropdown-toggle {
+            background: transparent !important;
+            border: 1px solid transparent !important;
+            border-bottom: 3px solid transparent !important;
+            color: $apn-white !important;
+            border-radius: 0 !important;
+            margin-bottom: -3px !important;
+            padding-bottom: calc(0.5rem + 3px) !important;
+            transition: all 0.25s ease;
+
+            &:hover {
+                background: rgba($apn-primary, 0.15) !important;
+                border-bottom: 3px solid $apn-primary !important;
+                color: $apn-primary !important;
+            }
+
+            &.active, &.show, &[aria-expanded="true"] {
+                background: rgba($apn-primary, 0.2) !important;
+                border-bottom: 3px solid $apn-primary !important;
+                color: $apn-primary !important;
+                font-weight: 600;
+            }
+        }
+    }
+
+    .o_user_menu > a {
+        color: $apn-white !important;
+        &:hover { color: $apn-primary !important; }
+    }
+
+    .o_navbar_apps_menu > button,
+    .o_menu_systray > li > a {
+        color: $apn-white !important;
+        &:hover {
+            color: $apn-primary !important;
+            background: rgba($apn-primary, 0.15) !important;
+        }
+    }
+}
+
+.o_main_navbar .o_menu_sections .dropdown-menu {
+    background-color: $apn-secondary-light !important;
+    border: 1px solid $apn-primary !important;
+    border-top: 2px solid $apn-primary !important;
+    border-radius: 0 0 $apn-border-radius $apn-border-radius !important;
+    box-shadow: $apn-shadow-lg !important;
+    margin-top: 3px !important;
+
+    .dropdown-item {
+        color: $apn-white !important;
+        border-left: 3px solid transparent !important;
+        transition: all 0.2s ease;
+        &:hover {
+            background-color: rgba($apn-primary, 0.2) !important;
+            color: $apn-primary !important;
+            border-left: 3px solid $apn-primary !important;
+        }
+        &.active {
+            background-color: rgba($apn-primary, 0.25) !important;
+            border-left: 3px solid $apn-primary !important;
+        }
+    }
+}
+
+.o_control_panel {
+    border-bottom: 2px solid rgba($apn-primary, 0.3) !important;
+    background-color: $apn-bg-secondary !important;
+}
+
+// =============================================
+//  6. ENTRADAS DEL MENÚ
+// =============================================
+
+.o_main_navbar .o_menu_sections .o_nav_entry,
+.o_main_navbar .o_menu_sections .dropdown-toggle {
+    padding-top: calc(0.5rem + 5px) !important;
+    border: 1px solid transparent !important;
+    color: $apn-white !important;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: $apn-primary !important;
+        color: $apn-secondary !important;
+        border-color: $apn-primary-dark !important;
+    }
+
+    &.active, &.show, &[aria-expanded="true"] {
+        background: $apn-primary !important;
+        color: $apn-secondary !important;
+        border-color: $apn-primary-dark !important;
+        box-shadow: 0 0 8px rgba($apn-primary, 0.5) !important;
+    }
+}
+
+.o_main_navbar .o_menu_sections .dropdown-menu {
+    background-color: $apn-secondary-light !important;
+    border: 1px solid $apn-primary !important;
+    .dropdown-item {
+        color: $apn-white !important;
+        &:hover {
+            background-color: $apn-primary !important;
+            color: $apn-secondary !important;
+        }
+    }
+}
+
+// =============================================
+//  7. PÁGINA DE LOGIN
+// =============================================
+
+.bg-100 {
+    background-image: url("/apn_theme/static/src/img/background_login.png") !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+// =============================================
+//  8. FORMULARIOS
+// =============================================
+
+.form-control, .o_input {
+    background-color: $apn-bg-secondary !important;
+    border-color: $apn-border-color !important;
+    color: $apn-text-primary !important;
+    &:focus {
+        border-color: $apn-primary !important;
+        box-shadow: 0 0 0 0.25rem rgba($apn-primary, 0.3) !important;
+    }
+}
+
+.o_form_view {
+    .o_form_label { color: $apn-text-secondary !important; }
+    .o_form_required { color: $apn-primary !important; }
+}
+
+.form-check-input:checked {
+    background-color: $apn-primary !important;
+    border-color: $apn-primary !important;
+}
+
+.nav-tabs .nav-link.active {
+    color: $apn-primary !important;
+    border-bottom-color: $apn-primary !important;
+}
+
+// =============================================
+//  9. BADGES Y ETIQUETAS
+// =============================================
+
+.badge-primary, .bg-primary { background-color: $apn-primary !important; color: $apn-secondary !important; }
+.badge-secondary, .bg-secondary { background-color: $apn-secondary-light !important; color: $apn-white !important; }
+.text-primary { color: $apn-primary !important; }
+.text-secondary { color: $apn-text-secondary !important; }
+
+// =============================================
+//  10. TABLAS (LIST VIEW)
+// =============================================
+
+.o_list_view {
+    background-color: $apn-bg-secondary !important;
+    color: $apn-text-secondary !important;
+
+    thead {
+        background-color: $apn-secondary-light !important;
+        color: $apn-primary !important;
+        th { border-bottom: 2px solid $apn-primary !important; }
+    }
+    .o_data_row:hover { background-color: rgba($apn-primary, 0.08) !important; }
+    .o_data_row.o_selected_row { background-color: rgba($apn-primary, 0.15) !important; }
+}
+
+// =============================================
+//  11. KANBAN
+// =============================================
+
+.o_kanban_view {
+    background-color: $apn-bg-secondary !important;
+    .o_kanban_record {
+        background-color: lighten($apn-secondary, 5%) !important;
+        border-color: $apn-border-color !important;
+        border-radius: $apn-border-radius !important;
+        color: $apn-text-secondary !important;
+        &:hover {
+            box-shadow: $apn-shadow !important;
+            border-color: $apn-primary !important;
+        }
+    }
+}
+
+// =============================================
+//  12. CARDS
+// =============================================
+
+.o_card, .card {
+    background-color: lighten($apn-secondary, 5%) !important;
+    border-color: $apn-border-color !important;
+    border-radius: $apn-border-radius !important;
+    box-shadow: $apn-shadow-sm !important;
+    color: $apn-text-secondary !important;
+}
+
+// =============================================
+//  13. BREADCRUMBS
+// =============================================
+
+.o_breadcrumb .breadcrumb-item {
+    &.active { color: $apn-primary !important; font-weight: 600; }
+    a {
+        color: $apn-text-muted !important;
+        &:hover { color: $apn-primary !important; }
+    }
+}
+
+// =============================================
+//  14. DROPDOWNS
+// =============================================
+
+.dropdown-menu {
+    background-color: $apn-secondary-light !important;
+    border-color: $apn-border-color !important;
+}
+.dropdown-item {
+    color: $apn-white !important;
+    &:hover { background-color: rgba($apn-primary, 0.2) !important; color: $apn-primary !important; }
+    &.active, &:active { background-color: $apn-primary !important; color: $apn-secondary !important; }
+}
+
+// =============================================
+//  15. PROGRESS BAR
+// =============================================
+
+.progress { background-color: $apn-secondary-light !important; }
+.progress-bar { background-color: $apn-primary !important; }
+
+// =============================================
+//  16. TOOLTIPS
+// =============================================
+
+.tooltip-inner { background-color: $apn-primary !important; color: $apn-secondary !important; border-radius: $apn-border-radius !important; }
+.bs-tooltip-auto[data-popper-placement^="top"] .tooltip-arrow::before,
+.bs-tooltip-top .tooltip-arrow::before { border-top-color: $apn-primary !important; }
+
+// =============================================
+//  17. FONDO GENERAL
+// =============================================
+
+.o_web_client {
+    background-color: $apn-bg-secondary !important;
+    color: $apn-text-secondary !important;
+}
+
+.o_action_manager {
+    background-color: $apn-bg-secondary !important;
+}
+
+// =============================================
+//  18. STATUSBAR
+// =============================================
+
+.o_statusbar_buttons > .btn.disabled {
+    background-color: $apn-primary !important;
+    color: $apn-secondary !important;
+    opacity: 0.9 !important;
+}
+
+// =============================================
+//  19. SPINNER
+// =============================================
+
+.fa-spinner, .o_loading_indicator { color: $apn-primary !important; }
+
+// =============================================
+//  20. NOTIFICACIONES
+// =============================================
+
+.o_notification {
+    border-left: 4px solid $apn-primary !important;
+    background-color: $apn-secondary-light !important;
+    color: $apn-white !important;
+}
+
+// =============================================
+//  21. ACCORDION
+// =============================================
+
+.accordion-button {
+    background-color: $apn-secondary-light !important;
+    color: $apn-white !important;
+    &:not(.collapsed) {
+        color: $apn-primary !important;
+        background-color: rgba($apn-primary, 0.1) !important;
+    }
+    &:focus {
+        border-color: $apn-primary !important;
+        box-shadow: 0 0 0 0.25rem rgba($apn-primary, 0.3) !important;
+    }
+}
+
+// =============================================
+//  22. MODALES
+// =============================================
+
+.modal-content {
+    background-color: $apn-bg-secondary !important;
+    color: $apn-text-secondary !important;
+    border: 1px solid $apn-border-color !important;
+}
+.modal-header { border-bottom: 2px solid $apn-primary !important; }
+.modal-footer { border-top: 1px solid $apn-border-color !important; }
+
+// =============================================
+//  23. PAGINACIÓN
+// =============================================
+
+.page-item.active .page-link {
+    background-color: $apn-primary !important;
+    border-color: $apn-primary !important;
+    color: $apn-secondary !important;
+}
+.page-link {
+    background-color: $apn-secondary-light !important;
+    border-color: $apn-border-color !important;
+    color: $apn-white !important;
+    &:hover {
+        color: $apn-primary !important;
+        background-color: $apn-secondary-lighter !important;
+    }
+}
+
+// =============================================
+//  24. TOGGLE / SWITCH
+// =============================================
+
+.form-switch .form-check-input:checked {
+    background-color: $apn-primary !important;
+    border-color: $apn-primary !important;
+}
+
+// =============================================
+//  25. DATEPICKER
+// =============================================
+
+.o_datepicker .o_datepicker_button { color: $apn-primary !important; }
+
+// =============================================
+//  26. BÚSQUEDA
+// =============================================
+
+.o_searchview {
+    .o_searchview_facet .o_searchview_facet_label {
+        background-color: rgba($apn-primary, 0.15) !important;
+        border-color: $apn-primary !important;
+        color: $apn-primary !important;
+    }
+    .o_searchview_input {
+        background-color: $apn-bg-secondary !important;
+        color: $apn-text-primary !important;
+    }
+}
+
+// =============================================
+//  27. CORRECCIONES EXTRAS
+// =============================================
+
+.bg-primary .text-primary,
+.btn-primary .text-primary { color: $apn-secondary !important; }
+.o-dropdown--menu .o-dropdown--item-highlight { background-color: $apn-primary !important; color: $apn-secondary !important; }
+
+.o_form_view {
+    background-color: $apn-bg-secondary !important;
+}
+
+.o_chatter {
+    background-color: $apn-bg-secondary !important;
+    border-top-color: $apn-border-color !important;
+}
+
+.o_cp_switch_buttons .btn.active {
+    background-color: $apn-primary !important;
+    color: $apn-secondary !important;
+    border-color: $apn-primary !important;
+}
