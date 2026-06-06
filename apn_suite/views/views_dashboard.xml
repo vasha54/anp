@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="apn_dashboard_action" model="ir.actions.client">
+        <field name="name">Dashboard</field>
+        <field name="tag">apn_dashboard_tag</field>
+    </record>
+    <menuitem 
+            name="Dashboard" id="apn_dashboard"
+            sequence="-10000" 
+            action="apn_dashboard_action"
+            web_icon="apn_suite,static/src/img/item_menu_dashboard.png"/>
+
+    
+     
+
+
+
+</odoo>

@@ -39,20 +39,30 @@
 
         ## MODULOS IDOOGROUP
         "apn_theme",
+        "apn_group",
     ],
     # always loaded
     "data": [
         "data/system_parameter_data.xml",
         "views/views_login.xml",
+        "views/views_dashboard.xml",
+        "views/menu_icons.xml",
     ],
     "assets": {
         "web.assets_backend": [
             "apn_suite/static/src/js/favicon.js",
+            "apn_suite/static/src/css/dashboard.css",
+            "apn_suite/static/src/css/card_info_build_construction.css",
+            "apn_suite/static/src/js/card_info_build_construction.js",
+            "apn_suite/static/src/js/dashboard.js",
+            "apn_suite/static/src/xml/card_info_build_construction.xml",
+            "apn_suite/static/src/xml/dashboard.xml",
         ],
         "web.assets_frontend": [
             "apn_suite/static/src/css/login.css",
             "apn_suite/static/src/js/hide_login_elements.js",
             "apn_suite/static/src/js/favicon.js",
+
         ],
         "web._assets_primary_variables": [],
     },

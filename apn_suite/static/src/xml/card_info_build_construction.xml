@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t t-name="apn_suite.CardInfoBuildConstructionTemplate">
+        <div class="card shadow-sm mb-2 border-0 d-flex flex-column"
+             style="border-radius: 0.75rem;">
+
+            <!-- Header fijo (cambia la altura según necesites) -->
+            <div class="card-header d-flex align-items-center p-2"
+                 style="background-color: var(--apn-secondary, #4A4A4A);
+                        border-radius: 0.75rem 0.75rem 0 0;
+                        height: 50px;">
+                <h5 class="mb-0 text-white fw-bold"><t t-esc="props.title_card or ' '"/></h5>
+                <!-- Aquí puedes poner el contenido del header -->
+            </div>
+
+            <!-- Body que se expande automáticamente -->
+            <div class="card-body p-0 flex-grow-1">
+                <img src="/apn_suite/static/src/img/build_construction.png"
+                     alt="Imagen de construcción"
+                     class="w-100 h-100"
+                     style="object-fit: contain; display: block;"/>
+            </div>
+
+            <!-- Footer fijo -->
+            <div class="card-footer bg-light border-top-0 d-flex justify-content-end p-2"
+                 style="border-radius: 0 0 0.75rem 0.75rem;
+                        height: 36px;">
+                <!-- Aquí iría el contenido del footer -->
+            </div>
+        </div>
+    </t>
+</templates>

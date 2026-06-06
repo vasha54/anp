@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Usuario Administrador APN Pilates -->
+        <record id="user_admin_apn_pilates" model="res.users">
+            <field name="name">Administrador APN Pilates</field>
+            <field name="login">admin@apnpilates.com</field>
+            <field name="password">.admin123*</field>
+            <field name="confirmed_password">.admin123*</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="company_ids" eval="[(4, ref('base.main_company'))]"/>
+            <field name="groups_id" eval="[(4, ref('group_admin_apn_pilates'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- Usuario Soporte Técnico APN Pilates -->
+        <record id="user_support_apn_pilates" model="res.users">
+            <field name="name">Soporte Técnico APN Pilates</field>
+            <field name="login">soporte@apnpilates.com</field>
+            <field name="password">.soporte123*</field>
+            <field name="confirmed_password">.soporte123*</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="company_ids" eval="[(4, ref('base.main_company'))]"/>
+            <field name="groups_id" eval="[(4, ref('group_support_anp_pilates'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- Usuario Administrador de Compañía -->
+        <record id="user_admin_company" model="res.users">
+            <field name="name">Administrador Compañía APN Pilates</field>
+            <field name="login">admin.company@apnpilates.com</field>
+            <field name="password">.company123*</field>
+            <field name="confirmed_password">.company123*</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="company_ids" eval="[(4, ref('base.main_company'))]"/>
+            <field name="groups_id" eval="[(4, ref('group_admin_company'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- Usuario Administrador de Sucursal -->
+        <record id="user_admin_branch" model="res.users">
+            <field name="name">Administrador Sucursal APN Pilates</field>
+            <field name="login">admin.branch@apnpilates.com</field>
+            <field name="password">.branch123*</field>
+            <field name="confirmed_password">.branch123*</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="company_ids" eval="[(4, ref('base.main_company'))]"/>
+            <field name="groups_id" eval="[(4, ref('group_admin_branch'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- Usuario Operador de Sucursal -->
+        <record id="user_operator_branch" model="res.users">
+            <field name="name">Operador Sucursal APN Pilates</field>
+            <field name="login">operator.branch@apnpilates.com</field>
+            <field name="password">.operator123*</field>
+            <field name="confirmed_password">.operator123*</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="company_ids" eval="[(4, ref('base.main_company'))]"/>
+            <field name="groups_id" eval="[(4, ref('group_operator_branch'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- Usuario Cliente -->
+        <record id="user_client" model="res.users">
+            <field name="name">Cliente APN Pilates</field>
+            <field name="login">client@apnpilates.com</field>
+            <field name="password">.client123*</field>
+            <field name="confirmed_password">.client123*</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="company_ids" eval="[(4, ref('base.main_company'))]"/>
+            <field name="groups_id" eval="[(4, ref('group_client'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+    </data>
+</odoo>

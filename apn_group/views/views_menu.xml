@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="res_group_menu" model="ir.ui.menu" context="{'ui_menu_desoft_mtz': True}">
+        <field name="name">Groups</field>
+        <field name="action" ref="res_groups_view_action"/>
+		<field name="sequence">-99</field>
+        <field name="web_icon">apn_group,static/src/img/group_menu_icon.png</field>
+
+    </record>
+
+    <record id="res_user_menu" model="ir.ui.menu" context="{'ui_menu_desoft_mtz': True}">
+        <field name="name">Users</field>
+        <field name="action" ref="action_residence_res_user"/>
+		<field name="sequence">-98</field>
+		<field name="web_icon">apn_group,static/src/img/user_menu_icon.png</field>
+
+    </record>
+
+</odoo>

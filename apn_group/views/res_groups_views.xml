@@ -1,0 +1,139 @@
+<odoo>
+    <record id="res_groups_form_view" model="ir.ui.view" context="{'ui_view_apn': True}">
+        <field name="name">res_groups_form</field>
+        <field name="model">res.groups</field>
+        <field name="priority">1</field>
+        <field name="arch" type="xml">
+            <form string="User Group - Form">
+                <sheet>
+                    <group col="4">
+                        <field string="Category" name="category_id"/>
+                        <field string="Name" name="name"
+                               readonly="not active"/>
+                        <field string="Active" name="active" widget="boolean_toggle"/>
+                    </group>
+                    <notebook>
+                        <page string="Users" name="users">
+                            <field name="users"
+                                   readonly="not active"
+                                   context="{'search_default_filter_no_share':1}"
+                                   domain="[('is_user_apn', '=', True)]">
+                                <list>
+                                    <field string="Name" name="name"
+                                           readonly="1"/>
+                                    <field string="User" name="login"
+                                           readonly="1"/>
+                                    <field string="Last Login"
+                                           name="login_date"
+                                           readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Inherited" name="inherit_groups">
+                            <label for="implied_ids" string="Users added to this group will be automatically added to the following groups."/>
+                            <field name="implied_ids" readonly="not active"
+                                   domain="[('is_group_apn', '=', True)]"/>
+                        </page>
+                        <page string="Menus" name="menus">
+                            <field name="menu_access" readonly="not active"/>
+                        </page>
+                        <page string="Views" name="views">
+                            <field name="view_access"
+                                   readonly="not active"
+                                   groups="base.group_system">
+                                <list>
+                                    <field name="priority" string="Sequence"
+                                           widget="handle"/>
+                                    <field string="Name" name="name"/>
+                                    <field string="Type" name="type"/>
+                                    <field string="Model" name="model"/>
+                                    <field string="XML ID" name="xml_id"
+                                           groups="base.group_no_one"/>
+                                    <field string="Inherited View"
+                                           name="inherit_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Access Rights" name="access_rights">
+                            <field name="model_access" readonly="not active">
+                                <list string="Access Rights" editable="top">
+                                    <field string="Name" name="name"/>
+                                    <field string="Model" name="model_id"/>
+                                    <field string="Read" name="perm_read"/>
+                                    <field string="Write"
+                                           name="perm_write"/>
+                                    <field string="Create" name="perm_create"/>
+                                    <field string="Delete"
+                                           name="perm_unlink"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Record Rules" name="record_rules">
+                            <field name="rule_groups" readonly="not active">
+                                <list string="Record Rules" editable="top">
+                                    <field string="Name" name="name"/>
+                                    <field string="Model" name="model_id"/>
+                                    <field string="Domain"
+                                           name="domain_force"/>
+                                    <field string="Read" name="perm_read"/>
+                                    <field string="Write"
+                                           name="perm_write"/>
+                                    <field string="Create" name="perm_create"/>
+                                    <field string="Delete"
+                                           name="perm_unlink"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Description" name="notes">
+                            <field name="comment" readonly="not active"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="res_groups_list_view" model="ir.ui.view" context="{'ui_view_apn': True}">
+        <field name="name">res_groups_list</field>
+        <field name="model">res.groups</field>
+        <field name="priority">1</field>
+        <field name="arch" type="xml">
+            <list default_order="active desc">
+                <field string="Active" name="active" widget="boolean_toggle"/>
+                <field string="Name" name="display_name"/>
+                <field string="Description" name="comment"/>
+                <field string="Creation Date" name="create_date"/>
+                <field string="User Count" name="count_users" />
+            </list>
+        </field>
+    </record>
+
+    <record id="res_groups_search_view" model="ir.ui.view" context="{'ui_view_apn': True}">
+        <field name="name">res_groups_search</field>
+        <field name="model">res.groups</field>
+        <field name="priority">1</field>
+        <field name="arch" type="xml">
+            <search string="Groups">
+                <field name="name" filter_domain="['|', ('full_name','ilike',self), ('category_id','ilike',self)]" string="Group"/>
+                <separator orientation="vertical"/>
+                <field name="share"/>
+                <filter name="filter_no_share" string="Internal Groups" domain="[('share','=',False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="res_groups_view_action" model="ir.actions.act_window">
+        <field name="name">Groups</field>
+        <field name="res_model">res.groups</field>
+        <field name="domain">[('is_group_apn', '=', True)]</field>
+        <field name="context">
+            {
+                'search_default_active': True,
+                'group_apn': True,
+                'create': True,
+                'edit': True
+            }
+        </field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

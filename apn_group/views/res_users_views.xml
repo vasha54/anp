@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- View residence_res_user View List -->
+    <record id="view_residence_res_user_list" model="ir.ui.view">
+        <field name="name">Vista Lista de Usuarios</field>
+        <field name="model">res.users</field>
+        <field name="arch" type="xml">
+            <list default_order="name asc" decoration-muted="active == False" >
+                <field string="Active" name="active" widget="boolean_toggle"/>
+                <field string="Name" name="name" />
+                <field string="User" name="login" />
+                <field string="Email" name="email"/>
+                <field string="Roles" name="apn_group_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_open': True}"/>
+                <field name="company_id"/>
+                <field name="create_date"  string="Created" />
+            </list>
+        </field>
+    </record>
+
+
+
+
+    <!-- View residence_res_user form -->
+    <record id="view_residence_res_user_form" model="ir.ui.view">
+        <field name="name">Vista Formulario del Usuario</field>
+        <field name="model">res.users</field>
+        <field name="arch" type="xml">
+            <form string="Res user" context="{'user_apn':True}">
+                <header>
+                        <!-- <button
+                            name="toggle_active"
+                            type="object"
+                            class="oe_highlight btn-danger"
+                            invisible="not active or not id"
+                            string="Deactivate user"
+                        />                     -->
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="alert alert-info text-center o_form_header" invisible="active and active_partner or not active and not active_partner or active and not active_partner" role="alert">
+                        <a class="close" data-bs-dismiss="alert" href="#">x</a>
+                        <div>
+                            <strong>The contact linked to this user is still active.</strong>
+                        </div>
+                        <div>You can archive the contact
+                            <field name="partner_id" required="0" readonly="1"/>
+                        </div>
+                    </div>
+                    <field name="image_1920" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nombre completo" required="1"/>
+                        </h1>
+                        <group>
+                            <field name="login" string="User" required="1" readonly="id"/>
+
+                        </group>
+                    </div>
+                    <notebook>
+                        <page string="Information">
+                            <group>
+                                <group string="Password">
+                                    <field name="password" password="True" string="Password" required="not id"/>
+                                    <field name="confirmed_password" password="True" string="Confirm Password" required="not id"/>
+                                </group>
+                                <group name="info" string="Basic Information">
+                                    <field name="email" string="Email"/>
+                                    <field name="mobile" string="Mobile"/>
+                                    <field name="phone" string="Phone"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Pilates Roles">
+                            <field name="apn_group_ids" options="{'create':false, 'edit':false, 'delete':false}" >
+                                <list optional="show" >
+                                    <field name="category_id" />
+                                    <field name="full_name" />
+                                    <field name="name" />
+                                    <field name="comment" />
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Audit" invisible="not id">
+                            <group>
+                                <field name="password_reset_attempts" string="Password Reset Attempts" readonly="1"/>
+                                <field name="last_password_reset_attempt" string="Last Attempt" readonly="1"/>
+                                <field name="write_date" string="Last Modified" readonly="1"/>
+                                <field name="create_date" string="Creation Date" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+
+
+    <!-- View residence_res_user search -->
+    <record id="view_residence_res_user_search" model="ir.ui.view">
+        <field name="name">Vista Búsqueda de Usuario</field>
+        <field name="model">res.users</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="create_date" string="Created"/>
+                <!-- <field name="group_names" string="Grupo"/> -->
+                <field name="name"  string="Name" />
+                <field name="email" string="Email" />
+                <filter name="inactive" string="Inactive Users" domain="[('active','=',False)]"/>
+            </search>
+        </field>
+    </record>
+
+
+    <!-- Action residence_res_user -->
+    <record id="action_residence_res_user" model="ir.actions.act_window">
+        <field name="name">List of users</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.users</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[("is_user_apn","=",True)]</field>
+        <field name="context">{'active_test': False, 'user_apn':True }</field>
+        <field name="search_view_id" ref="view_residence_res_user_search" />
+        <field name="view_ids" eval="[ (5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_residence_res_user_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_residence_res_user_form')})]"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent">
+                No users were found matching those criteria.
+            </p>
+        </field>
+    </record>
+
+
+
+</odoo>

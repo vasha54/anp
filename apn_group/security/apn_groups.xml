@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- Category for APN Pilates groups -->
+        <record id="module_category_apn_pilates" model="ir.module.category">
+            <field name="name">APN Pilates</field>
+            <field name="description">APN Pilates system access groups</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- APN Pilates Administrator (inherits from admin group: base.group_erp_manager) -->
+        <record id="group_admin_apn_pilates" model="res.groups">
+            <field name="name">APN Pilates Administrator</field>
+            <field name="category_id" ref="module_category_apn_pilates"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_erp_manager'))]"/>
+            <field name="is_group_apn">True</field>
+            <field name="comment">Group for APN Pilates administrators, inherits full administration rights from Odoo administrators group.</field>
+        </record>
+
+        <!-- APN Pilates Technical Support (inherits from admin and system groups) -->
+        <record id="group_support_anp_pilates" model="res.groups">
+            <field name="name">APN Pilates Technical Support</field>
+            <field name="category_id" ref="module_category_apn_pilates"/>
+            <field name="implied_ids" eval="[(6, 0, [ref('base.group_erp_manager'), ref('base.group_system')])]"/>
+            <field name="is_group_apn">True</field>
+            <field name="comment">Group for APN Pilates technical support team, inherits full administrative and system rights.</field>
+        </record>
+
+        <!-- Administrator Company (inherits from base.group_user and salesman) -->
+        <record id="group_admin_company" model="res.groups">
+            <field name="name">Administrator Company</field>
+            <field name="category_id" ref="module_category_apn_pilates"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')), (4, ref('sales_team.group_sale_salesman'))]"/>
+            <field name="is_group_apn">True</field>
+            <field name="comment">Group for company administrators, with internal user and salesman permissions.</field>
+        </record>
+
+        <!-- Branch Administrator (inherits from base.group_user and salesman) -->
+        <record id="group_admin_branch" model="res.groups">
+            <field name="name">Branch Administrator</field>
+            <field name="category_id" ref="module_category_apn_pilates"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')), (4, ref('sales_team.group_sale_salesman'))]"/>
+            <field name="is_group_apn">True</field>
+            <field name="comment">Group for branch administrators, with internal user and salesman permissions.</field>
+        </record>
+
+        <!-- Branch Operator (inherits from base.group_user and salesman) -->
+        <record id="group_operator_branch" model="res.groups">
+            <field name="name">Branch Operator</field>
+            <field name="category_id" ref="module_category_apn_pilates"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')), (4, ref('sales_team.group_sale_salesman'))]"/>
+            <field name="is_group_apn">True</field>
+            <field name="comment">Group for branch operators, with internal user and salesman permissions.</field>
+        </record>
+
+        <!-- Client (inherits from base.group_user and salesman) -->
+        <record id="group_client" model="res.groups">
+            <field name="name">Client</field>
+            <field name="category_id" ref="module_category_apn_pilates"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')), (4, ref('sales_team.group_sale_salesman'))]"/>
+            <field name="is_group_apn">True</field>
+            <field name="comment">Group for clients, with internal user and salesman permissions.</field>
+        </record>
+
+    </data>
+
+
+
+</odoo>
