@@ -1,0 +1,24 @@
+<template>
+    <t t-name="apn_charts.StackedBarVChartTemplate">
+        <div class="o_bar_chart_container" t-attf-style="height: #{props.height or '350px'}">
+            <div t-if="state.loading" class="d-flex justify-content-center align-items-center h-100">
+                <span class="text-muted">Loading chart...</span>
+            </div>
+            <div t-elif="!state.hasData" class="d-flex justify-content-center align-items-center h-100">
+                <span class="text-muted">No data available</span>
+            </div>
+            <canvas t-else="" t-ref="canvaChart" style="width:100%; height:100%;"/>
+        </div>
+    </t>
+    <t t-name="apn_charts.StackedBarHChartTemplate">
+        <div class="o_bar_chart_container" t-attf-style="height: #{props.height or '350px'}">
+            <div t-if="state.loading" class="d-flex justify-content-center align-items-center h-100">
+                <span class="text-muted">Loading chart...</span>
+            </div>
+            <div t-elif="!state.hasData" class="d-flex justify-content-center align-items-center h-100">
+                <span class="text-muted">No data available</span>
+            </div>
+            <canvas t-else="" t-ref="canvaChart" style="width:100%; height:100%;"/>
+        </div>
+    </t>
+</template>

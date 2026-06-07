@@ -37,8 +37,8 @@ class ResGroups(models.Model):
                 raise ValidationError(_("Ya existe un grupo con el nombre '%s'.") % vals['name'])
 
         current_context = self.env.context
-        if current_context.get('group_desoft_mtz'):
-            vals['is_group_desoft_mtz'] = True
+        if current_context.get('group_apn'):
+            vals['is_group_apn'] = True
 
         return super().create(vals)
 

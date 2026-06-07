@@ -1,0 +1,49 @@
+<t t-name="apn_suite.DateFilterTemplate">
+    <div class="d-flex align-items-center gap-2" style="margin-left: auto;">
+        <select
+            class="form-select"
+            style="width: auto; min-width: 150px; border-radius: 20px; border: 1px solid #dee2e6; padding: 8px 15px; font-size: 0.9rem;"
+            t-model="state.selectedPeriod"
+            t-on-change="onPeriodChange"
+        >
+            <t t-foreach="periods" t-as="period" t-key="period.id">
+                <option t-att-value="period.id">
+                    <t t-esc="period.label"/>
+                </option>
+            </t>
+        </select>
+
+        <t t-if="state.showCustomDates">
+            <div class="input-group" style="width: auto;">
+                <span class="input-group-text" style="border-radius: 20px 0 0 20px; background-color: #f8f9fa; border: 1px solid #dee2e6; font-size: 0.8rem; color: #6c757d;">
+                    <i class="fa fa-calendar me-1"></i>From
+                </span>
+                <input
+                    type="date"
+                    class="form-control"
+                    style="border-radius: 0; border-left: none; font-size: 0.9rem;"
+                    t-model="state.customStartDate"
+                />
+            </div>
+            <div class="input-group" style="width: auto;">
+                <span class="input-group-text" style="border-radius: 20px 0 0 20px; background-color: #f8f9fa; border: 1px solid #dee2e6; font-size: 0.8rem; color: #6c757d;">
+                    <i class="fa fa-calendar-check-o me-1"></i>To
+                </span>
+                <input
+                    type="date"
+                    class="form-control"
+                    style="border-radius: 0; border-left: none; font-size: 0.9rem;"
+                    t-model="state.customEndDate"
+                />
+            </div>
+        </t>
+
+        <button
+            class="btn btn-primary"
+            style="border-radius: 20px; padding: 8px 20px; font-weight: 500; background-color: #4154f1; border-color: #4154f1;"
+            t-on-click="onFilterClick"
+        >
+            <i class="fa fa-filter me-2"></i>Filter
+        </button>
+    </div>
+</t>

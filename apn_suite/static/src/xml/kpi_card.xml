@@ -1,0 +1,61 @@
+<t t-name="apn_suite.KPICardTemplate">
+    <div class="kpi-card" t-att-class="{
+        'kpi-loading': props.isLoading,
+        'kpi-animated': true,
+    }">
+        <!-- Franja decorativa superior -->
+        <div class="kpi-stripe" t-att-style="'background: ' + (props.color or '#4154f1')"/>
+
+        <!-- Icono de fondo decorativo -->
+        <div class="kpi-background-icon" t-att-style="'color: ' + (props.color or '#4154f1')">
+            <i t-att-class="props.icon"/>
+        </div>
+
+        <!-- Contenido principal - Layout horizontal -->
+        <div class="kpi-content">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <!-- Icono principal a la izquierda -->
+                <div class="kpi-icon-wrapper" t-att-style="'background: linear-gradient(135deg, ' + (props.color or '#4154f1') + '20, ' + (props.color or '#4154f1') + '35);'">
+                    <i t-att-class="props.icon" class="kpi-icon" t-att-style="'color: ' + (props.color or '#4154f1')"/>
+                </div>
+
+                <!-- Texto a la derecha -->
+                <div style="flex: 1; min-width: 0;">
+                    <!-- Título -->
+                    <p class="kpi-title">
+                        <t t-esc="props.title"/>
+                    </p>
+
+                    <!-- Valor principal y tendencia -->
+                    <div class="kpi-value-container">
+                        <h3 class="kpi-value">
+                            <t t-if="props.isLoading">
+                                <span class="kpi-placeholder"></span>
+                            </t>
+                            <t t-else="">
+                                <t t-esc="props.value"/>
+                            </t>
+                        </h3>
+
+                        <!-- Indicador de tendencia -->
+                        <t t-if="props.trend !== undefined and props.trend !== null and !props.isLoading">
+                            <span t-att-class="'kpi-trend ' + (props.trend >= 0 ? 'kpi-trend-up' : 'kpi-trend-down')">
+                                <span class="kpi-trend-icon">
+                                    <t t-esc="props.trend >= 0 ? '▲' : '▼'"/>
+                                </span>
+                                <t t-esc="Math.abs(props.trend)"/>%
+                            </span>
+                        </t>
+                    </div>
+
+                    <!-- Etiqueta de tendencia -->
+                    <t t-if="props.trendLabel and !props.isLoading">
+                        <p class="kpi-trend-label">
+                            <t t-esc="props.trendLabel"/>
+                        </p>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </div>
+</t>

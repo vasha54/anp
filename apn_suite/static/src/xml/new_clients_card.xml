@@ -1,0 +1,11 @@
+<t t-name="apn_suite.NewClientsCardTemplate">
+    <KPICard
+        title="'NEW CLIENTS'"
+        value="formattedValue"
+        icon="'fa fa-user-plus'"
+        trend="props.trend"
+        trendLabel="'vs. previous period'"
+        color="'#9775fa'"
+        isLoading="props.isLoading"
+    />
+</t>

@@ -21,7 +21,7 @@
 #main {
   padding: 20px 30px;
   transition: all 0.3s;
-  background-image: url(../img/pilate_background.svg);
+  background-image: url(../img/pilates_background.svg);
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
@@ -45,6 +45,7 @@
   font-size: 14px;
   transition: all 0.3s;
   border-top: 1px solid #cddfff;
+  background-color: #ffffff !important;
 }
 
 .footer .copyright {

@@ -1,0 +1,11 @@
+<t t-name="apn_suite.ClassesCardTemplate">
+    <KPICard
+        title="'CLASSES COMPLETED'"
+        value="formattedValue"
+        icon="'fa fa-calendar-check-o'"
+        trend="props.trend"
+        trendLabel="'vs. previous period'"
+        color="'#339af0'"
+        isLoading="props.isLoading"
+    />
+</t>

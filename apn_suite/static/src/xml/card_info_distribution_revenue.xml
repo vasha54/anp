@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t t-name="apn_suite.CardInfoDistributionRevenueTemplate">
+        <div class="card shadow-sm mb-2 border-0 order-dashboard-card">
+            <!-- Header con color secundario de Odoo -->
+
+           <div class="card-body p-3">
+               <h4 class="mb-2 text-black fw-bold text-center text-uppercase">Distribution of Revenue</h4>
+               <hr style="border: none; border-top: 1px solid #adb5bd; margin: 10px 0; opacity: 0.7;"/>
+               <PieChart data="state.chartData" options="state.chartOptions" />
+           </div>
+
+
+        </div>
+    </t>
+</templates>

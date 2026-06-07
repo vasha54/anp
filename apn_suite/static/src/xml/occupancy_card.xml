@@ -1,0 +1,11 @@
+<t t-name="apn_suite.OccupancyCardTemplate">
+    <KPICard
+        title="'OCCUPATION RATE'"
+        value="formattedValue"
+        icon="'fa fa-users'"
+        trend="props.trend"
+        trendLabel="'vs. previous period'"
+        color="'#ff6b6b'"
+        isLoading="props.isLoading"
+    />
+</t>

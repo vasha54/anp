@@ -1,0 +1,11 @@
+<t t-name="apn_suite.RevenueCardTemplate">
+    <KPICard
+        title="'TOTAL REVENUE'"
+        value="formattedValue"
+        icon="'fa fa-money'"
+        trend="props.trend"
+        trendLabel="'vs. previous period'"
+        color="'#51cf66'"
+        isLoading="props.isLoading"
+    />
+</t>

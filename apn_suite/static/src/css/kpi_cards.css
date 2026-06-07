@@ -1,0 +1,258 @@
+/* ============================================
+   KPI Cards Styles - APN Pilates Dashboard
+   ============================================ */
+
+/* Contenedor principal de la tarjeta KPI */
+.kpi-card {
+    background: white;
+    border-radius: 15px;
+    padding: 15px 20px 20px 20px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* Efecto hover en la tarjeta */
+.kpi-card:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    transform: translateY(-3px);
+}
+
+/* Franja decorativa superior */
+.kpi-card .kpi-stripe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    border-radius: 15px 15px 0 0;
+}
+
+/* Contenido principal */
+.kpi-card .kpi-content {
+    position: relative;
+    z-index: 1;
+}
+
+/* Icono de fondo decorativo */
+.kpi-card .kpi-background-icon {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 6rem;
+    opacity: 0.06;
+    transform: rotate(15deg);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.kpi-card:hover .kpi-background-icon {
+    transform: rotate(0deg) scale(1.15);
+    opacity: 0.1;
+}
+
+/* Contenedor del icono principal - Ahora en layout horizontal */
+.kpi-card .kpi-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 65px;
+    height: 65px;
+    min-width: 65px; /* Evita que se encoja */
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+/* Icono principal */
+.kpi-card .kpi-icon {
+    font-size: 1.8rem;
+    transition: transform 0.3s ease;
+}
+
+.kpi-card:hover .kpi-icon {
+    transform: scale(1.1);
+}
+
+/* Título del KPI */
+.kpi-card .kpi-title {
+    color: #6c757d;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+}
+
+/* Contenedor del valor y tendencia */
+.kpi-card .kpi-value-container {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Valor principal */
+.kpi-card .kpi-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+    color: #1a1a2e;
+    line-height: 1;
+}
+
+/* Placeholder de carga */
+.kpi-card .kpi-placeholder {
+    width: 100px;
+    height: 1.8rem;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: kpi-loading 1.5s ease-in-out infinite;
+}
+
+/* Animación de carga */
+@keyframes kpi-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Indicador de tendencia */
+.kpi-card .kpi-trend {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    white-space: nowrap;
+}
+
+/* Tendencia positiva (verde) */
+.kpi-card .kpi-trend-up {
+    color: #28a745;
+    background-color: rgba(40, 167, 69, 0.1);
+}
+
+/* Tendencia negativa (rojo) */
+.kpi-card .kpi-trend-down {
+    color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Icono de tendencia */
+.kpi-card .kpi-trend-icon {
+    font-size: 0.7rem;
+}
+
+/* Etiqueta de tendencia */
+.kpi-card .kpi-trend-label {
+    color: #6c757d;
+    font-size: 0.7rem;
+    margin: 4px 0 0 0;
+    font-style: italic;
+}
+
+/* Estados de la tarjeta */
+.kpi-card.kpi-loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Animación de entrada */
+@keyframes kpi-fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.kpi-card.kpi-animated {
+    animation: kpi-fadeInUp 0.5s ease-out;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .kpi-card .kpi-icon-wrapper {
+        width: 55px;
+        height: 55px;
+        min-width: 55px;
+        border-radius: 12px;
+    }
+
+    .kpi-card .kpi-icon {
+        font-size: 1.5rem;
+    }
+
+    .kpi-card .kpi-value {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .kpi-card {
+        padding: 12px 15px 15px 15px;
+    }
+
+    .kpi-card .kpi-icon-wrapper {
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+        border-radius: 12px;
+    }
+
+    .kpi-card .kpi-icon {
+        font-size: 1.4rem;
+    }
+
+    .kpi-card .kpi-value {
+        font-size: 1.4rem;
+    }
+
+    .kpi-card .kpi-background-icon {
+        font-size: 4rem;
+    }
+
+    .kpi-card .kpi-title {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .kpi-card {
+        padding: 10px 12px 12px 12px;
+    }
+
+    .kpi-card .kpi-icon-wrapper {
+        width: 45px;
+        height: 45px;
+        min-width: 45px;
+        border-radius: 10px;
+    }
+
+    .kpi-card .kpi-icon {
+        font-size: 1.2rem;
+    }
+
+    .kpi-card .kpi-value {
+        font-size: 1.2rem;
+    }
+
+    .kpi-card .kpi-trend {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+    }
+}

@@ -130,3 +130,4 @@ class ResUser(models.Model):
         if not re.search(r'[!@#$%^&*(),.?":{}|<>_]', password):
             raise ValidationError(_("La contraseña debe contener al menos un carácter especial."))
         return True
+

@@ -76,8 +76,8 @@ sudo systemctl restart odoo
 #### 7.1 Orden de instalación de los addons 
 A continuación los nombres técnicos que debe instalar en el siguiente orden:
 - web_responsive
-- desoft_mtz_company
-- desoft_mtz_products
+- apn_company
+- apn_products
 - 
 ---
 

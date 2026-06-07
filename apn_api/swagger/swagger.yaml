@@ -1,0 +1,236 @@
+openapi: 3.0.0
+info:
+  title: APN Pilates API REST
+  description: |
+    API REST para el sistema APN Pilates
+    
+    ## Autenticación
+    
+    Para usar los endpoints protegidos, debes incluir el token en el header:
+    `Authorization: Bearer TU_TOKEN_AQUI`
+    
+    ## Flujo de uso
+    
+    1. Obtén un token mediante el endpoint `/api/v1/auth/login`
+    2. Usa ese token en los demás endpoints en el header Authorization
+
+  version: 1.0.0
+  contact:
+    name: APN Pilates
+    email: soporte@apnpilates.com
+  license:
+    name: LGPL-3.0
+
+servers:
+  - url: http://localhost:8069
+    description: Servidor de desarrollo
+
+security:
+  - BearerAuth: []
+
+paths:
+  /api_pilates/v1/status:
+    get:
+      tags:
+        - Sistema
+      summary: Estado de la API
+      description: Verifica que la API está funcionando correctamente
+      security: []
+      responses:
+        '200':
+          description: API funcionando correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      api_version:
+                        type: string
+                        example: "1.0"
+                      status:
+                        type: string
+                        example: "operational"
+              example:
+                success: true
+                message: "OK"
+                data:
+                  api_version: "1.0"
+                  odoo_version: "18.0"
+                  status: "operational"
+
+#  /api/v1/auth/login:
+#    post:
+#      tags:
+#        - Autenticación
+#      summary: Iniciar sesión y obtener token
+#      description: |
+#        Autentica al usuario y devuelve un token para usar en los demás endpoints.
+#        Este endpoint NO requiere token.
+#      security: []
+#      requestBody:
+#        required: true
+#        content:
+#          application/json:
+#            schema:
+#              type: object
+#              required:
+#                - login
+#                - password
+#              properties:
+#                login:
+#                  type: string
+#                  description: Email o nombre de usuario
+#                  example: "soporte@apnpilates.com"
+#                password:
+#                  type: string
+#                  description: Contraseña del usuario
+#                  example: ".soporte123*"
+#      responses:
+#        '200':
+#          description: Login exitoso
+#          content:
+#            application/json:
+#              schema:
+#                type: object
+#                properties:
+#                  success:
+#                    type: boolean
+#                    example: true
+#                  data:
+#                    type: object
+#                    properties:
+#                      token:
+#                        type: string
+#                        description: Token para autenticación
+#                      user:
+#                        type: object
+#                        properties:
+#                          id:
+#                            type: integer
+#                          name:
+#                            type: string
+#                          email:
+#                            type: string
+#              example:
+#                success: true
+#                message: "OK"
+#                data:
+#                  token: "abc123def456..."
+#                  expiration: "2025-01-01 00:00:00"
+#                  user:
+#                    id: 2
+#                    name: "Soporte Técnico"
+#                    email: "soporte@apnpilates.com"
+#        '401':
+#          description: Credenciales inválidas
+#
+#  /api/v1/user/info:
+#    get:
+#      tags:
+#        - Usuario
+#      summary: Información del usuario autenticado
+#      description: Obtiene la información del usuario asociado al token
+#      responses:
+#        '200':
+#          description: Información del usuario
+#          content:
+#            application/json:
+#              example:
+#                success: true
+#                data:
+#                  id: 2
+#                  name: "Soporte Técnico"
+#                  email: "soporte@apnpilates.com"
+#                  login: "soporte@apnpilates.com"
+#                  company:
+#                    id: 1
+#                    name: "Mi Compañía"
+#        '401':
+#          description: Token no proporcionado
+#        '403':
+#          description: Token inválido o expirado
+#
+#  /api/v1/pilates/centers:
+#    get:
+#      tags:
+#        - Pilates
+#      summary: Listar centros de pilates
+#      description: Obtiene el listado de centros de pilates disponibles
+#      responses:
+#        '200':
+#          description: Lista de centros
+#          content:
+#            application/json:
+#              example:
+#                success: true
+#                data:
+#                  - id: 1
+#                    name: "Centro Pilates Norte"
+#                    location: "Zona Norte"
+#                  - id: 2
+#                    name: "Centro Pilates Sur"
+#                    location: "Zona Sur"
+#
+#  /api/v1/pilates/classes:
+#    get:
+#      tags:
+#        - Pilates
+#      summary: Listar clases disponibles
+#      description: Obtiene el listado de clases de pilates disponibles
+#      responses:
+#        '200':
+#          description: Lista de clases
+#          content:
+#            application/json:
+#              example:
+#                success: true
+#                data:
+#                  - id: 1
+#                    name: "Pilates Reformer"
+#                    duration: "60 min"
+#                    level: "Intermedio"
+#                  - id: 2
+#                    name: "Pilates Mat"
+#                    duration: "45 min"
+#                    level: "Básico"
+#
+#  /api/v1/token/refresh:
+#    post:
+#      tags:
+#        - Autenticación
+#      summary: Refrescar token
+#      description: Genera un nuevo token y desactiva el anterior
+#      responses:
+#        '200':
+#          description: Nuevo token generado
+#          content:
+#            application/json:
+#              example:
+#                success: true
+#                data:
+#                  token: "nuevo_token_xyz789..."
+#                  expiration: "2025-06-07 00:00:00"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Token obtenido mediante el endpoint de login
+
+tags:
+  - name: Sistema
+    description: Endpoints del sistema
+#  - name: Autenticación
+#    description: Login y gestión de tokens
+#  - name: Usuario
+#    description: Información del usuario
+#  - name: Pilates
+#    description: Endpoints relacionados con pilates
