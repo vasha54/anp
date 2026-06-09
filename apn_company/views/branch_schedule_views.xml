@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_branch_schedule_form" model="ir.ui.view">
+            <field name="name">branch.schedule.form</field>
+            <field name="model">branch.schedule</field>
+            <field name="arch" type="xml">
+                <form string="Work Schedule">
+                    <sheet>
+                        <!-- Botón de sucursales -->
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_branches"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-building"
+                                    invisible="[('branch_count', '=', 0)]">
+                                <field name="branch_count" widget="statinfo"
+                                       string="Branches"/>
+                            </button>
+                        </div>
+
+                        <div class="oe_title">
+                            <label for="display_name"/>
+                            <h1>
+                                <field name="display_name" readonly="1"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group string="Days">
+                                <field name="day_of_week_from"/>
+                                <field name="day_of_week_to"/>
+                            </group>
+                            <group string="Hours">
+                                <field name="hour_from"
+                                       widget="float_time"/>
+                                <field name="hour_to"
+                                       widget="float_time"/>
+                            </group>
+                        </group>
+
+                        <!-- Alerta si está en uso -->
+                        <div class="alert alert-warning"
+                             role="alert"
+                             invisible="[('branch_count', '=', 0)]">
+                            <i class="fa fa-lock me-2"/>
+                            <strong>This schedule is in use.</strong>
+                            Days and hours cannot be modified while the schedule
+                            is assigned to one or more branches.
+                        </div>
+
+                        <!-- Resumen -->
+                        <group>
+                            <group string="Schedule Summary" colspan="2">
+                                <div class="alert alert-info" role="alert">
+                                    <field name="day_range" readonly="1" nolabel="1"/>
+                                    <field name="hour_range" readonly="1" nolabel="1"/>
+                                </div>
+                            </group>
+                        </group>
+
+                        <group string="Branches">
+                            <field name="branch_ids"
+                                   string="Assigned Branches"
+                                   widget="many2many_tags"
+                                   options="{'no_create': True}">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="phone"/>
+                                    <field name="email"/>
+                                    <field name="city"/>
+                                </list>
+                            </field>
+                        </group>
+
+                        <group string="Additional Information">
+                            <group>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="notes"
+                                       placeholder="Any special considerations..."/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_branch_schedule_list" model="ir.ui.view">
+            <field name="name">branch.schedule.list</field>
+            <field name="model">branch.schedule</field>
+            <field name="arch" type="xml">
+                <list string="Work Schedules"
+                      decoration-warning="branch_count > 0">
+                    <field widget="" name="active"/>
+                    <field name="display_name" string="Schedule"/>
+                    <field name="day_range" optional="hide"/>
+                    <field name="hour_range"/>
+                    <field name="branch_count" string="Branches"/>
+
+                </list>
+            </field>
+        </record>
+
+        <record id="view_branch_schedule_search" model="ir.ui.view">
+            <field name="name">branch.schedule.search</field>
+            <field name="model">branch.schedule</field>
+            <field name="arch" type="xml">
+                <search string="Work Schedules">
+                    <field name="display_name"/>
+                    <field name="day_of_week_from"/>
+                    <field name="day_of_week_to"/>
+
+                    <filter string="Active" name="active"
+                            domain="[('active', '=', True)]"/>
+                    <filter string="Inactive" name="inactive"
+                            domain="[('active', '=', False)]"/>
+
+                    <separator/>
+
+                    <filter string="In Use" name="in_use"
+                            domain="[('branch_count', '>', 0)]"/>
+                    <filter string="Not Assigned" name="not_assigned"
+                            domain="[('branch_count', '=', 0)]"/>
+
+                    <group expand="0" string="Group By">
+                        <filter string="Start Day" name="group_by_day"
+                                context="{'group_by': 'day_of_week_from'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_branch_schedule" model="ir.actions.act_window">
+            <field name="name">Branch Work Schedules</field>
+            <field name="res_model">branch.schedule</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_branch_schedule_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a work schedule
+                </p>
+                <p>
+                    Define work schedules and assign them to your branches.
+                    Schedules can be shared across multiple branches.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Menú principal APN Pilates -->
+        <menuitem id="menu_apn_company_root"
+                  name="Companies"
+                  sequence="-97"
+        />
+
+        <!-- Submenú Compañías -->
+        <menuitem id="menu_apn_company"
+                  name="Companies"
+                  parent="menu_apn_company_root"
+                  action="action_apn_company"
+                  sequence="1"/>
+
+        <!-- Submenú Sucursales -->
+        <menuitem id="menu_apn_branch"
+                  name="Branches"
+                  parent="menu_apn_company_root"
+                  action="action_apn_branch"
+                  sequence="2"/>
+
+        <!-- Submenú Horarios -->
+        <menuitem id="menu_apn_branch_schedule"
+              name="Work Schedules"
+              action="action_branch_schedule"
+              parent="menu_apn_company_root"
+              sequence="4"/>
+    </data>
+</odoo>

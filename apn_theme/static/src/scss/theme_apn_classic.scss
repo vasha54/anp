@@ -1,5 +1,5 @@
 // =============================================
-//  THEME APN CLASSIC
+//  THEME APN CLASSIC v2
 //  Paleta: #F4A300 | #4A4A4A | #FFFFFF
 //  Odoo 18
 // =============================================
@@ -8,38 +8,89 @@
 //  1. VARIABLES
 // =============================================
 
-$apn-primary: #F4A300;
-$apn-secondary: #4A4A4A;
+// =============================================
+// PALETA DE COLORES PRINCIPAL
+// =============================================
+$apn-primary: #F4A300 !default;
+$apn-secondary: #4A4A4A !default;
 $apn-white: #FFFFFF;
 
-$apn-primary-hover: #DB9200;
-$apn-primary-active: #C28100;
-$apn-primary-light: #F8C54D;
-$apn-primary-lighter: #FCE19A;
-$apn-primary-dark: #A86E00;
+// =============================================
+// COLORES PRIMARIOS (Naranja/Ámbar)
+// =============================================
+$apn-primary-hover: #DB9200;            // Oscurecido ~10% para hover
+$apn-primary-active: #C28100;           // Más oscuro para estado activo
+$apn-primary-light: #F8C54D;            // Aclarado para elementos suaves
+$apn-primary-lighter: #FCE19A;          // Más claro para fondos sutiles
+$apn-primary-dark: #A86E00;             // Oscuro para contrastes
 
-$apn-secondary-hover: #3D3D3D;
-$apn-secondary-active: #333333;
-$apn-secondary-light: #6E6E6E;
-$apn-secondary-lighter: #9A9A9A;
-$apn-secondary-dark: #2A2A2A;
+// =============================================
+// COLORES SECUNDARIOS (Gris)
+// =============================================
+$apn-secondary-hover: #3D3D3D;          // Oscurecido ~10% para hover
+$apn-secondary-active: #333333;         // Más oscuro para estado activo
+$apn-secondary-light: #6E6E6E;          // Aclarado para elementos suaves
+$apn-secondary-lighter: #9A9A9A;        // Más claro para fondos sutiles
+$apn-secondary-dark: #2A2A2A;           // Oscuro para contrastes
 
-$apn-text-primary: #212529;
-$apn-text-secondary: #4A4A4A;
-$apn-text-muted: #6E6E6E;
-$apn-text-light: #FFFFFF;
+// =============================================
+// COLORES DE TEXTO
+// =============================================
+$apn-text-primary: #212529;             // Casi negro para texto principal
+$apn-text-secondary: #4A4A4A;           // Gris medio para textos secundarios
+$apn-text-muted: #6E6E6E;               // Gris más claro para textos desactivados
+$apn-text-light: #FFFFFF;               // Texto blanco para fondos oscuros
 
-$apn-bg-primary: #FFFFFF;
-$apn-bg-secondary: #F8F9FA;
-$apn-bg-dark: #4A4A4A;
-$apn-bg-darker: #2A2A2A;
+// =============================================
+// COLORES DE FONDO
+// =============================================
+$apn-bg-primary: #FFFFFF;               // Fondo principal blanco
+$apn-bg-secondary: #F8F9FA;             // Gris muy claro para fondo secundario
+$apn-bg-dark: #4A4A4A;                  // Gris oscuro para fondos contrastantes
+$apn-bg-darker: #2A2A2A;                // Casi negro para fondos muy oscuros
 
-$apn-border-color: #DEE2E6;
+// =============================================
+// BORDES Y SOMBRAS
+// =============================================
+$apn-border-color: #DEE2E6;             // Gris claro para bordes
 $apn-border-radius: 0.5rem;
 
-$apn-shadow-sm: 0 1px 3px rgba(74, 74, 74, 0.12);
-$apn-shadow: 0 4px 12px rgba(74, 74, 74, 0.15);
-$apn-shadow-lg: 0 8px 24px rgba(74, 74, 74, 0.20);
+$apn-shadow-sm: 0 1px 3px rgba(74, 74, 74, 0.12);    // Sombra ligera
+$apn-shadow: 0 4px 12px rgba(74, 74, 74, 0.15);      // Sombra media
+$apn-shadow-lg: 0 8px 24px rgba(74, 74, 74, 0.20);   // Sombra grande
+
+// =============================================
+// VARIABLES ADICIONALES PARA ODOO 18
+// =============================================
+$apn-success: #5FC56B;                  // Verde para éxito
+$apn-warning: #F4A300;                  // Naranja primario como advertencia
+$apn-danger: #E53E3E;                   // Rojo para errores/peligros
+$apn-info: #0192E1;                     // Azul para información
+
+$apn-link-color: #F4A300;               // Color de enlaces (naranja primario)
+$apn-link-hover: #DB9200;               // Hover de enlaces
+
+// Estados de botones primarios (naranja)
+$apn-btn-primary-bg: #F4A300;
+$apn-btn-primary-border: #F4A300;
+$apn-btn-primary-hover-bg: #DB9200;
+$apn-btn-primary-hover-border: #DB9200;
+
+// Estados de botones secundarios (gris)
+$apn-btn-secondary-bg: #4A4A4A;
+$apn-btn-secondary-border: #4A4A4A;
+$apn-btn-secondary-hover-bg: #3D3D3D;
+$apn-btn-secondary-hover-border: #3D3D3D;
+
+// =============================================
+// UTILIDADES DE CONTRASTE Y ACCESIBILIDAD
+// =============================================
+$apn-primary-contrast: #212529;          // Texto oscuro sobre fondo naranja (mejor legibilidad)
+$apn-secondary-contrast: #FFFFFF;        // Texto blanco sobre fondo gris
+$apn-primary-light-contrast: #A86E00;    // Texto oscuro sobre primary-light
+$apn-secondary-light-contrast: #2A2A2A;  // Texto oscuro sobre secondary-light
+
+
 
 // =============================================
 //  2. SOBRESCRIBIR VARIABLES DE ODOO
@@ -445,3 +496,176 @@ a:not(.btn):not(.dropdown-item):not(.o_menu_item) {
 .bg-primary .text-primary,
 .btn-primary .text-primary { color: $apn-white !important; }
 .o-dropdown--menu .o-dropdown--item-highlight { background-color: $apn-primary !important; }
+
+// =============================================
+//  28. STATUSBAR MEJORADO - VERSIÓN FINAL
+// =============================================
+
+.o_statusbar_status {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+
+    // Todos los botones del statusbar
+    .o_arrow_button {
+        // Reset de estilos base
+        background-color: $apn-bg-secondary !important;
+        color: $apn-text-muted !important;
+        border: 1.5px solid $apn-border-color !important;
+        border-radius: $apn-border-radius !important;
+        padding: 5px 16px !important;
+        font-weight: 400 !important;
+        font-size: 0.875rem !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        box-shadow: none !important;
+        opacity: 1 !important;
+        text-transform: capitalize !important;
+
+        // Hover solo para botones clickeables (no disabled y no current)
+        &:hover:not(.o_arrow_button_current):not([disabled]) {
+            background-color: rgba($apn-primary, 0.12) !important;
+            color: $apn-primary-dark !important;
+            border-color: $apn-primary-light !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 8px rgba($apn-primary, 0.2) !important;
+        }
+    }
+
+    // =============================================
+    // ESTADO ACTUAL - ¡EL QUE QUIERES RESALTAR!
+    // =============================================
+    .o_arrow_button_current {
+        background: linear-gradient(135deg, $apn-primary 0%, darken($apn-primary, 12%) 100%) !important;
+        color: $apn-white !important;
+        border-color: $apn-primary-dark !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.4px !important;
+        box-shadow: 0 4px 12px rgba($apn-primary, 0.4),
+                    0 0 0 2px rgba($apn-primary, 0.1) !important;
+        transform: scale(1.05) !important;
+        z-index: 2 !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+
+        // Efecto de brillo superior (glass effect)
+        &::before {
+            content: '' !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            height: 50% !important;
+            background: linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0.25) 0%,
+                rgba(255, 255, 255, 0) 100%
+            ) !important;
+            border-radius: $apn-border-radius $apn-border-radius 0 0 !important;
+            pointer-events: none !important;
+        }
+
+        // Indicador de "paso actual"
+        &::after {
+            content: '' !important;
+            position: absolute !important;
+            bottom: 3px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 30px !important;
+            height: 3px !important;
+            background-color: rgba(255, 255, 255, 0.6) !important;
+            border-radius: 2px !important;
+            pointer-events: none !important;
+        }
+    }
+
+    // Estados clickeables (no disabled)
+    .o_arrow_button:not(.o_arrow_button_current):not([disabled]) {
+        cursor: pointer !important;
+
+        &:active {
+            transform: translateY(0) !important;
+            box-shadow: 0 1px 2px rgba($apn-primary, 0.15) !important;
+        }
+    }
+
+    // Botones deshabilitados que NO son el actual
+    .o_arrow_button[disabled]:not(.o_arrow_button_current) {
+        opacity: 0.7 !important;
+        cursor: not-allowed !important;
+
+        &::before {
+            content: '✓' !important;
+            margin-right: 6px !important;
+            font-size: 0.75rem !important;
+            color: $apn-primary !important;
+            font-weight: bold !important;
+        }
+    }
+
+    // Ocultar botones dropdown innecesarios
+    .o-dropdown.d-none {
+        display: none !important;
+    }
+}
+
+// =============================================
+// COLORES SEMÁNTICOS POR ESTADO (OPCIONAL)
+// =============================================
+
+.o_statusbar_status {
+    // Estado "Valid" o "Confirmado"
+    .o_arrow_button_current[data-value="valid"],
+    .o_arrow_button_current[data-value="done"],
+    .o_arrow_button_current[data-value="posted"] {
+        background: linear-gradient(135deg, $apn-primary 0%, darken($apn-primary, 12%) 100%) !important;
+    }
+
+    // Estado "Draft" o "Borrador"
+    .o_arrow_button_current[data-value="draft"] {
+        background: linear-gradient(135deg, $apn-secondary 0%, $apn-secondary-dark 100%) !important;
+        border-color: $apn-secondary-dark !important;
+        box-shadow: 0 4px 12px rgba($apn-secondary, 0.4),
+                    0 0 0 2px rgba($apn-secondary, 0.1) !important;
+    }
+
+    // Estado "Cancelado"
+    .o_arrow_button_current[data-value="cancel"],
+    .o_arrow_button_current[data-value="cancelled"] {
+        background: linear-gradient(135deg, $apn-danger 0%, darken($apn-danger, 12%) 100%) !important;
+        border-color: darken($apn-danger, 12%) !important;
+        box-shadow: 0 4px 12px rgba($apn-danger, 0.4),
+                    0 0 0 2px rgba($apn-danger, 0.1) !important;
+    }
+}
+
+// =============================================
+// RESPONSIVE - Para pantallas pequeñas
+// =============================================
+
+@media (max-width: 768px) {
+    .o_statusbar_status {
+        flex-wrap: wrap !important;
+        gap: 3px !important;
+
+        .o_arrow_button {
+            padding: 4px 12px !important;
+            font-size: 0.8rem !important;
+        }
+
+        .o_arrow_button_current {
+            transform: scale(1.03) !important;
+        }
+    }
+}
+
+
+// ==========================================================
+// HEADER VIEW LIST
+// ===========================================================
+ .o_list_renderer .o_list_table thead th {
+    padding-top: var(--ListRenderer-thead-padding-y) !important;
+    background-color: transparent !important;
+    color: #ffffff !important;
+}

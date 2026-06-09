@@ -72,6 +72,20 @@
             <field name="tz">UTC</field>
         </record>
 
+        <!-- Usuario Instructor -->
+        <record id="user_instructor" model="res.users">
+            <field name="name">Instructor Pilates</field>
+            <field name="login">instructor@apnpilates.com</field>
+            <field name="password">.instructor123*</field>
+            <field name="confirmed_password">.instructor123*</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="company_ids" eval="[(4, ref('base.main_company'))]"/>
+            <field name="groups_id" eval="[(4, ref('group_instructor'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
         <!-- Usuario Cliente -->
         <record id="user_client" model="res.users">
             <field name="name">Cliente APN Pilates</field>

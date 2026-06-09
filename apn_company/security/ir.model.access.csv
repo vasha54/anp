@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_branch_schedule_admin,branch.schedule.admin,model_branch_schedule,apn_group.group_admin_apn_pilates,1,1,1,1
+access_branch_schedule_support,branch.schedule.support,model_branch_schedule,apn_group.group_support_anp_pilates,1,1,1,1
+access_branch_schedule_admin_company,branch.schedule.admin.company,model_branch_schedule,apn_group.group_admin_company,1,1,1,1
+access_branch_schedule_admin_branch,branch.schedule.admin.branch,model_branch_schedule,apn_group.group_admin_branch,1,1,1,1
+access_branch_schedule_operator,branch.schedule.operator,model_branch_schedule,apn_group.group_operator_branch,1,0,0,0
+access_branch_schedule_instructor,branch.schedule.instructor,model_branch_schedule,apn_group.group_instructor,1,0,0,0
+access_branch_schedule_client,branch.schedule.client,model_branch_schedule,apn_group.group_client,1,0,0,0

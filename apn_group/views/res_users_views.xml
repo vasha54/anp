@@ -71,7 +71,7 @@
                             </group>
                         </page>
 
-                        <page string="Pilates Roles">
+                        <page name="roles_pilates" string="Roles">
                             <field name="apn_group_ids" options="{'create':false, 'edit':false, 'delete':false}" >
                                 <list optional="show" >
                                     <field name="category_id" />

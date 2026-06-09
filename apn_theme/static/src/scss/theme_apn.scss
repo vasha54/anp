@@ -5,48 +5,86 @@
 // =============================================
 
 // =============================================
-//  1. VARIABLES
+// PALETA DE COLORES PRINCIPAL
 // =============================================
-
-// Colores primarios
-$apn-primary: #EDAC2E;
-$apn-secondary: #676767;
+$apn-primary: #EDAC2E !default;
+$apn-secondary: #676767 !default;
 $apn-white: #FFFFFF;
 
-// Variantes - Primary
-$apn-primary-hover: #D49A1C;
-$apn-primary-active: #BB8618;
-$apn-primary-light: #F5D78A;
-$apn-primary-lighter: #FAECC8;
-$apn-primary-dark: #C48E14;
+// =============================================
+// COLORES PRIMARIOS (Naranja/Dorado)
+// =============================================
+$apn-primary-hover: #D49A1C;            // Oscurecido ~12% para hover
+$apn-primary-active: #BB8618;           // Más oscuro para estado activo
+$apn-primary-light: #F5D78A;            // Aclarado para elementos suaves
+$apn-primary-lighter: #FAECC8;          // Más claro para fondos sutiles
+$apn-primary-dark: #C48E14;             // Oscuro para contrastes
 
-// Variantes - Secondary
-$apn-secondary-hover: #555555;
-$apn-secondary-active: #4A4A4A;
-$apn-secondary-light: #8A8A8A;
-$apn-secondary-lighter: #B0B0B0;
-$apn-secondary-dark: #3D3D3D;
+// =============================================
+// COLORES SECUNDARIOS (Gris)
+// =============================================
+$apn-secondary-hover: #555555;          // Oscurecido ~12% para hover
+$apn-secondary-active: #4A4A4A;         // Más oscuro para estado activo
+$apn-secondary-light: #8A8A8A;          // Aclarado para elementos suaves
+$apn-secondary-lighter: #B0B0B0;        // Más claro para fondos sutiles
+$apn-secondary-dark: #3D3D3D;           // Oscuro para contrastes
 
-// Texto
-$apn-text-primary: #212529;
-$apn-text-secondary: #676767;
-$apn-text-muted: #8A8A8A;
-$apn-text-light: #FFFFFF;
+// =============================================
+// COLORES DE TEXTO
+// =============================================
+$apn-text-primary: #212529;             // Casi negro para texto principal
+$apn-text-secondary: #676767;           // Gris medio para textos secundarios
+$apn-text-muted: #8A8A8A;               // Gris más claro para textos desactivados
+$apn-text-light: #FFFFFF;               // Texto blanco para fondos oscuros
 
-// Fondos
-$apn-bg-primary: #FFFFFF;
-$apn-bg-secondary: #F8F9FA;
-$apn-bg-dark: #676767;
-$apn-bg-darker: #3D3D3D;
+// =============================================
+// COLORES DE FONDO
+// =============================================
+$apn-bg-primary: #FFFFFF;               // Fondo principal blanco
+$apn-bg-secondary: #F8F9FA;             // Gris muy claro para fondo secundario
+$apn-bg-dark: #676767;                  // Gris oscuro para fondos contrastantes
+$apn-bg-darker: #3D3D3D;                // Casi negro para fondos muy oscuros
 
-// Bordes
-$apn-border-color: #DEE2E6;
+// =============================================
+// BORDES Y SOMBRAS
+// =============================================
+$apn-border-color: #DEE2E6;             // Gris claro para bordes
 $apn-border-radius: 0.5rem;
 
-// Sombras
-$apn-shadow-sm: 0 1px 3px rgba(103, 103, 103, 0.12);
-$apn-shadow: 0 4px 12px rgba(103, 103, 103, 0.15);
-$apn-shadow-lg: 0 8px 24px rgba(103, 103, 103, 0.20);
+$apn-shadow-sm: 0 1px 3px rgba(103, 103, 103, 0.12);   // Sombra ligera
+$apn-shadow: 0 4px 12px rgba(103, 103, 103, 0.15);     // Sombra media
+$apn-shadow-lg: 0 8px 24px rgba(103, 103, 103, 0.20);  // Sombra grande
+
+// =============================================
+// VARIABLES ADICIONALES PARA ODOO 18
+// =============================================
+$apn-success: #5FC56B;                  // Verde para éxito
+$apn-warning: #EDAC2E;                  // Naranja primario como advertencia
+$apn-danger: #E53E3E;                   // Rojo para errores/peligros
+$apn-info: #0192E1;                     // Azul para información
+
+$apn-link-color: #EDAC2E;               // Color de enlaces (naranja primario)
+$apn-link-hover: #D49A1C;               // Hover de enlaces
+
+// Estados de botones primarios (naranja)
+$apn-btn-primary-bg: #EDAC2E;
+$apn-btn-primary-border: #EDAC2E;
+$apn-btn-primary-hover-bg: #D49A1C;
+$apn-btn-primary-hover-border: #D49A1C;
+
+// Estados de botones secundarios (gris)
+$apn-btn-secondary-bg: #676767;
+$apn-btn-secondary-border: #676767;
+$apn-btn-secondary-hover-bg: #555555;
+$apn-btn-secondary-hover-border: #555555;
+
+// =============================================
+// UTILIDADES DE CONTRASTE Y ACCESIBILIDAD
+// =============================================
+$apn-primary-contrast: #212529;          // Texto oscuro sobre fondo naranja claro
+$apn-secondary-contrast: #FFFFFF;        // Texto blanco sobre fondo gris
+$apn-primary-light-contrast: #C48E14;    // Texto oscuro sobre primary-light
+$apn-secondary-light-contrast: #3D3D3D;  // Texto oscuro sobre secondary-light
 
 // =============================================
 //  2. SOBRESCRIBIR VARIABLES DE ODOO

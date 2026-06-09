@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<record id="view_users_form_inherit_apn_company" model="ir.ui.view">
+    <field name="name">res.users.form.inherit.apn</field>
+    <field name="model">res.users</field>
+    <field name="inherit_id" ref="apn_group.view_residence_res_user_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//page[@name='roles_pilates']" position="after">
+            <page string="APN Access" name="apn_access">
+
+                <group>
+                    <label for="company_ids" colspan="2"
+                           string="Select the companies and branches where the user will work or be assigned" />
+                    <field name="company_ids" widget="many2many_tags" nolabel="1"/>
+                </group>
+
+                <group string="Companies &amp; Branches">
+                    <group string="Company Administration">
+                        <field name="admin_company_ids"
+                               widget="many2many_tags"
+                               placeholder="Select companies to administer..."
+                               domain="[('is_branch', '=', False)]"/>
+                    </group>
+
+                    <group string="Branch Administration">
+                        <field name="admin_branch_ids"
+                               widget="many2many_tags"
+                               placeholder="Select branches to administer..."
+                               domain="[('is_branch', '=', True)]"/>
+                    </group>
+
+                    <group string="Branch Operations">
+                        <field name="operator_branch_ids"
+                               widget="many2many_tags"
+                               placeholder="Select branches to operate..."
+                               domain="[('is_branch', '=', True)]"/>
+                    </group>
+
+                    <group string="Instructor Assignments">
+                        <field name="instructor_branch_ids"
+                               widget="many2many_tags"
+                               placeholder="Select branches to instruct..."
+                               domain="[('is_branch', '=', True)]"/>
+                    </group>
+                </group>
+
+
+            </page>
+        </xpath>
+    </field>
+</record>
+</odoo>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ==================== COMPAÑÍAS PRINCIPALES ==================== -->
+
+        <!-- Vista Tree para Compañías -->
+        <record id="view_apn_company_tree" model="ir.ui.view">
+            <field name="name">apn.company.tree</field>
+            <field name="model">res.company</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <list string="Companies">
+                    <field name="name" required="1"/>
+                    <field name="phone" widget="phone"/>
+                    <field name="email" widget="email"/>
+                    <field name="city"/>
+                    <field name="country_id" optional="hide"/>
+                    <field name="parent_company_id" column_invisible="1"/>
+                    <field name="is_branch" column_invisible="1"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vista Form para Compañías -->
+        <record id="view_apn_company_form" model="ir.ui.view">
+            <field name="name">apn.company.form</field>
+            <field name="model">res.company</field>
+            <field name="arch" type="xml">
+                <form string="Company">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="open_map"
+                                    type="object"
+                                    string="View on Map"
+                                    class="oe_stat_button"
+                                    icon="fa-map-marker"
+                                    invisible="[('map_url', '=', False)]"/>
+                        </div>
+
+                        <field name="is_branch" invisible="1"/>
+                        <field name="parent_company_id" invisible="1"/>
+
+                        <!-- Agregar imagen de la compañía -->
+                        <field name="logo" widget="image" class="oe_avatar"/>
+                        <div class="oe_title">
+                            <div class="oe_avatar">
+
+                            </div>
+                            <h1>
+                                <field name="name" required="1" placeholder="Company Name"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group string="Company Information">
+                                <!-- Quitamos name de aquí porque ya está en el título -->
+                                <field name="phone" widget="phone"/>
+                                <field name="email" widget="email"/>
+                                <field name="website" widget="url"/>
+                            </group>
+                            <group string="Address">
+                                <field name="street" placeholder="Street..."/>
+                                <field name="street2" placeholder="Street 2..."/>
+                                <field name="city" placeholder="City"/>
+                                <field name="state_id" options="{'no_create': True}"/>
+                                <field name="zip" placeholder="ZIP"/>
+                                <field name="country_id" options="{'no_create': True}"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Geolocation">
+                                <group>
+                                    <field name="latitude" placeholder="e.g., 19.4326"/>
+                                    <field name="longitude" placeholder="e.g., -99.1332"/>
+                                    <field name="map_url" readonly="1" widget="url"/>
+                                    <button name="geo_localize"
+                                            type="object"
+                                            string="Geo Localize"
+                                            class="btn btn-secondary"
+                                            icon="fa-globe"/>
+                                </group>
+                            </page>
+                            <page string="Branches">
+                                <field name="branch_ids" readonly="1">
+                                    <list>
+                                        <field string="Name" name="name"/>
+                                        <field name="city"/>
+                                        <field name="phone" widget="phone"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vista Search para Compañías -->
+        <record id="view_apn_company_search" model="ir.ui.view">
+            <field name="name">apn.company.search</field>
+            <field name="model">res.company</field>
+            <field name="arch" type="xml">
+                <search string="Search Companies">
+                    <field name="name"/>
+                    <field name="phone"/>
+                    <field name="email"/>
+                    <field name="city"/>
+                    <field name="state_id"/>
+                    <field name="country_id"/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action para Compañías -->
+        <record id="action_apn_company" model="ir.actions.act_window">
+            <field name="name">Companies</field>
+            <field name="res_model">res.company</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('is_branch', '=', False)]</field>
+            <field name="search_view_id" ref="view_apn_company_search"/>
+            <field name="view_ids" eval="[ (5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('apn_company.view_apn_company_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('apn_company.view_apn_company_form')})]"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new company
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>
