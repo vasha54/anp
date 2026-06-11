@@ -1,31 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- Menú principal APN Pilates -->
-        <menuitem id="menu_apn_company_root"
-                  name="Companies"
-                  sequence="-97"
-        />
+    <!-- Menú principal APN Pilates -->
+    <menuitem id="menu_apn_company_root"
+              name="Organizational Structure"
+              sequence="-97"
+              web_icon="apn_company,static/src/img/menu_item_company_icon.png"
+    />
 
-        <!-- Submenú Compañías -->
-        <menuitem id="menu_apn_company"
-                  name="Companies"
-                  parent="menu_apn_company_root"
-                  action="action_apn_company"
-                  sequence="1"/>
+    <!-- Submenú Compañías -->
+    <menuitem id="menu_apn_company"
+              name="Companies"
+              parent="menu_apn_company_root"
+              action="action_apn_company"
+              sequence="1"/>
 
-        <!-- Submenú Sucursales -->
-        <menuitem id="menu_apn_branch"
-                  name="Branches"
-                  parent="menu_apn_company_root"
-                  action="action_apn_branch"
-                  sequence="2"/>
+    <!-- Submenú Sucursales -->
+    <menuitem id="menu_apn_branch"
+              name="Branches"
+              parent="menu_apn_company_root"
+              action="action_apn_branch"
+              sequence="2"/>
 
-        <!-- Submenú Horarios -->
-        <menuitem id="menu_apn_branch_schedule"
-              name="Work Schedules"
+    <!-- Submenú Rooms & Studios -->
+    <menuitem id="menu_apn_rooms"
+              name="Rooms &amp; Studios"
+              parent="menu_apn_company_root"
+              action="action_branch_room"
+              sequence="3"/>
+
+    <!-- Submenú Horarios -->
+    <menuitem id="menu_apn_branch_schedule"
+              name="Opening Hours"
               action="action_branch_schedule"
               parent="menu_apn_company_root"
               sequence="4"/>
-    </data>
 </odoo>

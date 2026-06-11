@@ -15,6 +15,7 @@
                     <field name="phone" widget="phone"/>
                     <field name="email" widget="email"/>
                     <field name="city"/>
+                    <field name="count_branchs"/>
                     <field name="country_id" optional="hide"/>
                     <field name="parent_company_id" column_invisible="1"/>
                     <field name="is_branch" column_invisible="1"/>
@@ -58,14 +59,16 @@
                                 <field name="phone" widget="phone"/>
                                 <field name="email" widget="email"/>
                                 <field name="website" widget="url"/>
+<!--                                <field name="is_branch"/>-->
+<!--                                <field name="parent_company_id" />-->
                             </group>
                             <group string="Address">
-                                <field name="street" placeholder="Street..."/>
+                                <field name="street" placeholder="Street..." required="1"/>
                                 <field name="street2" placeholder="Street 2..."/>
-                                <field name="city" placeholder="City"/>
-                                <field name="state_id" options="{'no_create': True}"/>
-                                <field name="zip" placeholder="ZIP"/>
-                                <field name="country_id" options="{'no_create': True}"/>
+                                <field name="city" placeholder="City" required="1"/>
+                                <field name="state_id" options="{'no_create': True}" required="1"/>
+                                <field name="zip" placeholder="ZIP" required="1"/>
+                                <field name="country_id" options="{'no_create': True}" required="1"/>
                             </group>
                         </group>
 
@@ -83,11 +86,18 @@
                                 </group>
                             </page>
                             <page string="Branches">
-                                <field name="branch_ids" readonly="1">
-                                    <list>
-                                        <field string="Name" name="name"/>
-                                        <field name="city"/>
-                                        <field name="phone" widget="phone"/>
+                                <field name="branch_ids" options="{'no_create': True, 'create': False}">
+                                    <list string="Branches"
+                                          decoration-info="not parent_company_id"
+                                          decoration-warning="not street">
+                                        <field name="active" widget="boolean_toggle"/>
+                                        <field string="Name" name="name" required="1"/>
+                                        <field name="parent_company_id" required="1"/>
+                                        <field name="city" optional="show"/>
+                                        <field name="phone" widget="phone" optional="show"/>
+                                        <field name="email" widget="email" optional="show"/>
+                                        <field name="room_count"/>
+                                        <field name="is_branch" column_invisible="1"/>
                                     </list>
                                 </field>
                             </page>

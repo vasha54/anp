@@ -1,6 +1,57 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError, UserError
 
+class BranchScheduleResCompanyRel(models.Model):
+    _name = "branch.schedule.res.company.rel"
+    _description = "Relation between Branch Schedule and Company"
+    _table = "branch_schedule_res_company_rel"
+
+    schedule_id = fields.Many2one(
+        'branch.schedule',
+        string='Schedule',
+        required=True,
+        ondelete='cascade',
+    )
+
+    branch_id = fields.Many2one(
+        'res.company',
+        string='Branch',
+        required=True,
+        ondelete='cascade',
+        domain="[('is_branch', '=', True)]",
+    )
+
+    active = fields.Boolean(
+        string='Active',
+        default=True,
+        help="Indicates if this schedule-branch relationship is active"
+    )
+
+    # Campos relacionados para acceso directo en vistas
+    day_range = fields.Char(
+        related='schedule_id.day_range',
+        string='Day Range',
+        store=False,
+    )
+
+    hour_from = fields.Float(
+        related='schedule_id.hour_from',
+        string='Hour From',
+        store=False,
+    )
+
+    hour_to = fields.Float(
+        related='schedule_id.hour_to',
+        string='Hour To',
+        store=False,
+    )
+
+    _sql_constraints = [
+        ('schedule_branch_uniq',
+         'UNIQUE(schedule_id, branch_id)',
+         'The schedule-branch relationship must be unique!')
+    ]
+
 
 class BranchSchedule(models.Model):
     _name = "branch.schedule"
@@ -11,17 +62,24 @@ class BranchSchedule(models.Model):
     # ─── Relación Many2many con sucursales ─────────────────────
     branch_ids = fields.Many2many(
         comodel_name="res.company",
-        relation="apn_branch_schedule_res_company_rel",
-        column1="schedule_id",
+        relation="branch_schedule_res_company_rel",
         column2="branch_id",
+        column1="schedule_id",
         string="Branches",
         domain="[('is_branch', '=', True)]",
+    )
+
+    # Relación con el modelo intermedio para acceder al campo active
+    branch_rel_ids = fields.One2many(
+        'branch.schedule.res.company.rel',
+        'schedule_id',
+        string='Branch Relations'
     )
 
     branch_count = fields.Integer(
         string="Branch Count",
         compute="_compute_branch_count",
-        store=True,
+        store=False,
     )
 
     # ─── Días ──────────────────────────────────────────────────
@@ -99,6 +157,7 @@ class BranchSchedule(models.Model):
     active = fields.Boolean(
         string="Active",
         default=True,
+        tracking=True,
     )
 
     notes = fields.Text(

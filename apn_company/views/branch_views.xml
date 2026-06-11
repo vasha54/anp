@@ -12,12 +12,14 @@
                 <list string="Branches"
                       decoration-info="not parent_company_id"
                       decoration-warning="not street">
+                    <field name="active" widget="boolean_toggle"/>
                     <field string="Name" name="name" required="1"/>
                     <field name="parent_company_id" required="1"/>
                     <field name="city" optional="show"/>
                     <field name="phone" widget="phone" optional="show"/>
                     <field name="email" widget="email" optional="show"/>
-                    <field name="is_branch" invisible="1"/>
+                    <field name="room_count"/>
+                    <field name="is_branch" column_invisible="1"/>
                 </list>
             </field>
         </record>
@@ -53,6 +55,7 @@
                                <field name="parent_company_id"
                                        required="1"
                                        domain="[('is_branch', '=', False)]"/>
+                               <field name="active" widget="boolean_toggle"/>
                             </group>
                             <group string="Contact">
                                 <field name="phone" widget="phone"/>
@@ -69,12 +72,12 @@
                                         <field name="street2" placeholder="Street 2..."/>
                                     </group>
                                     <group>
-                                        <field name="city" placeholder="City"/>
-                                        <field name="state_id" options="{'no_create': True}"/>
+                                        <field name="city" placeholder="City" required="1"/>
+                                        <field name="state_id" options="{'no_create': True}" required="1"/>
                                     </group>
                                     <group>
-                                        <field name="zip" placeholder="ZIP"/>
-                                        <field name="country_id" options="{'no_create': True}"/>
+                                        <field name="zip" placeholder="ZIP" required="1"/>
+                                        <field name="country_id" options="{'no_create': True}" required="1"/>
                                     </group>
                                     <group colspan="4">
                                         <field name="reference" placeholder="Nearby landmarks..."/>
@@ -92,19 +95,39 @@
                                 </group>
                             </page>
 
-                            <page string="Work Schedules" name="schedules">
-                                <field name="schedule_ids"
-                                       string="Work Schedules"
-                                       widget="many2many_tags"
-                                       context="{'default_branch_ids': id}">
-                                    <list editable="bottom">
-                                        <field name="day_range"/>
-                                        <field name="hour_from" widget="float_time"/>
-                                        <field name="hour_to" widget="float_time"/>
-                                        <field name="active"/>
-                                    </list>
-                                </field>
+                            <page string="Rooms &amp; Studios" name="rooms_studio">
+                                <group col="1">
+                                    <field name="room_ids"
+                                            nolabel="1"
+                                            required="1"
+                                            context="{'default_branch_id': id}">
+                                        <list editable="bottom">
+                                            <field name="name"/>
+                                            <field name="capacity"/>
+
+                                        </list>
+                                    </field>
+                                </group>
                             </page>
+
+                            <page string="Work Schedules" name="schedules">
+                                <group col="1">
+                                    <field name="schedule_ids"
+                                            nolabel="1"
+                                            context="{'branch_ids': id}"
+                                            required="1"
+                                    >
+                                        <list edit="0" options="{'create': true, 'delete': true}">
+
+                                            <field name="day_range"/>
+                                            <field name="hour_from" widget="float_time"/>
+                                            <field name="hour_to" widget="float_time"/>
+                                        </list>
+                                    </field>
+                                </group>
+
+                            </page>
+
 
 
                         </notebook>
@@ -127,6 +150,7 @@
                     <field name="street"/>
                     <field name="map_url"/>
                     <field name="is_branch"/>
+                    <field name="active"/>
                     <templates>
                         <t t-name="kanban-box">
                             <div class="oe_kanban_card oe_kanban_global_click">
@@ -135,7 +159,7 @@
                                         <strong class="o_kanban_record_title">
                                             <field name="name"/>
                                         </strong>
-                                        <small class="text-muted">
+                                        <small class="text-muted ms-2">
                                             <field name="parent_company_id"/>
                                         </small>
                                     </div>
@@ -163,6 +187,7 @@
                                         <i class="fa fa-map-marker"/> View Map
                                     </a>
                                 </div>
+
                             </div>
                         </t>
                     </templates>

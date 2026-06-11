@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+
+       <!-- ============================================ -->
+        <!-- ADMINISTRADORES DE COMPAÑÍA (2)               -->
+        <!-- ============================================ -->
+
+        <!-- 3. Admin Compañía 1 -->
+        <record id="user_admin_company_1" model="res.users">
+            <field name="name">Admin Compañía 1</field>
+            <field name="login">admin.company1@apnpilates.com</field>
+            <field name="password">.company123*</field>
+            <field name="confirmed_password">.company123*</field>
+            <field name="groups_id" eval="[(4, ref('apn_group.group_admin_company'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- 4. Admin Compañía 2 -->
+        <record id="user_admin_company_2" model="res.users">
+            <field name="name">Admin Compañía 2</field>
+            <field name="login">admin.company2@apnpilates.com</field>
+            <field name="password">.company123*</field>
+            <field name="confirmed_password">.company123*</field>
+            <field name="groups_id" eval="[(4, ref('apn_group.group_admin_company'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- ADMINISTRADORES DE SUCURSAL (6)               -->
+        <!-- ============================================ -->
+
+        <!-- 5. Admin Sucursal A1 -->
+        <record id="user_admin_branch_a1" model="res.users">
+            <field name="name">Admin Sucursal A1 - Centro</field>
+            <field name="login">admin.a1@apnpilates.com</field>
+            <field name="password">.branch123*</field>
+            <field name="confirmed_password">.branch123*</field>
+            <field name="groups_id" eval="[(4, ref('apn_group.group_admin_branch'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- 6. Admin Sucursal A2 -->
+        <record id="user_admin_branch_a2" model="res.users">
+            <field name="name">Admin Sucursal A2 - Norte</field>
+            <field name="login">admin.a2@apnpilates.com</field>
+            <field name="password">.branch123*</field>
+            <field name="confirmed_password">.branch123*</field>
+            <field name="groups_id" eval="[(4, ref('apn_group.group_admin_branch'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- 7. Admin Sucursal A3 -->
+        <record id="user_admin_branch_a3" model="res.users">
+            <field name="name">Admin Sucursal A3 - Sur</field>
+            <field name="login">admin.a3@apnpilates.com</field>
+            <field name="password">.branch123*</field>
+            <field name="confirmed_password">.branch123*</field>
+            <field name="groups_id" eval="[(4, ref('apn_group.group_admin_branch'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- 8. Admin Sucursal B1 -->
+        <record id="user_admin_branch_b1" model="res.users">
+            <field name="name">Admin Sucursal B1 - Reforma</field>
+            <field name="login">admin.b1@apnpilates.com</field>
+            <field name="password">.branch123*</field>
+            <field name="confirmed_password">.branch123*</field>
+            <field name="groups_id" eval="[(4, ref('apn_group.group_admin_branch'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- 9. Admin Sucursal B2 -->
+        <record id="user_admin_branch_b2" model="res.users">
+            <field name="name">Admin Sucursal B2 - Polanco</field>
+            <field name="login">admin.b2@apnpilates.com</field>
+            <field name="password">.branch123*</field>
+            <field name="confirmed_password">.branch123*</field>
+
+            <field name="groups_id" eval="[(4, ref('apn_group.group_admin_branch'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- 10. Admin Sucursal B3 -->
+        <record id="user_admin_branch_b3" model="res.users">
+            <field name="name">Admin Sucursal B3 - Santa Fe</field>
+            <field name="login">admin.b3@apnpilates.com</field>
+            <field name="password">.branch123*</field>
+            <field name="confirmed_password">.branch123*</field>
+
+            <field name="groups_id" eval="[(4, ref('apn_group.group_admin_branch'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- OPERADORES DE SUCURSAL (6)                    -->
+        <!-- ============================================ -->
+
+        <!-- 11. Operador Sucursal A1 -->
+        <record id="user_operator_a1" model="res.users">
+            <field name="name">Operador Sucursal A1 - Centro</field>
+            <field name="login">operator.a1@apnpilates.com</field>
+            <field name="password">.operator123*</field>
+            <field name="confirmed_password">.operator123*</field>
+            <field name="groups_id" eval="[(4, ref('apn_group.group_operator_branch'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- 12. Operador Sucursal A2 -->
+        <record id="user_operator_a2" model="res.users">
+            <field name="name">Operador Sucursal A2 - Norte</field>
+            <field name="login">operator.a2@apnpilates.com</field>
+            <field name="password">.operator123*</field>
+            <field name="confirmed_password">.operator123*</field>
+            <field name="groups_id" eval="[(4, ref('apn_group.group_operator_branch'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- 13. Operador Sucursal A3 -->
+        <record id="user_operator_a3" model="res.users">
+            <field name="name">Operador Sucursal A3 - Sur</field>
+            <field name="login">operator.a3@apnpilates.com</field>
+            <field name="password">.operator123*</field>
+            <field name="confirmed_password">.operator123*</field>
+            <field name="groups_id" eval="[(4, ref('apn_group.group_operator_branch'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- 14. Operador Sucursal B1 -->
+        <record id="user_operator_b1" model="res.users">
+            <field name="name">Operador Sucursal B1 - Reforma</field>
+            <field name="login">operator.b1@apnpilates.com</field>
+            <field name="password">.operator123*</field>
+            <field name="confirmed_password">.operator123*</field>
+            <field name="groups_id" eval="[(4, ref('apn_group.group_operator_branch'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- 15. Operador Sucursal B2 -->
+        <record id="user_operator_b2" model="res.users">
+            <field name="name">Operador Sucursal B2 - Polanco</field>
+            <field name="login">operator.b2@apnpilates.com</field>
+            <field name="password">.operator123*</field>
+            <field name="confirmed_password">.operator123*</field>
+            <field name="groups_id" eval="[(4, ref('apn_group.group_operator_branch'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- 16. Operador Sucursal B3 -->
+        <record id="user_operator_b3" model="res.users">
+            <field name="name">Operador Sucursal B3 - Santa Fe</field>
+            <field name="login">operator.b3@apnpilates.com</field>
+            <field name="password">.operator123*</field>
+            <field name="confirmed_password">.operator123*</field>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- INSTRUCTORES (6)                              -->
+        <!-- ============================================ -->
+
+        <!-- 17. Instructor Sucursal A1 -->
+        <record id="user_instructor_a1" model="res.users">
+            <field name="name">Instructor A1 - Centro</field>
+            <field name="login">instructor.a1@apnpilates.com</field>
+            <field name="password">.instructor123*</field>
+            <field name="confirmed_password">.instructor123*</field>
+            <field name="groups_id" eval="[(4, ref('apn_group.group_instructor'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- 18. Instructor Sucursal A2 -->
+        <record id="user_instructor_a2" model="res.users">
+            <field name="name">Instructor A2 - Norte</field>
+            <field name="login">instructor.a2@apnpilates.com</field>
+            <field name="password">.instructor123*</field>
+            <field name="confirmed_password">.instructor123*</field>
+            <field name="groups_id" eval="[(4, ref('apn_group.group_instructor'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- 19. Instructor Sucursal A3 -->
+        <record id="user_instructor_a3" model="res.users">
+            <field name="name">Instructor A3 - Sur</field>
+            <field name="login">instructor.a3@apnpilates.com</field>
+            <field name="password">.instructor123*</field>
+            <field name="confirmed_password">.instructor123*</field>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- 20. Instructor Sucursal B1 -->
+        <record id="user_instructor_b1" model="res.users">
+            <field name="name">Instructor B1 - Reforma</field>
+            <field name="login">instructor.b1@apnpilates.com</field>
+            <field name="password">.instructor123*</field>
+            <field name="confirmed_password">.instructor123*</field>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- 21. Instructor Sucursal B2 -->
+        <record id="user_instructor_b2" model="res.users">
+            <field name="name">Instructor B2 - Polanco</field>
+            <field name="login">instructor.b2@apnpilates.com</field>
+            <field name="password">.instructor123*</field>
+            <field name="confirmed_password">.instructor123*</field>
+
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- 22. Instructor Sucursal B3 -->
+        <record id="user_instructor_b3" model="res.users">
+            <field name="name">Instructor B3 - Santa Fe</field>
+            <field name="login">instructor.b3@apnpilates.com</field>
+            <field name="password">.instructor123*</field>
+            <field name="confirmed_password">.instructor123*</field>
+            <field name="groups_id" eval="[(4, ref('apn_group.group_instructor'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- CLIENTE                                       -->
+        <!-- ============================================ -->
+
+        <!-- 23. Cliente -->
+        <record id="user_client" model="res.users">
+            <field name="name">Cliente APN Pilates</field>
+            <field name="login">client@apnpilates.com</field>
+            <field name="password">.client123*</field>
+            <field name="confirmed_password">.client123*</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="company_ids" eval="[(4, ref('base.main_company'))]"/>
+            <field name="groups_id" eval="[(4, ref('apn_group.group_client'))]"/>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
+
+
+
+    </data>
+</odoo>

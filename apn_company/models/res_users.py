@@ -1,4 +1,4 @@
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models, SUPERUSER_ID
 from odoo.exceptions import ValidationError, UserError
 
 import logging
@@ -54,6 +54,29 @@ class ResUsersCompany(models.Model):
         help="Branches where this user is an instructor"
     )
 
+    def _get_assigned_companies(self):
+        """Obtiene todas las compañías asignadas en cualquier rol"""
+        self.ensure_one()
+        assigned = set()
+
+        if self.admin_company_ids:
+            assigned.update(self.admin_company_ids.ids)
+
+        if self.admin_branch_ids:
+            assigned.update(self.admin_branch_ids.ids)
+            # Agregar también las compañías padre de las sucursales
+            for branch in self.admin_branch_ids:
+                if branch.parent_company_id:
+                    assigned.add(branch.parent_company_id.id)
+
+        if self.operator_branch_ids:
+            assigned.update(self.operator_branch_ids.ids)
+
+        if self.instructor_branch_ids:
+            assigned.update(self.instructor_branch_ids.ids)
+
+        return assigned
+
     @api.onchange('company_ids')
     def _onchange_company_ids(self):
         """Clear role assignments when companies/branches are removed"""
@@ -88,7 +111,7 @@ class ResUsersCompany(models.Model):
                   'operator_branch_ids', 'instructor_branch_ids')
     def _onchange_check_roles(self):
         """Mostrar advertencia visual antes de guardar"""
-        if self.company_ids:
+        if self.id and self.company_ids:
             assigned = self._get_assigned_companies()
             company_set = set(self.company_ids.ids)
             unassigned = company_set - assigned
@@ -104,11 +127,36 @@ class ResUsersCompany(models.Model):
                     }
                 }
 
+    def _is_exempt_from_role_validation(self):
+        """Verifica si el usuario está exento de la validación de roles"""
+        self.ensure_one()
+
+        # Excluir SUPERUSER_ID
+        if self.id == SUPERUSER_ID:
+            return True
+
+        # Excluir OdooBot
+        odoobot = self.env.ref('base.user_root', raise_if_not_found=False)
+        if odoobot and self.id == odoobot.id:
+            return True
+
+        # Excluir grupos específicos
+        return (
+                self.has_group('apn_group.group_client') or
+                self.has_group('apn_group.group_admin_apn_pilates') or
+                self.has_group('apn_group.group_support_anp_pilates')
+        )
+
     @api.constrains('company_ids', 'admin_company_ids', 'admin_branch_ids',
                     'operator_branch_ids', 'instructor_branch_ids')
     def _check_companies_have_role(self):
         """Validación final: todas las compañías deben tener al menos un rol"""
         for user in self:
+            # Si el usuario pertenece a grupos exentos, saltar validación
+            _logger.info(f"{user.name} {user._is_exempt_from_role_validation()}")
+            if user._is_exempt_from_role_validation():
+                continue
+
             assigned = user._get_assigned_companies()
             company_set = set(user.company_ids.ids)
             unassigned = company_set - assigned

@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ============================================ -->
+        <!-- HORARIOS DE PILATES - TODOS LOS MOMENTOS      -->
+        <!-- ============================================ -->
+
+        <!-- MATUTINOS TEMPRANO (Lunes a Viernes) -->
+        <!-- 6:00 AM - 7:00 AM: Madrugadores -->
+        <record id="schedule_early_morning_weekdays" model="branch.schedule">
+            <field name="day_of_week_from">0</field> <!-- Monday -->
+            <field name="day_of_week_to">4</field>   <!-- Friday -->
+            <field name="hour_from">6.0</field>      <!-- 06:00 -->
+            <field name="hour_to">7.0</field>        <!-- 07:00 -->
+            <field name="notes">Early bird session for clients before work</field>
+        </record>
+
+        <!-- MATUTINO MEDIO (Lunes a Viernes) -->
+        <!-- 7:00 AM - 8:00 AM: Antes del trabajo -->
+        <record id="schedule_morning_before_work" model="branch.schedule">
+            <field name="day_of_week_from">0</field> <!-- Monday -->
+            <field name="day_of_week_to">4</field>   <!-- Friday -->
+            <field name="hour_from">7.0</field>      <!-- 07:00 -->
+            <field name="hour_to">8.0</field>        <!-- 08:00 -->
+            <field name="notes">Pre-work energizing pilates session</field>
+        </record>
+
+        <!-- MATUTINO MEDIO-2 (Lunes a Viernes) -->
+        <!-- 8:00 AM - 9:00 AM: Mañana fitness -->
+        <record id="schedule_morning_fitness" model="branch.schedule">
+            <field name="day_of_week_from">0</field> <!-- Monday -->
+            <field name="day_of_week_to">4</field>   <!-- Friday -->
+            <field name="hour_from">8.0</field>      <!-- 08:00 -->
+            <field name="hour_to">9.0</field>        <!-- 09:00 -->
+            <field name="notes">Morning fitness routine for flexible schedules</field>
+        </record>
+
+        <!-- MATUTINO TARDÍO (Lunes a Viernes) -->
+        <!-- 9:00 AM - 10:00 AM: Media mañana -->
+        <record id="schedule_late_morning_weekdays" model="branch.schedule">
+            <field name="day_of_week_from">0</field> <!-- Monday -->
+            <field name="day_of_week_to">4</field>   <!-- Friday -->
+            <field name="hour_from">9.0</field>      <!-- 09:00 -->
+            <field name="hour_to">10.0</field>       <!-- 10:00 -->
+            <field name="notes">Mid-morning pilates for stay-at-home parents and flexible workers</field>
+        </record>
+
+        <!-- MEDIODÍA (Lunes a Viernes) -->
+        <!-- 12:00 PM - 13:00 PM: Lunch break -->
+        <record id="schedule_lunch_break" model="branch.schedule">
+            <field name="day_of_week_from">0</field> <!-- Monday -->
+            <field name="day_of_week_to">4</field>   <!-- Friday -->
+            <field name="hour_from">12.0</field>     <!-- 12:00 -->
+            <field name="hour_to">13.0</field>       <!-- 13:00 -->
+            <field name="notes">Quick lunch break pilates for office workers</field>
+        </record>
+
+        <!-- MEDIODÍA TARDÍO (Lunes a Viernes) -->
+        <!-- 13:00 PM - 14:00 PM: Lunch break 2 -->
+        <record id="schedule_lunch_break_late" model="branch.schedule">
+            <field name="day_of_week_from">0</field> <!-- Monday -->
+            <field name="day_of_week_to">4</field>   <!-- Friday -->
+            <field name="hour_from">13.0</field>     <!-- 13:00 -->
+            <field name="hour_to">14.0</field>       <!-- 14:00 -->
+            <field name="notes">Late lunch break session</field>
+        </record>
+
+        <!-- VESPERTINO TEMPRANO (Lunes a Viernes) -->
+        <!-- 16:00 PM - 17:00 PM: Después del colegio -->
+        <record id="schedule_afternoon_early" model="branch.schedule">
+            <field name="day_of_week_from">0</field> <!-- Monday -->
+            <field name="day_of_week_to">4</field>   <!-- Friday -->
+            <field name="hour_from">16.0</field>     <!-- 16:00 -->
+            <field name="hour_to">17.0</field>       <!-- 17:00 -->
+            <field name="notes">After-school session for parents and teens</field>
+        </record>
+
+        <!-- VESPERTINO MEDIO (Lunes a Viernes) -->
+        <!-- 17:00 PM - 18:00 PM: Salida del trabajo -->
+        <record id="schedule_evening_after_work" model="branch.schedule">
+            <field name="day_of_week_from">0</field> <!-- Monday -->
+            <field name="day_of_week_to">4</field>   <!-- Friday -->
+            <field name="hour_from">17.0</field>     <!-- 17:00 -->
+            <field name="hour_to">18.0</field>       <!-- 18:00 -->
+            <field name="notes">Right after work stress relief session</field>
+        </record>
+
+        <!-- VESPERTINO (Lunes a Viernes) -->
+        <!-- 18:00 PM - 19:00 PM: Tarde fitness -->
+        <record id="schedule_evening_fitness" model="branch.schedule">
+            <field name="day_of_week_from">0</field> <!-- Monday -->
+            <field name="day_of_week_to">4</field>   <!-- Friday -->
+            <field name="hour_from">18.0</field>     <!-- 18:00 -->
+            <field name="hour_to">19.0</field>       <!-- 19:00 -->
+            <field name="notes">Popular after-work slot for professionals</field>
+        </record>
+
+        <!-- NOCTURNO TEMPRANO (Lunes a Viernes) -->
+        <!-- 19:00 PM - 20:00 PM: Noche fitness -->
+        <record id="schedule_night_early" model="branch.schedule">
+            <field name="day_of_week_from">0</field> <!-- Monday -->
+            <field name="day_of_week_to">4</field>   <!-- Friday -->
+            <field name="hour_from">19.0</field>     <!-- 19:00 -->
+            <field name="hour_to">20.0</field>       <!-- 20:00 -->
+            <field name="notes">Evening pilates for night owls</field>
+        </record>
+
+        <!-- NOCTURNO (Lunes a Viernes) -->
+        <!-- 20:00 PM - 21:00 PM: Noche -->
+        <record id="schedule_night_late" model="branch.schedule">
+            <field name="day_of_week_from">0</field> <!-- Monday -->
+            <field name="day_of_week_to">4</field>   <!-- Friday -->
+            <field name="hour_from">20.0</field>     <!-- 20:00 -->
+            <field name="hour_to">21.0</field>       <!-- 21:00 -->
+            <field name="notes">Late evening relaxing pilates session</field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- HORARIOS ESPECIALES                          -->
+        <!-- ============================================ -->
+
+        <!-- INTENSIVO MATUTINO (Lunes, Miércoles, Viernes) -->
+        <!-- 10:00 AM - 11:30 AM: Sesión de 1.5 horas -->
+        <record id="schedule_intensive_morning_mwf" model="branch.schedule">
+            <field name="day_of_week_from">0</field> <!-- Monday -->
+            <field name="day_of_week_to">0</field>   <!-- Monday -->
+            <field name="hour_from">10.0</field>     <!-- 10:00 -->
+            <field name="hour_to">11.5</field>       <!-- 11:30 -->
+            <field name="notes">Intensive 90-minute Monday session for deep work</field>
+        </record>
+
+        <!-- INTENSIVO MATUTINO (Martes y Jueves) -->
+        <!-- 10:00 AM - 11:30 AM: Sesión de 1.5 horas -->
+        <record id="schedule_intensive_morning_tt" model="branch.schedule">
+            <field name="day_of_week_from">1</field> <!-- Tuesday -->
+            <field name="day_of_week_to">1</field>   <!-- Tuesday -->
+            <field name="hour_from">10.0</field>     <!-- 10:00 -->
+            <field name="hour_to">11.5</field>       <!-- 11:30 -->
+            <field name="notes">Intensive Tuesday/Thursday morning pilates</field>
+        </record>
+
+        <!-- SÁBADO MATUTINO -->
+        <!-- 8:00 AM - 10:00 AM: Sesión de 2 horas -->
+        <record id="schedule_saturday_morning" model="branch.schedule">
+            <field name="day_of_week_from">5</field> <!-- Saturday -->
+            <field name="day_of_week_to">5</field>   <!-- Saturday -->
+            <field name="hour_from">8.0</field>      <!-- 08:00 -->
+            <field name="hour_to">10.0</field>       <!-- 10:00 -->
+            <field name="notes">Extended Saturday morning session for weekend warriors</field>
+        </record>
+
+        <!-- SÁBADO MEDIA MAÑANA -->
+        <!-- 10:30 AM - 11:30 AM -->
+        <record id="schedule_saturday_mid_morning" model="branch.schedule">
+            <field name="day_of_week_from">5</field> <!-- Saturday -->
+            <field name="day_of_week_to">5</field>   <!-- Saturday -->
+            <field name="hour_from">10.5</field>     <!-- 10:30 -->
+            <field name="hour_to">11.5</field>       <!-- 11:30 -->
+            <field name="notes">Relaxed Saturday mid-morning session</field>
+        </record>
+
+        <!-- SÁBADO TARDE -->
+        <!-- 16:00 PM - 17:30 PM -->
+        <record id="schedule_saturday_afternoon" model="branch.schedule">
+            <field name="day_of_week_from">5</field> <!-- Saturday -->
+            <field name="day_of_week_to">5</field>   <!-- Saturday -->
+            <field name="hour_from">16.0</field>     <!-- 16:00 -->
+            <field name="hour_to">17.5</field>       <!-- 17:30 -->
+            <field name="notes">Weekend afternoon pilates for busy weekday professionals</field>
+        </record>
+
+        <!-- DOMINGO MATUTINO -->
+        <!-- 9:00 AM - 10:30 AM -->
+        <record id="schedule_sunday_morning" model="branch.schedule">
+            <field name="day_of_week_from">6</field> <!-- Sunday -->
+            <field name="day_of_week_to">6</field>   <!-- Sunday -->
+            <field name="hour_from">9.0</field>      <!-- 09:00 -->
+            <field name="hour_to">10.5</field>       <!-- 10:30 -->
+            <field name="notes">Relaxing Sunday morning pilates and stretching</field>
+        </record>
+
+        <!-- DOMINGO TARDE -->
+        <!-- 17:00 PM - 18:00 PM -->
+        <record id="schedule_sunday_evening" model="branch.schedule">
+            <field name="day_of_week_from">6</field> <!-- Sunday -->
+            <field name="day_of_week_to">6</field>   <!-- Sunday -->
+            <field name="hour_from">17.0</field>     <!-- 17:00 -->
+            <field name="hour_to">18.0</field>       <!-- 18:00 -->
+            <field name="notes">Sunday evening session to prepare for the week ahead</field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- HORARIOS FULL DAY (Fines de semana)          -->
+        <!-- ============================================ -->
+
+        <!-- SÁBADO FULL MORNING -->
+        <!-- 7:00 AM - 12:00 PM: Sesiones cada hora -->
+        <record id="schedule_saturday_full_morning" model="branch.schedule">
+            <field name="day_of_week_from">5</field> <!-- Saturday -->
+            <field name="day_of_week_to">5</field>   <!-- Saturday -->
+            <field name="hour_from">7.0</field>      <!-- 07:00 -->
+            <field name="hour_to">12.0</field>       <!-- 12:00 -->
+            <field name="notes">Full Saturday morning block with multiple sessions</field>
+        </record>
+
+        <!-- SÁBADO FULL AFTERNOON -->
+        <!-- 14:00 PM - 18:00 PM -->
+        <record id="schedule_saturday_full_afternoon" model="branch.schedule">
+            <field name="day_of_week_from">5</field> <!-- Saturday -->
+            <field name="day_of_week_to">5</field>   <!-- Saturday -->
+            <field name="hour_from">14.0</field>     <!-- 14:00 -->
+            <field name="hour_to">18.0</field>       <!-- 18:00 -->
+            <field name="notes">Saturday afternoon intensive block</field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- HORARIOS REDUCIDOS (3 días por semana)       -->
+        <!-- ============================================ -->
+
+        <!-- LUNES, MIÉRCOLES, VIERNES - 7:00 AM -->
+        <record id="schedule_mwf_morning" model="branch.schedule">
+            <field name="day_of_week_from">0</field> <!-- Monday -->
+            <field name="day_of_week_to">4</field>   <!-- Friday (se aplica a L,M,X,J,V pero es para L,X,V) -->
+            <field name="hour_from">7.0</field>      <!-- 07:00 -->
+            <field name="hour_to">8.0</field>        <!-- 08:00 -->
+            <field name="notes">Standard Monday-Wednesday-Friday morning session</field>
+        </record>
+
+        <!-- LUNES, MIÉRCOLES, VIERNES - 18:00 PM -->
+        <record id="schedule_mwf_evening" model="branch.schedule">
+            <field name="day_of_week_from">0</field> <!-- Monday -->
+            <field name="day_of_week_to">4</field>   <!-- Friday -->
+            <field name="hour_from">18.0</field>     <!-- 18:00 -->
+            <field name="hour_to">19.0</field>       <!-- 19:00 -->
+            <field name="notes">Standard Monday-Wednesday-Friday evening session</field>
+        </record>
+
+        <!-- MARTES Y JUEVES - 7:00 AM -->
+        <record id="schedule_tt_morning" model="branch.schedule">
+            <field name="day_of_week_from">1</field> <!-- Tuesday -->
+            <field name="day_of_week_to">3</field>   <!-- Thursday -->
+            <field name="hour_from">7.0</field>      <!-- 07:00 -->
+            <field name="hour_to">8.0</field>        <!-- 08:00 -->
+            <field name="notes">Tuesday-Thursday morning session</field>
+        </record>
+
+        <!-- MARTES Y JUEVES - 18:00 PM -->
+        <record id="schedule_tt_evening" model="branch.schedule">
+            <field name="day_of_week_from">1</field> <!-- Tuesday -->
+            <field name="day_of_week_to">3</field>   <!-- Thursday -->
+            <field name="hour_from">18.0</field>     <!-- 18:00 -->
+            <field name="hour_to">19.0</field>       <!-- 19:00 -->
+            <field name="notes">Tuesday-Thursday evening session</field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- HORARIOS EXPRESS (30 minutos)                -->
+        <!-- ============================================ -->
+
+        <!-- EXPRESS MATUTINO (Lunes a Viernes) -->
+        <!-- 7:30 AM - 8:00 AM -->
+        <record id="schedule_express_morning" model="branch.schedule">
+            <field name="day_of_week_from">0</field> <!-- Monday -->
+            <field name="day_of_week_to">4</field>   <!-- Friday -->
+            <field name="hour_from">7.5</field>      <!-- 07:30 -->
+            <field name="hour_to">8.0</field>        <!-- 08:00 -->
+            <field name="notes">Express 30-minute morning energizer</field>
+        </record>
+
+        <!-- EXPRESS MEDIODÍA (Lunes a Viernes) -->
+        <!-- 12:30 PM - 13:00 PM -->
+        <record id="schedule_express_lunch" model="branch.schedule">
+            <field name="day_of_week_from">0</field> <!-- Monday -->
+            <field name="day_of_week_to">4</field>   <!-- Friday -->
+            <field name="hour_from">12.5</field>     <!-- 12:30 -->
+            <field name="hour_to">13.0</field>       <!-- 13:00 -->
+            <field name="notes">Express 30-minute lunch break pilates</field>
+        </record>
+
+        <!-- EXPRESS VESPERTINO (Lunes a Viernes) -->
+        <!-- 17:30 PM - 18:00 PM -->
+        <record id="schedule_express_evening" model="branch.schedule">
+            <field name="day_of_week_from">0</field> <!-- Monday -->
+            <field name="day_of_week_to">4</field>   <!-- Friday -->
+            <field name="hour_from">17.5</field>     <!-- 17:30 -->
+            <field name="hour_to">18.0</field>       <!-- 18:00 -->
+            <field name="notes">Express 30-minute after work quick session</field>
+        </record>
+
+    </data>
+</odoo>

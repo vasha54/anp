@@ -9,43 +9,107 @@
             <field name="sequence">10</field>
         </record>
 
-        <!-- APN Pilates Administrator (inherits from admin group: base.group_erp_manager) -->
+        <!-- APN Pilates Administrator -->
         <record id="group_admin_apn_pilates" model="res.groups">
             <field name="name">APN Pilates Administrator</field>
             <field name="category_id" ref="module_category_apn_pilates"/>
-            <field name="implied_ids" eval="[(4, ref('base.group_erp_manager')), (4, ref('base.group_partner_manager'))]"/>
+            <field name="implied_ids" eval="[
+                (4, ref('base.group_erp_manager')),
+                (4, ref('base.group_partner_manager')),
+                (4, ref('stock.group_stock_user')),
+                (4, ref('base.group_allow_export')),
+                (4, ref('sales_team.group_sale_salesman_all_leads')),
+                (4, ref('sales_team.group_sale_manager')),
+                (4, ref('account.group_account_invoice')),
+                (4, ref('account.group_account_manager')),
+                (4, ref('account.group_validate_bank_account')),
+                (4, ref('spreadsheet_dashboard.group_dashboard_manager')),
+                (4, ref('stock.group_stock_manager'))
+            ]"/>
             <field name="is_group_apn">True</field>
-            <field name="comment">Group for APN Pilates administrators, inherits full administration rights from Odoo administrators group and contact creation permissions.</field>
+            <field name="comment">Group for APN Pilates administrators, inherits full administration rights plus all standard operational groups.</field>
         </record>
 
-        <!-- APN Pilates Technical Support (inherits from admin and system groups) -->
+        <!-- APN Pilates Technical Support -->
         <record id="group_support_anp_pilates" model="res.groups">
             <field name="name">APN Pilates Technical Support</field>
             <field name="category_id" ref="module_category_apn_pilates"/>
-            <field name="implied_ids" eval="[(6, 0, [ref('base.group_erp_manager'), ref('base.group_system'), ref('base.group_partner_manager')])]"/>
+            <field name="implied_ids" eval="[
+                (6, 0, [
+                    ref('base.group_erp_manager'),
+                    ref('base.group_system'),
+                    ref('base.group_partner_manager'),
+                    ref('stock.group_stock_user'),
+                    ref('base.group_allow_export'),
+                    ref('sales_team.group_sale_salesman_all_leads'),
+                    ref('sales_team.group_sale_manager'),
+                    ref('account.group_account_invoice'),
+                    ref('account.group_account_manager'),
+                    ref('account.group_validate_bank_account'),
+                    ref('spreadsheet_dashboard.group_dashboard_manager'),
+                    ref('stock.group_stock_manager')
+                ])
+            ]"/>
             <field name="is_group_apn">True</field>
-            <field name="comment">Group for APN Pilates technical support team, inherits full administrative and system rights with contact creation permissions.</field>
+            <field name="comment">Group for APN Pilates technical support team, inherits full administrative and system rights plus all standard operational groups.</field>
         </record>
 
-        <!-- Administrator Company (inherits from base.group_user and salesman) -->
+        <!-- Administrator Company -->
         <record id="group_admin_company" model="res.groups">
             <field name="name">Administrator Company</field>
             <field name="category_id" ref="module_category_apn_pilates"/>
-            <field name="implied_ids" eval="[(4, ref('base.group_user')), (4, ref('sales_team.group_sale_salesman')), (4, ref('base.group_partner_manager'))]"/>
+            <field name="implied_ids" eval="[
+                (4, ref('base.group_user')),
+                (4, ref('sales_team.group_sale_salesman')),
+                (4, ref('base.group_partner_manager')),
+                (4, ref('stock.group_stock_user')),
+                (4, ref('base.group_allow_export')),
+                (4, ref('sales_team.group_sale_salesman_all_leads')),
+                (4, ref('sales_team.group_sale_manager')),
+                (4, ref('account.group_account_invoice')),
+                (4, ref('account.group_account_manager')),
+                (4, ref('account.group_validate_bank_account')),
+                (4, ref('spreadsheet_dashboard.group_dashboard_manager')),
+                (4, ref('stock.group_stock_manager'))
+            ]"/>
             <field name="is_group_apn">True</field>
-            <field name="comment">Group for company administrators, with internal user, salesman permissions and contact creation.</field>
+            <field name="comment">Group for company administrators, with internal user, salesman permissions and all standard operational groups.</field>
         </record>
 
-        <!-- Branch Administrator (inherits from base.group_user and salesman) -->
+        <!-- Branch Administrator -->
         <record id="group_admin_branch" model="res.groups">
             <field name="name">Branch Administrator</field>
             <field name="category_id" ref="module_category_apn_pilates"/>
-            <field name="implied_ids" eval="[(4, ref('base.group_user')), (4, ref('sales_team.group_sale_salesman'))]"/>
+            <field name="implied_ids" eval="[
+                (4, ref('base.group_user')),
+                (4, ref('sales_team.group_sale_salesman')),
+                (4, ref('stock.group_stock_user')),
+                (4, ref('base.group_allow_export')),
+                (4, ref('sales_team.group_sale_salesman_all_leads')),
+                (4, ref('sales_team.group_sale_manager')),
+                (4, ref('account.group_account_invoice')),
+                (4, ref('account.group_account_manager')),
+                (4, ref('account.group_validate_bank_account')),
+                (4, ref('spreadsheet_dashboard.group_dashboard_manager')),
+                (4, ref('stock.group_stock_manager'))
+            ]"/>
             <field name="is_group_apn">True</field>
-            <field name="comment">Group for branch administrators, with internal user and salesman permissions.</field>
+            <field name="comment">Group for branch administrators, with internal user, salesman permissions and all standard operational groups.</field>
         </record>
 
-        <!-- Branch Operator (inherits from base.group_user and salesman) -->
+        <!-- ===== NUEVO GRUPO: Branch Receptionist ===== -->
+        <record id="group_receptionist_branch" model="res.groups">
+            <field name="name">Branch Receptionist</field>
+            <field name="category_id" ref="module_category_apn_pilates"/>
+            <field name="implied_ids" eval="[
+                (4, ref('base.group_user')),
+                (4, ref('sales_team.group_sale_salesman'))
+            ]"/>
+            <field name="is_group_apn">True</field>
+            <field name="comment">Group for branch receptionists, with internal user and basic salesman permissions for managing client check-ins and inquiries.</field>
+        </record>
+
+        <!-- Branch Operator -->
         <record id="group_operator_branch" model="res.groups">
             <field name="name">Branch Operator</field>
             <field name="category_id" ref="module_category_apn_pilates"/>
@@ -54,7 +118,7 @@
             <field name="comment">Group for branch operators, with internal user and salesman permissions.</field>
         </record>
 
-        <!-- Instructor (inherits from base.group_user) -->
+        <!-- Instructor -->
         <record id="group_instructor" model="res.groups">
             <field name="name">Instructor</field>
             <field name="category_id" ref="module_category_apn_pilates"/>
@@ -63,7 +127,7 @@
             <field name="comment">Group for class instructors, with basic internal user permissions and access to class management.</field>
         </record>
 
-        <!-- Client (inherits from base.group_user and salesman) -->
+        <!-- Client -->
         <record id="group_client" model="res.groups">
             <field name="name">Client</field>
             <field name="category_id" ref="module_category_apn_pilates"/>

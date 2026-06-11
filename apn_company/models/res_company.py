@@ -7,13 +7,6 @@ _logger = logging.getLogger(__name__)
 class ResCompany(models.Model):
     _inherit = "res.company"
 
-    is_branch = fields.Boolean(string="Is Branch", default=False)
-    parent_company_id = fields.Many2one(
-        'res.company',
-        string="Parent Company",
-        help="Parent company for consolidation",
-        domain = [('is_branch', '=', False)]
-    )
     latitude = fields.Float(
         string="Latitude",
         digits=(16, 7),
@@ -28,10 +21,6 @@ class ResCompany(models.Model):
         string="Map URL",
         compute='_compute_map_url'
     )
-    reference = fields.Char(
-        string="Reference",
-        help="Nearby landmarks or references"
-    )
     # Relación inversa: sucursales de una compañía
     branch_ids = fields.One2many(
         'res.company',
@@ -39,56 +28,11 @@ class ResCompany(models.Model):
         string="Branches",
         domain="[('is_branch', '=', True)]"
     )
-
-    schedule_ids = fields.Many2many(
-        comodel_name="branch.schedule",
-        relation="branch_schedule_res_company_rel",
-        column1="branch_id",
-        column2="schedule_id",
-        string="Work Schedules",
+    count_branchs = fields.Integer(
+        compute='_count_branchs',
+        string="Branches",
+        store=False,
     )
-
-    @api.constrains("schedule_ids", "is_branch")
-    def _check_branch_schedules_no_overlap(self):
-        """Valida que una sucursal no tenga horarios solapados"""
-        for company in self:
-            if not company.is_branch:
-                continue
-
-            active_schedules = company.schedule_ids.filtered(
-                lambda s: s.active
-            )
-
-            # Comparar cada par de horarios
-            for i, schedule1 in enumerate(active_schedules):
-                for schedule2 in active_schedules[i + 1:]:
-                    # Verificar solapamiento de días
-                    days_overlap = self.env["apn.branch.schedule"]._days_overlap(
-                        schedule1.day_of_week_from,
-                        schedule1.day_of_week_to,
-                        schedule2.day_of_week_from,
-                        schedule2.day_of_week_to,
-                    )
-
-                    # Verificar solapamiento de horas
-                    hours_overlap = self.env["apn.branch.schedule"]._hours_overlap(
-                        schedule1.hour_from,
-                        schedule1.hour_to,
-                        schedule2.hour_from,
-                        schedule2.hour_to,
-                    )
-
-                    if days_overlap and hours_overlap:
-                        raise ValidationError(_(
-                            "The branch '%(branch)s' has overlapping schedules:\n"
-                            "• %(schedule1)s\n"
-                            "• %(schedule2)s\n\n"
-                            "Please adjust the schedules to avoid conflicts."
-                        ) % {
-                                                  "branch": company.name,
-                                                  "schedule1": schedule1.display_name,
-                                                  "schedule2": schedule2.display_name,
-                                              })
 
     def create(self, vals):
         current_context = self.env.context
@@ -152,7 +96,7 @@ class ResCompany(models.Model):
         geocoder = self.env['base.geocoder']
         geocoded_address = geocoder.geo_query_address(street=street, zip=zip, city=city, state=state, country=country)
 
-        logger.info("Geoquery address result: %s", geocoded_address)
+        _logger.info("Geoquery address result: %s", geocoded_address)
 
         result = geocoder.geo_find(addr=geocoded_address)
 
@@ -160,7 +104,7 @@ class ResCompany(models.Model):
             return None
 
         lat, long = result
-        logger.info("Geofind result: %s, %s", lat, long)
+        _logger.info("Geofind result: %s, %s", lat, long)
 
         return lat, long
 
@@ -211,7 +155,7 @@ class ResCompany(models.Model):
 
         return True
 
-    @api.constrains('street', 'street2', 'city', 'state_id', 'zip', 'country_id')
+    @api.constrains('street', 'city', 'state_id', 'zip', 'country_id')
     def check_has_address(self):
         for record in self:
             if record.partner_id:
@@ -220,8 +164,6 @@ class ResCompany(models.Model):
 
                 if not record.partner_id.street:
                     missing_fields.append("street")
-                if not record.partner_id.street2:
-                    missing_fields.append("street2")
                 if not record.partner_id.city:
                     missing_fields.append("city")
                 if not record.partner_id.state_id:
@@ -236,3 +178,36 @@ class ResCompany(models.Model):
                     raise UserError(
                         _("The %s is missing the following address fields: %s") % (entity_type, fields_str)
                     )
+
+    @api.model
+    def create(self, vals):
+        records = super().create(vals)
+        for company in records:
+            company._link_admin_support_users()  # ← añade esta línea
+        return records
+
+    def _get_admin_support_group_ids(self):
+        """Devuelve una tupla (id_grupo_admin, id_grupo_soporte) o (False, False) si no existen."""
+        admin_group = self.env.ref('apn_group.group_admin_apn_pilates', raise_if_not_found=False)
+        support_group = self.env.ref('apn_group.group_support_anp_pilates', raise_if_not_found=False)
+        return (admin_group.id if admin_group else False, support_group.id if support_group else False)
+
+    def _link_admin_support_users(self):
+        """Agrega esta compañía a la lista de compañías permitidas de todos los usuarios
+        que pertenecen a los grupos APN PILATES Administrator o APN PILATES Technical Support."""
+        admin_id, support_id = self._get_admin_support_group_ids()
+        group_ids = [gid for gid in [admin_id, support_id] if gid]
+        if not group_ids:
+            return
+        users = self.env['res.users'].sudo().search([('groups_id', 'in', group_ids)])
+        for user in users:
+            if self.id not in user.company_ids.ids:
+                user.sudo().write({'company_ids': [(4, self.id)]})
+
+    @api.depends('branch_ids')
+    def _count_branchs(self):
+        for record in self:
+            if record.branch_ids:
+                record.count_branchs = len(record.branch_ids)
+            else:
+                record.count_branchs = 0

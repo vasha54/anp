@@ -5,7 +5,7 @@
             <field name="name">branch.schedule.form</field>
             <field name="model">branch.schedule</field>
             <field name="arch" type="xml">
-                <form string="Work Schedule">
+                <form string="Opening Hours">
                     <sheet>
                         <!-- Botón de sucursales -->
                         <div class="oe_button_box" name="button_box">
@@ -28,14 +28,14 @@
 
                         <group>
                             <group string="Days">
-                                <field name="day_of_week_from"/>
-                                <field name="day_of_week_to"/>
+                                <field name="day_of_week_from" readonly="branch_ids"/>
+                                <field name="day_of_week_to" readonly="branch_ids"/>
                             </group>
-                            <group string="Hours">
+                            <group string="Hours" >
                                 <field name="hour_from"
-                                       widget="float_time"/>
+                                       widget="float_time" readonly="branch_ids"/>
                                 <field name="hour_to"
-                                       widget="float_time"/>
+                                       widget="float_time" readonly="branch_ids"/>
                             </group>
                         </group>
 
@@ -44,14 +44,14 @@
                              role="alert"
                              invisible="[('branch_count', '=', 0)]">
                             <i class="fa fa-lock me-2"/>
-                            <strong>This schedule is in use.</strong>
-                            Days and hours cannot be modified while the schedule
+                            <strong>This opening hours is in use.</strong>
+                            Days and hours cannot be modified while the opening hours
                             is assigned to one or more branches.
                         </div>
 
                         <!-- Resumen -->
                         <group>
-                            <group string="Schedule Summary" colspan="2">
+                            <group string="Opening Hours Summary" colspan="2">
                                 <div class="alert alert-info" role="alert">
                                     <field name="day_range" readonly="1" nolabel="1"/>
                                     <field name="hour_range" readonly="1" nolabel="1"/>
@@ -74,13 +74,9 @@
                         </group>
 
                         <group string="Additional Information">
-                            <group>
-                                <field name="active"/>
-                            </group>
-                            <group>
-                                <field name="notes"
+                           <field name="notes" widget="textarea" rows="7" nolabel="1"
                                        placeholder="Any special considerations..."/>
-                            </group>
+
                         </group>
                     </sheet>
                 </form>
@@ -93,7 +89,7 @@
             <field name="arch" type="xml">
                 <list string="Work Schedules"
                       decoration-warning="branch_count > 0">
-                    <field widget="" name="active"/>
+
                     <field name="display_name" string="Schedule"/>
                     <field name="day_range" optional="hide"/>
                     <field name="hour_range"/>
@@ -119,10 +115,10 @@
 
                     <separator/>
 
-                    <filter string="In Use" name="in_use"
-                            domain="[('branch_count', '>', 0)]"/>
-                    <filter string="Not Assigned" name="not_assigned"
-                            domain="[('branch_count', '=', 0)]"/>
+<!--                    <filter string="In Use" name="in_use"-->
+<!--                            domain="[('branch_count', '>', 0)]"/>-->
+<!--                    <filter string="Not Assigned" name="not_assigned"-->
+<!--                            domain="[('branch_count', '=', 0)]"/>-->
 
                     <group expand="0" string="Group By">
                         <filter string="Start Day" name="group_by_day"
@@ -133,7 +129,7 @@
         </record>
 
         <record id="action_branch_schedule" model="ir.actions.act_window">
-            <field name="name">Branch Work Schedules</field>
+            <field name="name">Opening Hours</field>
             <field name="res_model">branch.schedule</field>
             <field name="view_mode">list,form</field>
             <field name="search_view_id" ref="view_branch_schedule_search"/>
@@ -142,8 +138,8 @@
                     Create a work schedule
                 </p>
                 <p>
-                    Define work schedules and assign them to your branches.
-                    Schedules can be shared across multiple branches.
+                    Define Opening Hours and assign them to your branches.
+                    Opening Hours can be shared across multiple branches.
                 </p>
             </field>
         </record>

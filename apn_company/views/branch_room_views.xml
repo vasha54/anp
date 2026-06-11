@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_branch_room_tree" model="ir.ui.view">
+            <field name="name">branch.room.tree</field>
+            <field name="model">branch.room</field>
+            <field name="arch" type="xml">
+                <list string="Rooms">
+                    <field name="name"/>
+                    <field name="branch_id"/>
+                    <field name="company_id"/>
+                    <field name="capacity"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_branch_room_form" model="ir.ui.view">
+            <field name="name">branch.room.form</field>
+            <field name="model">branch.room</field>
+            <field name="arch" type="xml">
+                <form string="Room">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+
+                        </div>
+
+                        <group name="header_group">
+                            <field name="complete_name" invisible="1"/>
+                            <field name="branch_id" options="{'no_create': True}"/>
+                            <field name="name" placeholder="Room name e.g., Main Studio"/>
+                        </group>
+                        <group>
+                            <field name="capacity"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Kanban View -->
+        <record id="view_branch_room_kanban" model="ir.ui.view">
+            <field name="name">branch.room.kanban</field>
+            <field name="model">branch.room</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile">
+                    <field name="name"/>
+                    <field name="branch_id"/>
+
+                    <field name="capacity"/>
+
+
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <div class="o_kanban_image">
+                                    <img t-attf-src="/web/static/src/img/icon_room.png" alt="Room"/>
+                                </div>
+                                <div class="oe_kanban_details">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                    <div class="text-muted o_kanban_record_subtitle">
+                                        <field name="branch_id"/>
+                                    </div>
+                                    <div>
+
+                                        <span class="badge badge-primary">
+                                            Capacity: <field name="capacity"/>
+                                        </span>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="view_branch_room_search" model="ir.ui.view">
+            <field name="name">branch.room.search</field>
+            <field name="model">branch.room</field>
+            <field name="arch" type="xml">
+                <search string="Search Rooms">
+                    <field name="name"/>
+                    <field name="branch_id"/>
+                    <field name="capacity"/>
+
+                    <separator/>
+                    <filter name="group_by_branch" string="Branch" context="{'group_by': 'branch_id'}"/>
+
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_branch_room" model="ir.actions.act_window">
+            <field name="name">Rooms &amp; Studios</field>
+            <field name="res_model">branch.room</field>
+            <field name="view_mode">list,kanban,form</field>
+            <field name="search_view_id" ref="view_branch_room_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Add your first room or studio
+                </p>
+                <p>
+                    Rooms are spaces within your branch where classes take place.
+                    Each room can have its own capacity, equipment, and schedule.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

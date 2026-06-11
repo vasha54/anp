@@ -15,11 +15,13 @@
         "apn_group",
     ],
     "data": [
+        "data/data_branch_schedule.xml",
         "security/ir.model.access.csv",
         "views/res_users_views.xml",
         "views/company_views.xml",
         "views/branch_views.xml",
         "views/branch_schedule_views.xml",
+        "views/branch_room_views.xml",
         "views/menu_views.xml",
     ],
     "assets": {},
