@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menu Items -->
+    <menuitem id="menu_fcm_device_root"
+              name="Push Notifications"
+              sequence="-97"
+              web_icon="apn_notifications,static/src/img/item_menu_notification.png"/>
+
+    <menuitem id="menu_fcm_device_management"
+              name="Devices"
+              parent="menu_fcm_device_root"
+              sequence="10"/>
+
+    <menuitem id="menu_fcm_device_list"
+              name="FCM Devices"
+              parent="menu_fcm_device_management"
+              sequence="10"
+              action="action_fcm_device"/>
+
+    <!-- Menú para acceder a la configuración -->
+    <menuitem id="menu_firebase_config"
+              name="Firebase Configuration"
+              parent="menu_fcm_device_root"
+              sequence="20"
+              action="action_firebase_settings"/>
+
+</odoo>

@@ -3,7 +3,7 @@
     <!-- Menú principal APN Pilates -->
     <menuitem id="menu_apn_company_root"
               name="Organizational Structure"
-              sequence="-97"
+              sequence="-96"
               web_icon="apn_company,static/src/img/menu_item_company_icon.png"
     />
 

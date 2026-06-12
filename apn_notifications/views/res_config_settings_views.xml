@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista independiente para configuración de Firebase -->
+    <record id="view_firebase_config_settings" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.firebase</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="50"/>
+        <field name="arch" type="xml">
+            <form string="Firebase Configuration" create="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Firebase Cloud Messaging Configuration</h1>
+                    </div>
+
+                    <group string="Firebase Credentials">
+                        <group>
+                            <field name="firebase_is_configured"
+                                   widget="boolean_toggle"
+                                   readonly="1"/>
+                        </group>
+                        <group invisible="not firebase_is_configured">
+                            <field name="firebase_project_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Service Account JSON">
+                        <field name="firebase_credentials"
+                               nolabel="1"
+                               class="o_input_text"
+                               style="min-height: 300px; font-family: monospace;"
+                               placeholder='{"type": "service_account", "project_id": "..."}'/>
+                    </group>
+
+                    <group string="Actions">
+                        <button name="action_test_firebase_connection"
+                                type="object"
+                                string="Test Firebase Connection"
+                                class="btn btn-primary"
+                                icon="fa-play"/>
+                    </group>
+
+                    <div class="alert alert-info">
+                        <i class="fa fa-info-circle"/>
+                        <strong>How to get Firebase credentials:</strong>
+                        <ol>
+                            <li>Go to Firebase Console > Project Settings > Service Accounts</li>
+                            <li>Click "Generate New Private Key"</li>
+                            <li>Open the downloaded JSON file and copy all its content</li>
+                            <li>Paste the content in the field above</li>
+                        </ol>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción para abrir la configuración -->
+    <record id="action_firebase_settings" model="ir.actions.act_window">
+        <field name="name">Firebase Configuration</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_firebase_config_settings"/>
+        <field name="context">{'module' : 'apn_notifications', 'bin_size': False}</field>
+        <field name="target">inline</field>
+    </record>
+
+
+</odoo>
