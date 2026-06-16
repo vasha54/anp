@@ -54,7 +54,7 @@
                         <t t-name="kanban-box">
                             <div class="oe_kanban_global_click">
                                 <div class="o_kanban_image">
-                                    <img t-attf-src="/web/static/src/img/icon_room.png" alt="Room"/>
+                                    <img t-attf-src="/apn_company/static/src/img/icon_room.png" alt="Room"/>
                                 </div>
                                 <div class="oe_kanban_details">
                                     <strong class="o_kanban_record_title">

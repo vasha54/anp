@@ -4,6 +4,7 @@ import logging
 import jwt
 import traceback
 import yaml
+import logging
 
 from odoo import _, fields, http
 from odoo.http import Response
@@ -12,6 +13,9 @@ from odoo.exceptions import AccessDenied, AccessError, UserError
 from pytz import timezone
 from datetime import datetime
 
+from ..exceptions.exceptions import EmptyBodyInRequest, MissingParameterError
+
+_logger = logging.getLogger(__name__)
 
 class BaseAPIController(http.Controller):
 
@@ -50,6 +54,17 @@ class BaseAPIController(http.Controller):
             "pagination": None,
         }
         return answer
+
+    def _get_json_data(self, _raw_data):
+        if not _raw_data:
+            raise EmptyBodyInRequest()
+        data = json.loads(_raw_data)
+        return data
+
+    def _check_existence_parameters(self, _params, _data):
+        for p in _params:
+            if p not in _data:
+                raise MissingParameterError(p)
 
     def _info_error(self, _exception):
         info_error = False
@@ -117,6 +132,85 @@ class BaseAPIController(http.Controller):
                 'Access-Control-Allow-Headers': 'Authorization, Content-Type',
             }
         )
+
+    def _check_access_user_active(self, _env, _user_id):
+        """
+        Verifica que el usuario exista y esté activo.
+
+        Args:
+            _env: Entorno de Odoo
+            _user_id: ID del usuario a verificar
+
+        Raises:
+            UserError: Si el usuario no existe o no está activo
+        """
+        # Obtener el usuario sin restricciones de permisos
+        user = _env['res.users'].sudo().with_context(
+            active_test=False  # Para poder ver usuarios inactivos
+        ).browse(_user_id)
+
+        if not user:
+            raise UserError(_(
+                "User not found"
+            ))
+
+        if not user.active:
+            raise UserError(_(
+                "The user '%(user_name)s' is not active. "
+                "Please contact your administrator to activate this account.",
+                user_name=user.name
+            ))
+
+    def _handle_error(self, _exception, status=500):
+        info_error = self._info_error(_exception)
+        answer = {
+            "status": "error",
+            "message": str(_exception),
+            "data": info_error,
+            "pagination": None,
+        }
+        _logger.info(f"answer : {answer}")
+        return answer
+
+    def _handle_error_get(self, _exception, status=500):
+        info_error = self._info_error(_exception)
+        answer = {
+            "status": "error",
+            "message": str(_exception),
+            "data": info_error,
+            "pagination": None,
+        }
+        _logger.info(f"answer : {answer}")
+        return Response(
+            json.dumps(answer),
+            status=status,
+            headers={"Content-Type": "application/json"},
+        )
+
+    def _convert_timezone(self, _user, _date):
+        """
+        Convierte un datetime de UTC a la zona horaria del usuario.
+
+        Args:
+            _user: objeto usuario con tz
+            _date: objeto datetime (asume que está en UTC)
+        """
+        _logger.info(f"User tz: {_user.tz}")
+        user_tz = timezone(_user.tz or 'UTC')
+        utc_tz = timezone('UTC')
+
+        # Asegurarnos de que el datetime tenga zona horaria UTC
+        if _date.tzinfo is None:
+            # Si es naive, asumir que está en UTC y añadir timezone UTC
+            utc_dt = utc_tz.localize(_date)
+        else:
+            # Si ya tiene timezone, convertir a UTC por si acaso
+            utc_dt = _date.astimezone(utc_tz)
+
+        # Convertir a la zona del usuario
+        user_dt = utc_dt.astimezone(user_tz)
+
+        return user_dt.strftime('%Y-%m-%d %H:%M:%S')
 
     @http.route('/api_pilates/v1/status', type='http', auth='public', methods=['GET'], csrf=False)
     def api_status(self):

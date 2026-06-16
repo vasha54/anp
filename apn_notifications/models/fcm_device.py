@@ -11,43 +11,77 @@ _logger = logging.getLogger(__name__)
 class FCMDevice(models.Model):
     _name = 'fcm.device'
     _description = 'FCM Device Token'
-
-    name = fields.Char(string='Device Name', required=True)
+    name = fields.Char(string='Device User')
     token = fields.Char(string='FCM Token', required=True)
     user_id = fields.Many2one('res.users', string='User', required=True, ondelete='cascade')
     active = fields.Boolean(default=True)
     last_seen = fields.Datetime(default=fields.Datetime.now)
+    # Campo platform existente - LO MANTENEMOS PERO NO LO USAREMOS PARA LA NUEVA INFO
     platform = fields.Selection([
         ('android', 'Android'),
         ('ios', 'iOS'),
     ], string='Platform')
 
-    @api.model
-    def register_device_token(self, token, _user=None, platform=None):
-        """
-        API method to register device token from mobile app.
+    # NUEVOS CAMPOS para información detallada del dispositivo
+    device_platform = fields.Char(string='Plataforma Detallada', help="Ej: Mobile, Tablet, Desktop")
+    device_os = fields.Char(string='Sistema Operativo', help="Ej: Android 13, iOS 16.1, Windows 10")
+    device_browser = fields.Char(string='Navegador', help="Ej: Chrome 120, Safari 16")
+    device_type = fields.Char(string='Tipo de Dispositivo', help="Ej: iPhone, Samsung Galaxy, PC")
+    user_agent = fields.Text(string='User Agent Completo')
+    ip_address = fields.Char(string='Dirección IP')
+    is_mobile = fields.Boolean(string='Es Móvil')
+    is_tablet = fields.Boolean(string='Es Tablet')
+    is_pc = fields.Boolean(string='Es PC')
 
-        This method is called from the mobile application to register or update
-        a device token for push notifications. It handles both new device
-        registration and existing device updates.
+    # Campo computado para mostrar nombre descriptivo
+    device_name = fields.Char(
+        string='Device Name',
+        compute='_compute_device_name',
+        store=True
+    )
+    first_login = fields.Datetime(
+        string='First login',
+        default=fields.Datetime.now
+    )
+    login_count = fields.Integer(
+        string='Count login',
+        default=1
+    )
+
+    @api.depends('device_platform', 'device_os', 'device_browser', 'device_type')
+    def _compute_device_name(self):
+        for record in self:
+            parts = []
+            if record.device_platform:
+                parts.append(record.device_platform)
+            if record.device_os:
+                parts.append(record.device_os)
+            if record.device_browser:
+                parts.append(f"({record.device_browser})")
+            if record.device_type:
+                parts.append(f"- {record.device_type}")
+
+            record.device_name = ' '.join(parts) if parts else record.name
+
+    @api.model
+    def register_device_token(self, token, _user=None, platform=None, device_info=None):
+        """
+        API method mejorado para registrar device token con información detallada
 
         Args:
-            token: FCM device token from the mobile app
-            _user: User object (optional, defaults to current user)
-            platform: Device platform ('android' or 'ios')
-
-        Returns:
-            Dictionary with success status, message, and device_id
+            token: FCM device token
+            _user: User object (opcional)
+            platform: 'android' o 'ios' (campo legacy)
+            device_info: Diccionario con información detallada del dispositivo
         """
-        _logger.info(_("Registering device token: %s"), token)
+        _logger.info(_("Registering device token: %s with device info"), token)
 
         if not token:
             return {'success': False, 'error': _('Token is required')}
 
-        # Get current user
         user = _user if _user else self.env.user
 
-        # Check if token already exists for the same user
+        # Buscar dispositivo existente por token y usuario
         device = self.search([
             ('token', '=', token),
             ('user_id', '=', user.id)
@@ -56,26 +90,43 @@ class FCMDevice(models.Model):
         values = {
             'user_id': user.id,
             'last_seen': fields.Datetime.now(),
-            'active': True
+            'active': True,
         }
 
+        # Solo actualizar platform si se proporciona (campo legacy)
         if platform:
             values['platform'] = platform
 
+        # Si hay información detallada del dispositivo
+        if device_info:
+            values.update({
+                'device_platform': device_info.get('platform'),
+                'device_os': device_info.get('os'),
+                'device_browser': device_info.get('browser'),
+                'device_type': device_info.get('device'),
+                'user_agent': device_info.get('user_agent_raw'),
+                'ip_address': device_info.get('ip_address'),
+                'is_mobile': device_info.get('is_mobile', False),
+                'is_tablet': device_info.get('is_tablet', False),
+                'is_pc': device_info.get('is_pc', False),
+            })
+
         if device:
-            # Update existing device for the same user
+            # Actualizar dispositivo existente
             device.write(values)
+            # Incrementar contador de login
+            device.login_count += 1
             device_id = device.id
-            _logger.info(_("Updated existing device token for user %s"), user.name)
+            _logger.info(_("Updated existing device for user %s"), user.name)
         else:
-            # Create new device
+            # Crear nuevo dispositivo
             values.update({
                 'name': _("%s's device") % user.name,
                 'token': token,
             })
             new_device = self.create(values)
             device_id = new_device.id
-            _logger.info(_("Created new device token for user %s"), user.name)
+            _logger.info(_("Created new device with detailed info for user %s"), user.name)
 
         return {
             'success': True,
@@ -84,19 +135,10 @@ class FCMDevice(models.Model):
         }
 
     @api.model
-    def clean_invalid_tokens(self):
+    def clean_invalid_tokens(self, *args, **kwargs):
         """
         Clean up invalid and inactive tokens.
-
-        This method performs two cleanup operations:
-        1. Removes inactive device tokens from the database
-        2. Marks old tokens (not seen in 90+ days) as inactive
-
-        This helps maintain database cleanliness and ensures that push
-        notifications are only sent to active, recently used devices.
-
-        Returns:
-            Client action dictionary for UI notification display
+        (Mantiene la funcionalidad original)
         """
         result = {
             'success': True,
@@ -104,7 +146,6 @@ class FCMDevice(models.Model):
             'details': []
         }
 
-        # Find and delete inactive tokens
         inactive_devices = self.search([('active', '=', False)])
         if inactive_devices:
             count = len(inactive_devices)
@@ -112,7 +153,6 @@ class FCMDevice(models.Model):
             _logger.info(_("Cleaned up %d inactive device tokens"), count)
             result['details'].append(_("Removed %d inactive device tokens") % count)
 
-        # Find old tokens (not seen in more than 90 days)
         date_threshold = fields.Datetime.now() - timedelta(days=90)
         old_devices = self.search([
             ('last_seen', '<', date_threshold),
@@ -133,7 +173,7 @@ class FCMDevice(models.Model):
         return self._prepare_notification_action(result)
 
     @api.model
-    def test_firebase_configuration(self):
+    def test_firebase_configuration(self, *args, **kwargs):
         """
         Test Firebase configuration and connection.
 

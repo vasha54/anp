@@ -35,7 +35,31 @@
             <field name="tz">UTC</field>
         </record>
 
+        <!-- Partner para el usuario administrador -->
+        <record id="partner_admin_creator" model="res.partner">
+            <field name="name">Administrador de Usuarios</field>
+            <field name="email">user_register@apn.pilates.com</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
 
+        <!-- Usuario con permisos para crear otros usuarios -->
+        <record id="user_admin_creator" model="res.users">
+            <field name="partner_id" ref="partner_admin_creator"/>
+            <field name="login">user_register@apn.pilates.com</field>
+            <field name="password">.0s3r_r3g1st3r*</field>
+            <field name="confirmed_password">.0s3r_r3g1st3r*</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="company_ids" eval="[(4, ref('base.main_company'))]"/>
+            <field name="groups_id" eval="[
+                (4, ref('base.group_user')),
+                (4, ref('base.group_partner_manager')),
+                (4, ref('base.group_erp_manager'))
+            ]"/>
+            <field name="signature"><![CDATA[<span>-- <br/>Administrador de Usuarios<br/>Das Cortez</span>]]></field>
+            <field name="is_user_apn">True</field>
+            <field name="lang">en_US</field>
+            <field name="tz">UTC</field>
+        </record>
 
     </data>
 </odoo>

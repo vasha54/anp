@@ -2,11 +2,15 @@
     "name": "APN - Pilates API",
     "version": "18.0.0.0.0",
     'license': 'LGPL-3',
+    "category": "API/Integration",
     'depends': [
         'base',
-        'web'
+        'web',
+        'apn_group',
+        'apn_notifications',
     ],
     'data': [
+        "data/ir_cron.xml",
         'views/swagger_template.xml',
     ],
     'assets': {

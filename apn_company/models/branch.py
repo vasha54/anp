@@ -4,9 +4,6 @@ from odoo.exceptions import ValidationError, UserError
 import logging
 _logger = logging.getLogger(__name__)
 
-
-
-
 class Branch(models.Model):
     _inherit = "res.company"
 
@@ -100,3 +97,27 @@ class Branch(models.Model):
     def _compute_room_stats(self):
         for branch in self:
             branch.room_count = len(branch.room_ids)
+
+    @api.model
+    def create(self, vals):
+        records = super().create(vals)
+        for company in records:
+            if company.is_branch:
+                company._link_client_users()
+        return records
+
+    def _get_client_group_id(self):
+        client_group = self.env.ref('apn_group.group_client', raise_if_not_found=False)
+        return client_group.id if client_group else False
+
+    def _link_client_users(self):
+        """Agrega esta compañía a la lista de compañías permitidas de todos los usuarios
+        que pertenecen a los grupos APN PILATES Client."""
+        client_id = self._get_client_group_id()
+        group_ids = [gid for gid in [client_id] if gid]
+        if not group_ids:
+            return
+        users = self.env['res.users'].sudo().search([('groups_id', 'in', group_ids)])
+        for user in users:
+            if self.id not in user.company_ids.ids:
+                user.sudo().write({'company_ids': [(4, self.id)]})

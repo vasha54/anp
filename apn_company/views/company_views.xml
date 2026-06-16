@@ -107,6 +107,8 @@
             </field>
         </record>
 
+
+
         <!-- Vista Search para Compañías -->
         <record id="view_apn_company_search" model="ir.ui.view">
             <field name="name">apn.company.search</field>

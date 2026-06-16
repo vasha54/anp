@@ -11,7 +11,7 @@ info:
     
     ## Flujo de uso
     
-    1. Obtén un token mediante el endpoint `/api/v1/auth/login`
+    1. Obtén un token mediante el endpoint `/api_pilates/v1/login`
     2. Usa ese token en los demás endpoints en el header Authorization
 
   version: 1.0.0
@@ -64,158 +64,384 @@ paths:
                   odoo_version: "18.0"
                   status: "operational"
 
-#  /api/v1/auth/login:
-#    post:
-#      tags:
-#        - Autenticación
-#      summary: Iniciar sesión y obtener token
-#      description: |
-#        Autentica al usuario y devuelve un token para usar en los demás endpoints.
-#        Este endpoint NO requiere token.
-#      security: []
-#      requestBody:
-#        required: true
-#        content:
-#          application/json:
-#            schema:
-#              type: object
-#              required:
-#                - login
-#                - password
-#              properties:
-#                login:
-#                  type: string
-#                  description: Email o nombre de usuario
-#                  example: "soporte@apnpilates.com"
-#                password:
-#                  type: string
-#                  description: Contraseña del usuario
-#                  example: ".soporte123*"
-#      responses:
-#        '200':
-#          description: Login exitoso
-#          content:
-#            application/json:
-#              schema:
-#                type: object
-#                properties:
-#                  success:
-#                    type: boolean
-#                    example: true
-#                  data:
-#                    type: object
-#                    properties:
-#                      token:
-#                        type: string
-#                        description: Token para autenticación
-#                      user:
-#                        type: object
-#                        properties:
-#                          id:
-#                            type: integer
-#                          name:
-#                            type: string
-#                          email:
-#                            type: string
-#              example:
-#                success: true
-#                message: "OK"
-#                data:
-#                  token: "abc123def456..."
-#                  expiration: "2025-01-01 00:00:00"
-#                  user:
-#                    id: 2
-#                    name: "Soporte Técnico"
-#                    email: "soporte@apnpilates.com"
-#        '401':
-#          description: Credenciales inválidas
-#
-#  /api/v1/user/info:
-#    get:
-#      tags:
-#        - Usuario
-#      summary: Información del usuario autenticado
-#      description: Obtiene la información del usuario asociado al token
-#      responses:
-#        '200':
-#          description: Información del usuario
-#          content:
-#            application/json:
-#              example:
-#                success: true
-#                data:
-#                  id: 2
-#                  name: "Soporte Técnico"
-#                  email: "soporte@apnpilates.com"
-#                  login: "soporte@apnpilates.com"
-#                  company:
-#                    id: 1
-#                    name: "Mi Compañía"
-#        '401':
-#          description: Token no proporcionado
-#        '403':
-#          description: Token inválido o expirado
-#
-#  /api/v1/pilates/centers:
-#    get:
-#      tags:
-#        - Pilates
-#      summary: Listar centros de pilates
-#      description: Obtiene el listado de centros de pilates disponibles
-#      responses:
-#        '200':
-#          description: Lista de centros
-#          content:
-#            application/json:
-#              example:
-#                success: true
-#                data:
-#                  - id: 1
-#                    name: "Centro Pilates Norte"
-#                    location: "Zona Norte"
-#                  - id: 2
-#                    name: "Centro Pilates Sur"
-#                    location: "Zona Sur"
-#
-#  /api/v1/pilates/classes:
-#    get:
-#      tags:
-#        - Pilates
-#      summary: Listar clases disponibles
-#      description: Obtiene el listado de clases de pilates disponibles
-#      responses:
-#        '200':
-#          description: Lista de clases
-#          content:
-#            application/json:
-#              example:
-#                success: true
-#                data:
-#                  - id: 1
-#                    name: "Pilates Reformer"
-#                    duration: "60 min"
-#                    level: "Intermedio"
-#                  - id: 2
-#                    name: "Pilates Mat"
-#                    duration: "45 min"
-#                    level: "Básico"
-#
-#  /api/v1/token/refresh:
-#    post:
-#      tags:
-#        - Autenticación
-#      summary: Refrescar token
-#      description: Genera un nuevo token y desactiva el anterior
-#      responses:
-#        '200':
-#          description: Nuevo token generado
-#          content:
-#            application/json:
-#              example:
-#                success: true
-#                data:
-#                  token: "nuevo_token_xyz789..."
-#                  expiration: "2025-06-07 00:00:00"
+  /api_pilates/v1/login:
+    post:
+      tags:
+        - Autenticación
+      summary: Iniciar sesión
+      description: |
+        Autentica al usuario y genera un token JWT para usar en los demás endpoints.
+        
+        **Importante:**
+        - Este endpoint **NO** requiere token
+        - Siempre genera un nuevo token, invalidando cualquier token anterior
+        - El token tiene una duración configurable (por defecto 12 horas)
+        - Registra el dispositivo para notificaciones push si se envía `token_fmc`
+        - Analiza automáticamente el User-Agent para identificar el dispositivo
+      security: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - login
+                - password
+                - token_fmc
+              properties:
+                login:
+                  type: string
+                  description: Email o nombre de usuario
+                  example: "usuario@apnpilates.com"
+                password:
+                  type: string
+                  format: password
+                  description: Contraseña del usuario
+                  example: "MiPassword123"
+                token_fmc:
+                  type: string
+                  description: Token de Firebase Cloud Messaging para notificaciones push. Enviar cadena vacía si no desea notificaciones.
+                  example: "fMC_token:APA91bH3k4j5..."
+            examples:
+              con_notificaciones:
+                summary: Login con notificaciones push
+                value:
+                  login: "maria@apnpilates.com"
+                  password: "Maria2024!"
+                  token_fmc: "fMC_token:APA91bH3k4j5l8m9..."
+              sin_notificaciones:
+                summary: Login sin notificaciones
+                value:
+                  login: "juan@apnpilates.com"
+                  password: "Juan2024!"
+                  token_fmc: ""
+      responses:
+        '200':
+          description: Login exitoso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: ID del usuario
+                        example: 42
+                      name:
+                        type: string
+                        description: Nombre completo del usuario
+                        example: "María García"
+                      login:
+                        type: string
+                        description: Login/email del usuario
+                        example: "maria@apnpilates.com"
+                      token:
+                        type: string
+                        description: Token JWT para autenticación
+                        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                      token_expiration:
+                        type: string
+                        description: Fecha de expiración del token
+                        example: "2024-01-02 12:00:00"
+                  message:
+                    type: string
+                    example: "Sesión iniciada exitosamente"
+              example:
+                status: "success"
+                user:
+                  id: 42
+                  name: "María García"
+                  login: "maria@apnpilates.com"
+                  token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo0MiwibG9naW4iOiJtYXJpYS5nYXJjaWFAZWplbXBsby5jb20iLCJleHAiOjE3MDQxOTY0MDAsImlhdCI6MTcwNDExNjQwMH0.abc123..."
+                  token_expiration: "2024-01-02 12:00:00"
+                message: "Sesión iniciada exitosamente"
+        '400':
+          description: Datos inválidos o faltantes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    nullable: true
+                  pagination:
+                    type: object
+                    nullable: true
+              examples:
+                parametros_faltantes:
+                  summary: Parámetros faltantes
+                  value:
+                    status: "error"
+                    message: "Falta el parámetro: login"
+                    data: null
+                    pagination: null
+                credenciales_invalidas:
+                  summary: Credenciales incorrectas
+                  value:
+                    status: "error"
+                    message: "Invalid credentials"
+                    data:
+                      type: "AccessDenied"
+                      message: "Invalid credentials"
+                      file: ".../auth.py"
+                      line: 123
+                      function: "login"
+                      text: "raise AccessDenied(_('Invalid credentials'))"
+                    pagination: null
+        '403':
+          description: Usuario inactivo o bloqueado
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "El usuario 'María García' no está activo. Contacte al administrador para activar esta cuenta."
+                data: null
+                pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data:
+                  type: "InternalError"
+                  message: "Descripción del error"
+                pagination: null
+
+  /api_pilates/v1/logout:
+    post:
+      tags:
+        - Autenticación
+      summary: Cerrar sesión
+      description: |
+        Invalida el token JWT actual del usuario.
+        
+        **Comportamiento:**
+        - Busca el token en la base de datos y lo elimina
+        - Si el token está expirado pero es válido, igualmente limpia la sesión
+        - No requiere que el token esté activo para procesar el logout
+        
+        **Importante:** El token JWT debe enviarse en el header `Authorization: Bearer TU_TOKEN`
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: El body puede ser un objeto vacío o contener datos adicionales
+              example: { }
+      responses:
+        '200':
+          description: Logout exitoso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    nullable: true
+                  pagination:
+                    type: object
+                    nullable: true
+              examples:
+                logout_exitoso:
+                  summary: Sesión cerrada correctamente
+                  value:
+                    status: "success"
+                    message: "Sesión cerrada correctamente"
+                    data: null
+                    pagination: null
+                logout_token_expirado:
+                  summary: Sesión cerrada (token expirado)
+                  value:
+                    status: "success"
+                    message: "Sesión cerrada correctamente (token expirado)"
+                    data: null
+                    pagination: null
+        '400':
+          description: Token no proporcionado o inválido
+          content:
+            application/json:
+              examples:
+                sin_autorizacion:
+                  summary: Header de autorización faltante
+                  value:
+                    status: "error"
+                    message: "Encabezado de autorización inválido"
+                    data: null
+                    pagination: null
+                token_invalido:
+                  summary: Token inválido
+                  value:
+                    status: "error"
+                    message: "Token inválido"
+                    data: null
+                    pagination: null
+                usuario_no_encontrado:
+                  summary: Usuario no encontrado
+                  value:
+                    status: "error"
+                    message: "Usuario no encontrado en el sistema"
+                    data: null
+                    pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
+  /api_pilates/v1/branches:
+    get:
+      tags:
+        - Sucursales
+      summary: Listar todas las sucursales activas
+      description: |
+        Obtiene la lista completa de sucursales activas con toda su información relacionada.
+        
+        **Información incluida por sucursal:**
+        - Datos generales (nombre, dirección, contacto)
+        - Ubicación geográfica (latitud, longitud, enlace a Google Maps)
+        - Salas disponibles con sus capacidades
+        - Horarios de operación con días y horas
+        
+        **Nota sobre los horarios:**
+        - Los días se representan: 0=Lunes, 1=Martes, 2=Miércoles, 3=Jueves, 4=Viernes, 5=Sábado, 6=Domingo
+        - Las horas están en formato 24h decimal (ej: 6.5 = 06:30, 17.5 = 17:30)
+        - Un horario puede cubrir un rango de días (ej: Lunes a Viernes) o un solo día (ej: Solo Sábado)
+        - Si `hour_to` es menor que `hour_from`, el horario cruza al día siguiente
+      security: []
+      responses:
+        '200':
+          description: Lista de sucursales obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Datos obtenidos correctamente"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Branch'
+              example:
+                status: "success"
+                message: "Datos obtenidos correctamente"
+                data:
+                  - id: 3
+                    name: "Sucursal A"
+                    latitude: 20.6648948
+                    longitude: -103.3938723
+                    map_url: "https://www.google.com/maps?q=20.6648948,-103.3938723"
+                    city: "Guadalajara"
+                    phone: "(33) 1598 2647"
+                    email: false
+                    website: false
+                    street: "Av. López Mateos Sur 4450"
+                    street2: false
+                    state:
+                      id: 498
+                      name: "Jalisco"
+                    zip: "45040"
+                    country:
+                      id: 156
+                      name: "Mexico"
+                    parent_company:
+                      id: 1
+                      name: "Pilates"
+                    reference: false
+                    room_count: 3
+                    rooms:
+                      - id: 2
+                        name: "Sala Cadillac"
+                        capacity: 40
+                      - id: 1
+                        name: "Sala Flow"
+                        capacity: 30
+                      - id: 3
+                        name: "Sala Wunda"
+                        capacity: 25
+                    schedules:
+                      - id: 1
+                        day_of_week_from: "0"
+                        day_of_week_from_label: "Monday"
+                        day_of_week_to: "4"
+                        day_of_week_to_label: "Friday"
+                        hour_from: 6
+                        hour_to: 7
+                      - id: 6
+                        day_of_week_from: "0"
+                        day_of_week_from_label: "Monday"
+                        day_of_week_to: "4"
+                        day_of_week_to_label: "Friday"
+                        hour_from: 13
+                        hour_to: 14
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "Error interno del servidor"
+                  data:
+                    type: object
+                    nullable: true
+                  pagination:
+                    type: object
+                    nullable: true
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
+  /api_pilates/v1/view_profile_user:
+    post:
+      tags:
+        - Usuario
+
+  /api_pilates/v1/create_user_client:
+    post:
+      tags:
+        - Usuario
+
+
 
 components:
   securitySchemes:
@@ -225,12 +451,236 @@ components:
       bearerFormat: JWT
       description: Token obtenido mediante el endpoint de login
 
+  schemas:
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: "ERROR_CODE"
+            message:
+              type: string
+              example: "Descripción del error"
+            detail:
+              type: string
+              example: "Detalles adicionales"
+        timestamp:
+          type: string
+          format: date-time
+
+    Success:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "OK"
+        data:
+          type: object
+        timestamp:
+          type: string
+          format: date-time
+
+    Branch:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID único de la sucursal
+          example: 3
+        name:
+          type: string
+          description: Nombre de la sucursal
+          example: "Sucursal A"
+        latitude:
+          type: number
+          format: float
+          description: Latitud geográfica
+          example: 20.6648948
+        longitude:
+          type: number
+          format: float
+          description: Longitud geográfica
+          example: -103.3938723
+        map_url:
+          type: string
+          format: uri
+          description: URL de Google Maps con la ubicación
+          example: "https://www.google.com/maps?q=20.6648948,-103.3938723"
+        city:
+          type: string
+          description: Ciudad donde se ubica la sucursal
+          example: "Guadalajara"
+        phone:
+          type: string
+          description: Número de teléfono
+          example: "(33) 1598 2647"
+        email:
+          type: string
+          nullable: true
+          description: Correo electrónico de contacto
+          example: "sucursal@ejemplo.com"
+        website:
+          type: string
+          nullable: true
+          description: Sitio web de la sucursal
+          example: "https://sucursal.ejemplo.com"
+        street:
+          type: string
+          description: Calle y número
+          example: "Av. López Mateos Sur 4450"
+        street2:
+          type: string
+          nullable: true
+          description: Información adicional de dirección
+          example: "Col. Jardines del Sol"
+        state:
+          $ref: '#/components/schemas/State'
+        zip:
+          type: string
+          description: Código postal
+          example: "45040"
+        country:
+          $ref: '#/components/schemas/Country'
+        parent_company:
+          $ref: '#/components/schemas/ParentCompany'
+        reference:
+          type: string
+          nullable: true
+          description: Referencias o puntos de referencia cercanos
+          example: "Frente al parque central"
+        room_count:
+          type: integer
+          description: Número total de salas en la sucursal
+          example: 3
+        rooms:
+          type: array
+          description: Lista de salas disponibles
+          items:
+            $ref: '#/components/schemas/Room'
+        schedules:
+          type: array
+          description: Horarios de operación de la sucursal
+          items:
+            $ref: '#/components/schemas/Schedule'
+
+    State:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID del estado/provincia
+          example: 498
+        name:
+          type: string
+          description: Nombre del estado/provincia
+          example: "Jalisco"
+
+    Country:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID del país
+          example: 156
+        name:
+          type: string
+          description: Nombre del país
+          example: "Mexico"
+
+    ParentCompany:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID de la compañía padre
+          example: 1
+        name:
+          type: string
+          description: Nombre de la compañía padre
+          example: "Pilates"
+
+    Room:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID único de la sala
+          example: 2
+        name:
+          type: string
+          description: Nombre de la sala
+          example: "Sala Cadillac"
+        capacity:
+          type: integer
+          description: Capacidad máxima de personas
+          example: 40
+          minimum: 1
+
+    Schedule:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID único del horario
+          example: 1
+        day_of_week_from:
+          type: string
+          description: |
+            Día de inicio del horario.
+            0=Lunes, 1=Martes, 2=Miércoles, 3=Jueves, 4=Viernes, 5=Sábado, 6=Domingo
+          example: "0"
+          enum: ["0", "1", "2", "3", "4", "5", "6"]
+        day_of_week_from_label:
+          type: string
+          description: Etiqueta legible del día de inicio
+          example: "Monday"
+          enum: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        day_of_week_to:
+          type: string
+          description: |
+            Día de fin del horario.
+            Puede ser igual que day_of_week_from si es un solo día
+          example: "4"
+          enum: ["0", "1", "2", "3", "4", "5", "6"]
+        day_of_week_to_label:
+          type: string
+          description: Etiqueta legible del día de fin
+          example: "Friday"
+          enum: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        hour_from:
+          type: number
+          format: float
+          description: |
+            Hora de inicio en formato 24h decimal.
+            Ejemplos: 6.0 = 06:00, 13.5 = 13:30, 17.0 = 17:00
+          example: 6
+          minimum: 0
+          maximum: 23.99
+        hour_to:
+          type: number
+          format: float
+          description: |
+            Hora de fin en formato 24h decimal.
+            Si es menor que hour_from, indica que cruza al día siguiente
+          example: 7
+          minimum: 0
+          maximum: 23.99
+
 tags:
   - name: Sistema
     description: Endpoints del sistema
-#  - name: Autenticación
-#    description: Login y gestión de tokens
-#  - name: Usuario
-#    description: Información del usuario
-#  - name: Pilates
-#    description: Endpoints relacionados con pilates
+  - name: Autenticación
+    description: Endpoints relacionados con la autenticación de los usuarios en el sistema
+  - name: Usuario
+    description: Endpoints relacionados con los usuarios
+  - name: Sucursales
+    description: Endpoints relacionados con las sucursales, salas y horarios de operación

@@ -24,7 +24,7 @@
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            <field name="name"
+                            <field name="device_name"
                                    placeholder="Device Name"
                                    readonly="1"/>
                         </h1>
@@ -81,22 +81,28 @@
                   create="false"
                   decoration-muted="active == False"
                   decoration-danger="last_seen &lt; (context_today() - relativedelta(days=90))">
-                <field name="name"
-                       string="Device Name"/>
-                <field name="user_id"
-                       string="User"
-                       widget="many2one_avatar_user"/>
-                <field name="platform"
-                       string="Platform"/>
-                <field name="token"
-                       string="FCM Token"
-                       optional="hide"/>
-                <field name="last_seen"
-                       string="Last Seen"
-                       widget="remaining_days"/>
                 <field name="active"
                        string="Active"
                        widget="boolean_toggle"/>
+                <field name="device_name"/>
+                <field name="user_id"
+                       string="User"
+                       widget="many2one_avatar_user"/>
+
+                <field name="token"
+                       string="FCM Token"
+                       optional="hide"/>
+                <field name="device_platform"/>
+                <field name="device_os"/>
+                <field name="device_browser"/>
+
+                <field name="is_mobile"/>
+                <field name="ip_address"/>
+                <field name="last_seen"/>
+                <field name="login_count"/>
+                <field name="last_seen"
+                       string="Last Seen"
+                       widget="remaining_days"/>
                 <field name="create_date"
                        string="Created On"
                        optional="hide"/>
@@ -109,10 +115,9 @@
         <field name="name">fcm.device.kanban</field>
         <field name="model">fcm.device</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="platform"
-                    class="o_kanban_mobile"
+            <kanban class="o_kanban_mobile"
                     create="false">
-                <field name="name"/>
+                <field name="device_name"/>
                 <field name="user_id"/>
                 <field name="platform"/>
                 <field name="token"/>
@@ -125,7 +130,7 @@
                             <div class="o_kanban_record_top">
                                 <div class="o_kanban_record_headings">
                                     <strong class="o_kanban_record_title">
-                                        <field name="name"/>
+                                        <field name="device_name"/>
                                     </strong>
                                     <span class="o_kanban_record_subtitle">
                                         <field name="user_id"/>
@@ -175,8 +180,7 @@
         <field name="model">fcm.device</field>
         <field name="arch" type="xml">
             <search string="Search FCM Devices">
-                <field name="name"
-                       string="Device Name"/>
+
                 <field name="user_id"
                        string="User"/>
                 <field name="token"
@@ -225,7 +229,7 @@
     <record id="action_fcm_device" model="ir.actions.act_window">
         <field name="name">FCM Devices</field>
         <field name="res_model">fcm.device</field>
-        <field name="view_mode">kanban,list,form</field>
+        <field name="view_mode">list,kanban,form</field>
         <field name="search_view_id" ref="view_fcm_device_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

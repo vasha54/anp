@@ -42,6 +42,7 @@
         "apn_group",
         "apn_charts",
         "apn_company",
+        "apn_notifications",
         "apn_api",
     ],
     # always loaded
