@@ -49,9 +49,18 @@
 
                         <field name="is_branch" invisible="1"/>
 
+                        <field name="logo" widget="image" class="oe_avatar"/>
+                        <div class="oe_title">
+                            <div class="oe_avatar">
+
+                            </div>
+                            <h1>
+                                <field name="name" required="1" placeholder="Branch Name"/>
+                            </h1>
+                        </div>
+
                         <group>
                             <group string="Branch Information">
-                                <field string="Name" name="name" required="1"/>
                                <field name="parent_company_id"
                                        required="1"
                                        domain="[('is_branch', '=', False)]"/>

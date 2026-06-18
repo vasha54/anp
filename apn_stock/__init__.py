@@ -1,0 +1,1 @@
+from .hooks import adjust_addons_parents

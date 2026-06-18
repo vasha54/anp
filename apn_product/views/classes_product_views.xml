@@ -1,0 +1,10 @@
+<odoo>
+    <!-- Action for Classes -->
+        <record id="action_class_products" model="ir.actions.act_window">
+            <field name="name">Classes</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">list,kanban,form</field>
+            <field name="domain" eval="[('categ_id', '=', ref('apn_product.cat_class'))]"/>
+            <field name="context">{}</field>
+        </record>
+</odoo>

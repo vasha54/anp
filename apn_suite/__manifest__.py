@@ -43,6 +43,11 @@
         "apn_charts",
         "apn_company",
         "apn_notifications",
+        "apn_product",
+        "apn_stock",
+        "apn_sale",
+        "apn_account",
+        "apn_event",
         "apn_api",
     ],
     # always loaded

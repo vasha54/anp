@@ -327,8 +327,13 @@ paths:
         **Información incluida por sucursal:**
         - Datos generales (nombre, dirección, contacto)
         - Ubicación geográfica (latitud, longitud, enlace a Google Maps)
+        - Logo de la sucursal (indicador y URL de descarga)
         - Salas disponibles con sus capacidades
         - Horarios de operación con días y horas
+        
+        **Nota sobre el logo:**
+        - `logo`: indica si la sucursal tiene un logo configurado (true/false)
+        - `logo_url`: URL completa para descargar la imagen del logo (null si no tiene logo)
         
         **Nota sobre los horarios:**
         - Los días se representan: 0=Lunes, 1=Martes, 2=Miércoles, 3=Jueves, 4=Viernes, 5=Sábado, 6=Domingo
@@ -369,6 +374,8 @@ paths:
                     website: false
                     street: "Av. López Mateos Sur 4450"
                     street2: false
+                    logo: true
+                    logo_url: "http://localhost:8069/public/image/branch/3"
                     state:
                       id: 498
                       name: "Jalisco"
@@ -406,6 +413,46 @@ paths:
                         day_of_week_to_label: "Friday"
                         hour_from: 13
                         hour_to: 14
+                  - id: 4
+                    name: "Sucursal B"
+                    latitude: 20.9798447
+                    longitude: -89.6208458
+                    map_url: "https://www.google.com/maps?q=20.9798447,-89.6208458"
+                    city: "Mérida"
+                    phone: "(999) 285 6143"
+                    email: false
+                    website: false
+                    street: "Calle 60 476"
+                    street2: "Calle 55"
+                    logo: false
+                    logo_url: null
+                    state:
+                      id: 515
+                      name: "Yucatán"
+                    zip: "97000"
+                    country:
+                      id: 156
+                      name: "Mexico"
+                    parent_company:
+                      id: 1
+                      name: "Pilates"
+                    reference: false
+                    room_count: 2
+                    rooms:
+                      - id: 9
+                        name: "Sala Mat"
+                        capacity: 25
+                      - id: 8
+                        name: "Sala Reformer"
+                        capacity: 20
+                    schedules:
+                      - id: 4
+                        day_of_week_from: "0"
+                        day_of_week_from_label: "Monday"
+                        day_of_week_to: "4"
+                        day_of_week_to_label: "Friday"
+                        hour_from: 9
+                        hour_to: 10
         '500':
           description: Error interno del servidor
           content:
@@ -430,18 +477,6 @@ paths:
                 message: "Error interno del servidor"
                 data: null
                 pagination: null
-
-  /api_pilates/v1/view_profile_user:
-    post:
-      tags:
-        - Usuario
-
-  /api_pilates/v1/create_user_client:
-    post:
-      tags:
-        - Usuario
-
-
 
 components:
   securitySchemes:
@@ -542,6 +577,18 @@ components:
           nullable: true
           description: Información adicional de dirección
           example: "Col. Jardines del Sol"
+        logo:
+          type: boolean
+          description: Indica si la sucursal tiene un logo configurado
+          example: true
+        logo_url:
+          type: string
+          format: uri
+          nullable: true
+          description: |
+            URL completa para descargar la imagen del logo de la sucursal.
+            Es null cuando la sucursal no tiene logo configurado.
+          example: "http://localhost:8069/public/image/branch/3"
         state:
           $ref: '#/components/schemas/State'
         zip:
@@ -680,7 +727,5 @@ tags:
     description: Endpoints del sistema
   - name: Autenticación
     description: Endpoints relacionados con la autenticación de los usuarios en el sistema
-  - name: Usuario
-    description: Endpoints relacionados con los usuarios
   - name: Sucursales
     description: Endpoints relacionados con las sucursales, salas y horarios de operación

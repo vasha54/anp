@@ -1,0 +1,47 @@
+<odoo>
+    <menuitem
+            id="menu_catalog_root"
+            name="Catalog Products"
+            sequence="-95"
+            web_icon="apn_product,static/src/img/menu_item_catalog_icon.png"
+    />
+
+        <!-- Submenus for each category -->
+        <menuitem
+            id="menu_class_products"
+            name="Classes"
+            parent="menu_catalog_root"
+            action="action_class_products"
+            sequence="10"/>
+
+        <menuitem
+            id="menu_membership_products"
+            name="Memberships"
+            parent="menu_catalog_root"
+            action="action_membership_products"
+            sequence="20"/>
+
+        <menuitem
+            id="menu_accessories_products_root"
+            name="Accessories"
+            parent="menu_catalog_root"
+            action="action_accessories_products"
+            sequence="30"/>
+
+        <menuitem
+            id="menu_accessories_products"
+            name="Accessories"
+            parent="menu_accessories_products_root"
+            action="action_accessories_products"
+            sequence="10"/>
+
+        <!-- ============================================ -->
+        <!-- 7. MENÚ - Submenú de Accessories             -->
+        <!-- ============================================ -->
+        <menuitem
+            id="menu_product_tag_accessories"
+            name="Accessories Tags"
+            parent="menu_accessories_products_root"
+            action="action_product_tag_accessories"
+            sequence="20"/>
+</odoo>

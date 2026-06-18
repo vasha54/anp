@@ -1,0 +1,10 @@
+<odoo>
+        <!-- Action for Memberships -->
+        <record id="action_membership_products" model="ir.actions.act_window">
+            <field name="name">Memberships</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">list,kanban,form</field>
+            <field name="domain" eval="[('categ_id', '=', ref('apn_product.cat_membership'))]"/>
+            <field name="context">{}</field>
+        </record>
+</odoo>
