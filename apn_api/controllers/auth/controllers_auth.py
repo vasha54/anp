@@ -22,7 +22,7 @@ class AuthAPIController(BaseAPIController):
         """Obtener la fecha de expiración para el token JWT"""
         expiration_value = int(env['ir.config_parameter'].sudo().get_param(
             'jwt_token.expiration_value',
-            12
+            8
         ))
         expiration_unit = env['ir.config_parameter'].sudo().get_param(
             'jwt_token.expiration_unit',
@@ -231,6 +231,7 @@ class AuthAPIController(BaseAPIController):
                         "login": user.login,
                         "token": token,
                         "token_expiration": self._convert_timezone(user, expiration_dt),
+                        "partner": user.partner,
                     },
                     "message": "Sesión iniciada exitosamente"
                 }

@@ -11,6 +11,7 @@
     ],
     'data': [
         "data/ir_cron.xml",
+        "data/ir_config_parameter.xml",
         'views/swagger_template.xml',
     ],
     'assets': {

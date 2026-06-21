@@ -150,6 +150,18 @@ paths:
                         type: string
                         description: Fecha de expiración del token
                         example: "2024-01-02 12:00:00"
+                      partner:
+                        type: array
+                        description: Datos del contacto asociado (res.partner)
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 10
+                            name:
+                              type: string
+                              example: "Soporte Técnico APN Pilates"
                   message:
                     type: string
                     example: "Sesión iniciada exitosamente"
@@ -161,6 +173,9 @@ paths:
                   login: "maria@apnpilates.com"
                   token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo0MiwibG9naW4iOiJtYXJpYS5nYXJjaWFAZWplbXBsby5jb20iLCJleHAiOjE3MDQxOTY0MDAsImlhdCI6MTcwNDExNjQwMH0.abc123..."
                   token_expiration: "2024-01-02 12:00:00"
+                  partner:
+                    - id: 10
+                      name: "María García"
                 message: "Sesión iniciada exitosamente"
         '400':
           description: Datos inválidos o faltantes
@@ -316,13 +331,125 @@ paths:
                 data: null
                 pagination: null
 
+  /api_pilates/v1/profile_user:
+    post:
+      tags:
+        - Usuario
+      summary: Obtener perfil del usuario autenticado
+      description: |
+        Devuelve la información del perfil del usuario cuyo token JWT se envía en la cabecera.
+        
+        **Campos incluidos:**
+        - `id`, `name`, `login`, `active`
+        - `apn_groups`: lista de grupos de seguridad a los que pertenece
+        - `email`, `mobile`
+        - `partner`: datos de la ficha de contacto asociada
+        
+        **Requerimientos:**
+        - Token JWT válido en `Authorization: Bearer <token>`
+        - El token debe estar activo y pertenecer a un usuario existente
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Sin parámetros obligatorios. Puede enviarse un objeto vacío.
+              example: {}
+      responses:
+        '200':
+          description: Perfil obtenido exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Perfil obtenido exitosamente"
+                  data:
+                    $ref: '#/components/schemas/UserProfile'
+              example:
+                status: "success"
+                message: "Perfil obtenido exitosamente"
+                data:
+                  id: 9
+                  name: "Soporte Técnico APN Pilates"
+                  login: "soporte@apnpilates.com"
+                  active: true
+                  apn_groups:
+                    - id: 64
+                      name: "APN Pilates Administrator"
+                    - id: 65
+                      name: "APN Pilates Technical Support"
+                    - id: 71
+                      name: "Client"
+                  email: false
+                  mobile: false
+                  partner:
+                    - id: 10
+                      name: "Soporte Técnico APN Pilates"
+        '401':
+          description: Token no proporcionado, inválido o expirado
+          content:
+            application/json:
+              examples:
+                token_faltante:
+                  summary: Token no enviado
+                  value:
+                    status: "error"
+                    message: "Encabezado de autorización inválido"
+                    data: null
+                    pagination: null
+                token_expirado:
+                  summary: Token expirado
+                  value:
+                    status: "error"
+                    message: "Token has expired. Please login again."
+                    data: null
+                    pagination: null
+                token_invalido:
+                  summary: Token inválido
+                  value:
+                    status: "error"
+                    message: "Invalid authentication token."
+                    data: null
+                    pagination: null
+        '403':
+          description: Usuario inactivo o bloqueado
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "El usuario '...' no está activo. Contacte al administrador para activar esta cuenta."
+                data: null
+                pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
   /api_pilates/v1/branches:
-    get:
+    post:
       tags:
         - Sucursales
       summary: Listar todas las sucursales activas
       description: |
-        Obtiene la lista completa de sucursales activas con toda su información relacionada.
+        Obtiene una lista paginada de sucursales activas con toda su información relacionada.
+        
+        **Parámetros del cuerpo (opcionales):**
+        - `page`: número de página (por defecto 1)
+        - `limit`: elementos por página (por defecto 80)
         
         **Información incluida por sucursal:**
         - Datos generales (nombre, dirección, contacto)
@@ -340,7 +467,27 @@ paths:
         - Las horas están en formato 24h decimal (ej: 6.5 = 06:30, 17.5 = 17:30)
         - Un horario puede cubrir un rango de días (ej: Lunes a Viernes) o un solo día (ej: Solo Sábado)
         - Si `hour_to` es menor que `hour_from`, el horario cruza al día siguiente
-      security: []
+      security: [ ]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                page:
+                  type: integer
+                  description: Número de página a recuperar
+                  example: 1
+                  minimum: 1
+                limit:
+                  type: integer
+                  description: Cantidad de elementos por página
+                  example: 80
+                  minimum: 1
+            example:
+              page: 1
+              limit: 80
       responses:
         '200':
           description: Lista de sucursales obtenida exitosamente
@@ -359,6 +506,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Branch'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
               example:
                 status: "success"
                 message: "Datos obtenidos correctamente"
@@ -413,48 +562,314 @@ paths:
                         day_of_week_to_label: "Friday"
                         hour_from: 13
                         hour_to: 14
-                  - id: 4
-                    name: "Sucursal B"
-                    latitude: 20.9798447
-                    longitude: -89.6208458
-                    map_url: "https://www.google.com/maps?q=20.9798447,-89.6208458"
-                    city: "Mérida"
-                    phone: "(999) 285 6143"
-                    email: false
-                    website: false
-                    street: "Calle 60 476"
-                    street2: "Calle 55"
-                    logo: false
-                    logo_url: null
-                    state:
-                      id: 515
-                      name: "Yucatán"
-                    zip: "97000"
-                    country:
-                      id: 156
-                      name: "Mexico"
-                    parent_company:
-                      id: 1
-                      name: "Pilates"
-                    reference: false
-                    room_count: 2
-                    rooms:
-                      - id: 9
-                        name: "Sala Mat"
-                        capacity: 25
-                      - id: 8
-                        name: "Sala Reformer"
-                        capacity: 20
-                    schedules:
-                      - id: 4
-                        day_of_week_from: "0"
-                        day_of_week_from_label: "Monday"
-                        day_of_week_to: "4"
-                        day_of_week_to_label: "Friday"
-                        hour_from: 9
-                        hour_to: 10
+                pagination:
+                  page: 1
+                  limit: 80
+                  total_items: 6
+                  total_pages: 1
+                  offset: 0
+        '400':
+          description: Error en los parámetros (ej. página o límite no numéricos)
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error en los parámetros"
+                data: null
+                pagination: null
         '500':
           description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
+  /api_pilates/v1/accesories/:
+    post:
+      tags:
+        - Accesorios
+      summary: Listar accesorios generales
+      description: |
+        Obtiene una lista paginada de todos los productos de la categoría "Accesorios" activos.
+        
+        **Parámetros del cuerpo (opcionales):**
+        - `page`: número de página (por defecto 1)
+        - `limit`: elementos por página (por defecto 80)
+        
+        **Estructura de cada producto:** Incluye información detallada como etiquetas, impuestos, categoría, compañías, atributos, variantes e imágenes.
+      security: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                page:
+                  type: integer
+                  description: Número de página a recuperar
+                  example: 1
+                  minimum: 1
+                limit:
+                  type: integer
+                  description: Cantidad de elementos por página
+                  example: 80
+                  minimum: 1
+            example:
+              page: 1
+              limit: 80
+      responses:
+        '200':
+          description: Lista de accesorios obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Datos obtenidos correctamente"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductAccessory'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+              example:
+                status: "success"
+                message: "Datos obtenidos correctamente"
+                data:
+                  - id: 42
+                    name: "Mat Pilates Premium"
+                    display_name: "Mat Pilates Premium (Azul)"
+                    default_code: "MAT001"
+                    list_price: 35.0
+                    lst_price: 35.0
+                    description: "<p>Mat de pilates de alta densidad</p>"
+                    sale_ok: true
+                    purchase_ok: false
+                    type: "product"
+                    type_str: "Storable Product"
+                    uom_id: 1
+                    uom_name: "Units"
+                    image_1920: true
+                    image_1920_url: "http://localhost:8069/public/image/product_accesorie/42"
+                    is_favorite: false
+                    product_tags:
+                      - id: 3
+                        name: "Nuevo"
+                        color: 4
+                    tax_string: "IVA 16%"
+                    standard_price: 20.0
+                    taxes:
+                      - id: 1
+                        name: "IVA 16%"
+                        amount: 16.0
+                        type_tax_use: "sale"
+                        description: ""
+                        amount_type: "percent"
+                        price_include: false
+                    categ:
+                      id: 5
+                      name: "Accesorios"
+                    barcode: "7501234567890"
+                    companies:
+                      - id: 3
+                        name: "Sucursal A"
+                      - id: 4
+                        name: "Sucursal B"
+                    attribute_lines:
+                      - id: 12
+                        sequence: 1
+                        attribute_id: 2
+                        attribute_name: "Color"
+                        value_count: 3
+                        value_ids:
+                          - id: 45
+                            name: "Azul"
+                            color: 4
+                            sequence: 1
+                          - id: 46
+                            name: "Rojo"
+                            color: 1
+                            sequence: 2
+                    product_tmpl:
+                      id: 10
+                      name: "Mat Pilates Premium"
+                    description_sale: "Mat de pilates profesional"
+                    qty_available: 25
+                    variant_values:
+                      - id: 55
+                        attribute_id: 2
+                        attribute_name: "Color"
+                        value_id: 45
+                        value_name: "Azul"
+                        value_color: 4
+                        price_extra: 0.0
+                pagination:
+                  page: 1
+                  limit: 80
+                  total_items: 120
+                  total_pages: 2
+                  offset: 0
+        '400':
+          description: Error en la solicitud (ej. parámetros inválidos)
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error en los parámetros"
+                data: null
+                pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
+  /api_pilates/v1/accesories_branch:
+    post:
+      tags:
+        - Accesorios
+      summary: Listar accesorios por sucursal
+      description: |
+        Obtiene una lista paginada de accesorios activos disponibles en una sucursal específica.
+        
+        **Parámetros del cuerpo (obligatorio `branch_id`, opcionales `page` y `limit`):**
+        - `branch_id`: ID de la sucursal (requerido)
+        - `page`: número de página (por defecto 1)
+        - `limit`: elementos por página (por defecto 80)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - branch_id
+              properties:
+                branch_id:
+                  type: integer
+                  description: ID de la sucursal para filtrar los accesorios
+                  example: 3
+                page:
+                  type: integer
+                  description: Número de página
+                  example: 1
+                  minimum: 1
+                limit:
+                  type: integer
+                  description: Elementos por página
+                  example: 80
+                  minimum: 1
+            example:
+              branch_id: 3
+              page: 1
+              limit: 80
+      responses:
+        '200':
+          description: Lista de accesorios de la sucursal obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Datos obtenidos correctamente"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductAccessory'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+              example:
+                status: "success"
+                message: "Datos obtenidos correctamente"
+                data:
+                  - id: 42
+                    name: "Mat Pilates Premium"
+                    display_name: "Mat Pilates Premium (Azul)"
+                    default_code: "MAT001"
+                    list_price: 35.0
+                    lst_price: 35.0
+                    description: "<p>Mat de pilates de alta densidad</p>"
+                    sale_ok: true
+                    purchase_ok: false
+                    type: "product"
+                    type_str: "Storable Product"
+                    uom_id: 1
+                    uom_name: "Units"
+                    image_1920: true
+                    image_1920_url: "http://localhost:8069/public/image/product_accesorie/42"
+                    is_favorite: false
+                    product_tags:
+                      - id: 3
+                        name: "Nuevo"
+                        color: 4
+                    tax_string: "IVA 16%"
+                    standard_price: 20.0
+                    taxes:
+                      - id: 1
+                        name: "IVA 16%"
+                        amount: 16.0
+                        type_tax_use: "sale"
+                        description: ""
+                        amount_type: "percent"
+                        price_include: false
+                    categ:
+                      id: 5
+                      name: "Accesorios"
+                    barcode: "7501234567890"
+                    companies:
+                      - id: 3
+                        name: "Sucursal A"
+                    attribute_lines:
+                      - id: 12
+                        sequence: 1
+                        attribute_id: 2
+                        attribute_name: "Color"
+                        value_count: 3
+                        value_ids:
+                          - id: 45
+                            name: "Azul"
+                            color: 4
+                            sequence: 1
+                    product_tmpl:
+                      id: 10
+                      name: "Mat Pilates Premium"
+                    description_sale: "Mat de pilates profesional"
+                    qty_available: 15
+                    variant_values:
+                      - id: 55
+                        attribute_id: 2
+                        attribute_name: "Color"
+                        value_id: 45
+                        value_name: "Azul"
+                        value_color: 4
+                        price_extra: 0.0
+                pagination:
+                  page: 1
+                  limit: 80
+                  total_items: 45
+                  total_pages: 1
+                  offset: 0
+        '400':
+          description: Error en los parámetros (ej. falta branch_id)
           content:
             application/json:
               schema:
@@ -465,13 +880,22 @@ paths:
                     example: "error"
                   message:
                     type: string
-                    example: "Error interno del servidor"
+                    example: "Falta el parámetro: branch_id"
                   data:
                     type: object
                     nullable: true
                   pagination:
                     type: object
                     nullable: true
+              example:
+                status: "error"
+                message: "Falta el parámetro: branch_id"
+                data: null
+                pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
               example:
                 status: "error"
                 message: "Error interno del servidor"
@@ -722,6 +1146,349 @@ components:
           minimum: 0
           maximum: 23.99
 
+    ProductAccessory:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID del producto
+          example: 42
+        name:
+          type: string
+          description: Nombre del producto
+          example: "Mat Pilates Premium"
+        display_name:
+          type: string
+          description: Nombre completo mostrado (incluye variante)
+          example: "Mat Pilates Premium (Azul)"
+        default_code:
+          type: string
+          description: Código interno del producto
+          example: "MAT001"
+        list_price:
+          type: number
+          format: float
+          description: Precio de venta
+          example: 35.0
+        lst_price:
+          type: number
+          format: float
+          description: Precio de lista (igual a list_price)
+          example: 35.0
+        description:
+          type: string
+          description: Descripción del producto (HTML)
+          example: "<p>Mat de pilates de alta densidad</p>"
+        sale_ok:
+          type: boolean
+          description: Permite venta
+          example: true
+        purchase_ok:
+          type: boolean
+          description: Permite compra
+          example: false
+        type:
+          type: string
+          description: Tipo de producto (código)
+          example: "product"
+          enum: ["product", "consu", "service"]
+        type_str:
+          type: string
+          description: Tipo de producto legible
+          example: "Storable Product"
+        uom_id:
+          type: integer
+          description: ID de la unidad de medida
+          example: 1
+        uom_name:
+          type: string
+          description: Nombre de la unidad de medida
+          example: "Units"
+        image_1920:
+          type: boolean
+          description: Indica si el producto tiene imagen
+          example: true
+        image_1920_url:
+          type: string
+          format: uri
+          nullable: true
+          description: URL de la imagen del producto
+          example: "http://localhost:8069/public/image/product_accesorie/42"
+        is_favorite:
+          type: boolean
+          description: Producto marcado como favorito
+          example: false
+        product_tags:
+          type: array
+          nullable: true
+          description: Etiquetas del producto
+          items:
+            $ref: '#/components/schemas/ProductTag'
+        tax_string:
+          type: string
+          description: Resumen de impuestos
+          example: "IVA 16%"
+        standard_price:
+          type: number
+          format: float
+          description: Costo estándar
+          example: 20.0
+        taxes:
+          type: array
+          nullable: true
+          description: Lista de impuestos aplicables
+          items:
+            $ref: '#/components/schemas/Tax'
+        categ:
+          $ref: '#/components/schemas/Category'
+        barcode:
+          type: string
+          description: Código de barras
+          example: "7501234567890"
+        companies:
+          type: array
+          nullable: true
+          description: Compañías a las que está asignado el producto
+          items:
+            $ref: '#/components/schemas/CompanySimple'
+        attribute_lines:
+          type: array
+          nullable: true
+          description: Líneas de atributos de la plantilla
+          items:
+            $ref: '#/components/schemas/AttributeLine'
+        product_tmpl:
+          $ref: '#/components/schemas/ProductTemplate'
+        description_sale:
+          type: string
+          description: Descripción de venta
+          example: "Mat de pilates profesional"
+        qty_available:
+          type: number
+          format: float
+          description: Cantidad disponible
+          example: 25
+        variant_values:
+          type: array
+          nullable: true
+          description: Valores de atributos de esta variante
+          items:
+            $ref: '#/components/schemas/VariantValue'
+
+    ProductTag:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 3
+        name:
+          type: string
+          example: "Nuevo"
+        color:
+          type: integer
+          description: Índice de color (1-12)
+          example: 4
+
+    Tax:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "IVA 16%"
+        amount:
+          type: number
+          example: 16.0
+        type_tax_use:
+          type: string
+          enum: ["sale", "purchase", "none"]
+          example: "sale"
+        description:
+          type: string
+          example: ""
+        amount_type:
+          type: string
+          enum: ["percent", "fixed", "division", "group"]
+          example: "percent"
+        price_include:
+          type: boolean
+          example: false
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 5
+        name:
+          type: string
+          example: "Accesorios"
+
+    CompanySimple:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 3
+        name:
+          type: string
+          example: "Sucursal A"
+
+    AttributeLine:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 12
+        sequence:
+          type: integer
+          example: 1
+        attribute_id:
+          type: integer
+          example: 2
+        attribute_name:
+          type: string
+          example: "Color"
+        value_count:
+          type: integer
+          example: 3
+        value_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttributeValue'
+
+    AttributeValue:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 45
+        name:
+          type: string
+          example: "Azul"
+        color:
+          type: integer
+          example: 4
+        sequence:
+          type: integer
+          example: 1
+
+    ProductTemplate:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 10
+        name:
+          type: string
+          example: "Mat Pilates Premium"
+
+    VariantValue:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 55
+        attribute_id:
+          type: integer
+          example: 2
+        attribute_name:
+          type: string
+          example: "Color"
+        value_id:
+          type: integer
+          example: 45
+        value_name:
+          type: string
+          example: "Azul"
+        value_color:
+          type: integer
+          example: 4
+        price_extra:
+          type: number
+          format: float
+          example: 0.0
+
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID del usuario
+          example: 9
+        name:
+          type: string
+          description: Nombre completo
+          example: "Soporte Técnico APN Pilates"
+        login:
+          type: string
+          description: Email o nombre de usuario
+          example: "soporte@apnpilates.com"
+        active:
+          type: boolean
+          description: Indica si el usuario está activo
+          example: true
+        apn_groups:
+          type: array
+          description: Grupos de seguridad del usuario
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 64
+              name:
+                type: string
+                example: "APN Pilates Administrator"
+        email:
+          type: string
+          nullable: true
+          description: Correo electrónico adicional
+          example: false
+        mobile:
+          type: string
+          nullable: true
+          description: Número de móvil
+          example: false
+        partner:
+          type: array
+          description: Datos del contacto asociado (res.partner)
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 10
+              name:
+                type: string
+                example: "Soporte Técnico APN Pilates"
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: Página actual
+          example: 1
+        limit:
+          type: integer
+          description: Elementos por página
+          example: 80
+        total_items:
+          type: integer
+          description: Total de registros encontrados
+          example: 120
+        total_pages:
+          type: integer
+          description: Total de páginas
+          example: 2
+        offset:
+          type: integer
+          description: Desplazamiento aplicado
+          example: 0
+
 tags:
   - name: Sistema
     description: Endpoints del sistema
@@ -729,3 +1496,7 @@ tags:
     description: Endpoints relacionados con la autenticación de los usuarios en el sistema
   - name: Sucursales
     description: Endpoints relacionados con las sucursales, salas y horarios de operación
+  - name: Accesorios
+    description: Endpoints para consultar el catálogo de accesorios con paginación y filtro por sucursal
+  - name: Usuario
+    description: Endpoints para gestión del perfil de usuario

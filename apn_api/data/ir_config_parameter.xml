@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="jwt_token_expiration_value" model="ir.config_parameter">
+        <field name="key">jwt_token.expiration_value</field>
+        <field name="value">8</field>
+    </record>
+
+    <record id="jwt_token_expiration_unit" model="ir.config_parameter">
+        <field name="key">jwt_token.expiration_unit</field>
+        <field name="value">hours</field>
+    </record>
+
+</odoo>

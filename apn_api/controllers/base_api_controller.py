@@ -9,6 +9,7 @@ import logging
 from odoo import _, fields, http
 from odoo.http import Response
 from odoo.exceptions import AccessDenied, AccessError, UserError
+from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 
 from pytz import timezone
 from datetime import datetime
@@ -160,6 +161,64 @@ class BaseAPIController(http.Controller):
                 "Please contact your administrator to activate this account.",
                 user_name=user.name
             ))
+
+    def _get_token(self):
+        # Extraer token del encabezado Authorization
+        auth_header = http.request.httprequest.headers.get('Authorization')
+        if not auth_header or 'Bearer ' not in auth_header:
+            raise Exception("Encabezado de autorización inválido")
+
+        token = auth_header.split('Bearer ')[1].strip()
+        return token
+
+    def _validate_token(self, token):
+        """
+        Valida el token JWT y retorna el usuario correspondiente.
+        Args:
+            token (str): Token JWT a validar.
+        Returns:
+            recordset: El usuario (res.users) autenticado.
+        Raises:
+            AccessDenied: Si el token es inválido, expirado o el usuario no está activo.
+        """
+        # 1. Decodificar token
+        try:
+            payload = jwt.decode(
+                token,
+                self.SECRET_KEY,
+                algorithms=[self.ALGORITHM],
+                options={"verify_exp": True}  # Verifica expiración
+            )
+        except ExpiredSignatureError:
+            _logger.warning("Token expirado")
+            raise AccessDenied(_("Token has expired. Please login again."))
+        except InvalidTokenError:
+            _logger.warning("Token inválido")
+            raise AccessDenied(_("Invalid authentication token."))
+
+        # 2. Obtener user_id del payload
+        user_id = payload.get('user_id')
+        if not user_id:
+            _logger.warning("Token sin user_id")
+            raise AccessDenied(_("Invalid token payload."))
+
+        # 3. Obtener usuario sin restricciones (sudo)
+        user = http.request.env['res.users'].sudo().browse(user_id)
+        if not user:
+            _logger.warning(f"Usuario {user_id} no encontrado")
+            raise AccessDenied(_("User not found."))
+
+        # 4. Verificar que el usuario esté activo
+        self._check_access_user_active(http.request.env, user.id)
+
+        # 5. (Recomendado) Validar que el token coincida con el almacenado
+        #    Esto impide que un token viejo siga siendo válido después de un logout
+        #    o después de generar uno nuevo.
+        if user.jwt_token != token:
+            _logger.warning(f"Token no coincide con el registrado para el usuario {user.login}")
+            raise AccessDenied(_("Token is no longer valid. Please login again."))
+
+        return user
 
     def _handle_error(self, _exception, status=500):
         info_error = self._info_error(_exception)

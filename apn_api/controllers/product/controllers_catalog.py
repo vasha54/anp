@@ -1,5 +1,7 @@
 import odoo
 import re
+import logging
+import json
 
 from datetime import datetime, timedelta
 from user_agents import parse
