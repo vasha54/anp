@@ -19,6 +19,7 @@ class ResUser(models.Model):
         store=False,
         domain="[('category_id.name', '=', 'APN Pilates')]"
     )
+    #TODO revisar si se esta usando
     password_reset_token = fields.Char(string='Token de Reset')
     password_reset_token_expiry = fields.Datetime(string='Expiración del Token')
     password_reset_attempts = fields.Integer(string='Intentos de Reset', default=0)

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_users_form_inherit_activation_apn_signup" model="ir.ui.view">
+        <field name="name">res.users.form.inherit.activation.apn.signup</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="apn_group.view_residence_res_user_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='roles_pilates']" position="after">
+                <page string="Account Activation Email" name="account_activation" invisible="active or is_account_activated">
+                    <group>
+                        <group string="Activation Status">
+                            <field name="is_account_activated" widget="boolean_toggle"/>
+                            <field name="email_activation_sent"/>
+                            <field name="registration_date"/>
+                            <field name="last_activation_attempt"/>
+                            <field name="activation_attempts"/>
+                        </group>
+                        <group string="Activation Token" invisible="is_account_activated">
+                            <field name="activation_token" readonly="True"/>
+                            <field name="activation_token_expiration" readonly="True"/>
+                            <button name="action_resend_activation_email" type="object"
+                                        string="Resend Activation Email" class="btn-primary"
+                                        invisible="is_account_activated"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_users_search_inherit_activation_apn_signup" model="ir.ui.view">
+            <field name="name">res.users.search.inherit.activation.apn.signup</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="apn_group.view_residence_res_user_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='active']" position="after">
+                    <filter name="not_activated" string="Not Activated Email"
+                            domain="[('is_account_activated', '=', False),('active','=',False)]"/>
+                </xpath>
+            </field>
+        </record>
+</odoo>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="auth_activation_token_expiration_hours" model="ir.config_parameter">
+        <field name="key">auth.activation_token_expiration_hours</field>
+        <field name="value">48</field>
+    </record>
+
+     <!-- Minimum password length -->
+    <record id="param_min_password_length" model="ir.config_parameter">
+        <field name="key">auth.min_password_length</field>
+        <field name="value">8</field>
+    </record>
+
+    <!-- Token expiration time (minutes) -->
+    <record id="param_reset_expiration" model="ir.config_parameter">
+        <field name="key">auth.password_reset_expiration_minutes</field>
+        <field name="value">30</field>
+    </record>
+
+    <!-- Maximum reset attempts before lockout -->
+    <record id="param_max_reset_attempts" model="ir.config_parameter">
+        <field name="key">auth.max_reset_attempts</field>
+        <field name="value">5</field>
+    </record>
+
+    <!-- Account lockout duration (minutes) -->
+    <record id="param_reset_lock_minutes" model="ir.config_parameter">
+        <field name="key">auth.reset_lock_minutes</field>
+        <field name="value">30</field>
+    </record>
+
+    <!-- Number of previous passwords to remember -->
+    <record id="param_password_history" model="ir.config_parameter">
+        <field name="key">auth.password_history_count</field>
+        <field name="value">5</field>
+    </record>
+
+    <record id="param_min_password_length" model="ir.config_parameter">
+        <field name="key">auth.min_password_length</field>
+        <field name="value">8</field>
+    </record>
+</odoo>

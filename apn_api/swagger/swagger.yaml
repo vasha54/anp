@@ -439,6 +439,223 @@ paths:
                 data: null
                 pagination: null
 
+  /api_pilates/v1/account_activate_email:
+    post:
+      tags:
+        - Usuario
+      summary: Activar cuenta mediante token enviado por email
+      description: |
+        Activa la cuenta de un usuario previamente registrado utilizando el token recibido en el correo de activación.
+        
+        **Requerimientos:**
+        - `email`: debe corresponder al usuario que solicitó el registro.
+        - `token`: token de activación enviado al email.
+        
+        **Posibles errores:**
+        - Email no encontrado.
+        - Token inválido, expirado o ya utilizado.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountActivateRequest'
+            example:
+              email: "cliente@example.com"
+              token: "abc123def456..."
+      responses:
+        '200':
+          description: Cuenta activada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Cuenta activada exitosamente. Ya puede iniciar sesión."
+                  data:
+                    $ref: '#/components/schemas/AccountActivateData'
+              example:
+                status: "success"
+                message: "Cuenta activada exitosamente. Ya puede iniciar sesión."
+                data:
+                  id: 87
+                  name: "María López"
+                  email: "cliente@example.com"
+                  is_activated: true
+        '400':
+          description: Error en la solicitud (parámetros faltantes, email no encontrado, token inválido)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    nullable: true
+                  pagination:
+                    type: object
+                    nullable: true
+              examples:
+                parametros_faltantes:
+                  summary: Faltan email o token
+                  value:
+                    status: "error"
+                    message: "Falta el parámetro: email"
+                    data: null
+                    pagination: null
+                email_no_encontrado:
+                  summary: No existe cuenta con ese email
+                  value:
+                    status: "error"
+                    message: "No se encontró una cuenta con este email."
+                    data: null
+                    pagination: null
+                token_invalido:
+                  summary: Token incorrecto o expirado
+                  value:
+                    status: "error"
+                    message: "El token de activación no es válido o ha expirado."
+                    data: null
+                    pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
+  /api_pilates/v1/register_client_by_email:
+    post:
+      tags:
+        - Usuario
+      summary: Registro de cliente por email
+      description: |
+        Permite a un nuevo cliente registrarse en la plataforma. Se envía un correo de activación.
+        
+        **Requerimientos:**
+        - Email válido
+        - Contraseña segura (mínimo 8 caracteres, mayúscula, minúscula, número y carácter especial)
+        - `confirmed_password` debe coincidir con `password`
+        - Nombre completo
+        
+        **Comportamiento especial:**
+        - Si se proporciona `login`, se usa para buscar duplicados; si no, se usa el email.
+        - Si ya existe un usuario con ese `login` (incluso inactivo) **y** la cuenta está activada, devuelve error.
+        - Si ya existe un usuario con ese `login` **pero no está activado**, se reenvía el correo de activación y se retornan los datos del usuario existente (solo `id`, `name`, `login`).
+        - Si no existe, se crea un nuevo usuario con el grupo `group_client`, se asigna a las compañías/sucursales disponibles y se envía el email de activación. En este caso la respuesta incluye `email`, `is_activated` y `activation_email_sent`.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterClientRequest'
+            example:
+              email: "cliente@example.com"
+              password: "Clave.123"
+              confirmed_password: "Clave.123"
+              name: "María López"
+              mobile: "+34600123456"
+      responses:
+        '200':
+          description: Registro exitoso (o reenvío de activación)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/UserRegistrationData'
+              examples:
+                nuevo_registro:
+                  summary: Nuevo usuario creado
+                  value:
+                    status: "success"
+                    message: "Registro exitoso. Revisa tu email para activar tu cuenta."
+                    data:
+                      id: 87
+                      name: "María López"
+                      email: "cliente@example.com"
+                      is_activated: false
+                      activation_email_sent: true
+                reenvio_activacion:
+                  summary: Usuario existente no activado – reenvío de correo
+                  value:
+                    status: "success"
+                    message: "Ya existe una cuenta con este email pero no está activada. Se ha enviado un nuevo correo de activación."
+                    data:
+                      id: 85
+                      name: "María López"
+                      login: "maria.lopez"
+        '400':
+          description: Error de validación (email inválido, contraseña débil, email duplicado, etc.)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    nullable: true
+                  pagination:
+                    type: object
+                    nullable: true
+              examples:
+                email_invalido:
+                  summary: Formato de email incorrecto
+                  value:
+                    status: "error"
+                    message: "Formato de email inválido."
+                    data: null
+                    pagination: null
+                password_debil:
+                  summary: Contraseña no cumple requisitos
+                  value:
+                    status: "error"
+                    message: "La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y caracteres especiales."
+                    data: null
+                    pagination: null
+                email_duplicado:
+                  summary: El email/login ya está registrado y activado
+                  value:
+                    status: "error"
+                    message: "Ya existe un usuario con este email."
+                    data: null
+                    pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
   /api_pilates/v1/branches:
     post:
       tags:
@@ -1464,6 +1681,108 @@ components:
               name:
                 type: string
                 example: "Soporte Técnico APN Pilates"
+
+    RegisterClientRequest:
+      type: object
+      required:
+        - email
+        - password
+        - confirmed_password
+        - name
+      properties:
+        email:
+          type: string
+          format: email
+          description: Correo electrónico del nuevo usuario
+          example: "cliente@example.com"
+        password:
+          type: string
+          format: password
+          description: Contraseña (mínimo 8 caracteres, mayúscula, minúscula, número y carácter especial)
+          example: "Clave.123"
+        confirmed_password:
+          type: string
+          format: password
+          description: Debe coincidir con `password`
+          example: "Clave.123"
+        name:
+          type: string
+          description: Nombre completo
+          example: "María López"
+        login:
+          type: string
+          description: Nombre de usuario (opcional, si no se envía se usará el email)
+          example: "maria.lopez"
+        mobile:
+          type: string
+          description: Número de teléfono móvil
+          example: "+34600123456"
+
+    UserRegistrationData:
+      type: object
+      description: |
+        Datos de la respuesta de registro. Los campos presentes dependen de si se creó un usuario nuevo 
+        o se reenvió la activación a uno existente no activado.
+      properties:
+        id:
+          type: integer
+          description: ID del usuario (nuevo o existente)
+          example: 87
+        name:
+          type: string
+          example: "María López"
+        email:
+          type: string
+          format: email
+          description: Email del usuario (solo en registro nuevo)
+          example: "cliente@example.com"
+        is_activated:
+          type: boolean
+          description: Indica si la cuenta ya ha sido activada (solo en registro nuevo)
+          example: false
+        activation_email_sent:
+          type: boolean
+          description: Confirmación de envío de email de activación (solo en registro nuevo)
+          example: true
+        login:
+          type: string
+          description: Nombre de usuario (presente en reenvío de activación)
+          example: "maria.lopez"
+
+    AccountActivateRequest:
+      type: object
+      required:
+        - email
+        - token
+      properties:
+        email:
+          type: string
+          format: email
+          description: Email de la cuenta a activar
+          example: "cliente@example.com"
+        token:
+          type: string
+          description: Token de activación recibido por email
+          example: "abc123def456..."
+
+    AccountActivateData:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID del usuario activado
+          example: 87
+        name:
+          type: string
+          example: "María López"
+        email:
+          type: string
+          format: email
+          example: "cliente@example.com"
+        is_activated:
+          type: boolean
+          description: Indica que la cuenta ha sido activada
+          example: true
 
     Pagination:
       type: object

@@ -8,6 +8,7 @@
         'web',
         'apn_group',
         'apn_notifications',
+        'apn_signup',
     ],
     'data': [
         "data/ir_cron.xml",

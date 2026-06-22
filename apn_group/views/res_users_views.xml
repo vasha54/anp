@@ -110,6 +110,7 @@
                 <field name="name"  string="Name" />
                 <field name="email" string="Email" />
                 <filter name="inactive" string="Inactive Users" domain="[('active','=',False)]"/>
+                <filter name="active" string="Active Users" domain="[('active','=',True)]"/>
             </search>
         </field>
     </record>
