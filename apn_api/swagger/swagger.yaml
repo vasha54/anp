@@ -656,6 +656,204 @@ paths:
                 data: null
                 pagination: null
 
+  /api_pilates/v1/password_reset_request:
+    post:
+      tags:
+        - Usuario
+      summary: Solicitar código de restablecimiento de contraseña
+      description: |
+        Genera un código de verificación y lo envía al email del usuario.  
+        **Parámetros requeridos:** `email`
+        
+        **Comportamiento:**  
+        - Si el email está registrado, se crea un código de un solo uso y se envía por correo electrónico.  
+        - Por seguridad, siempre se responde con un mensaje genérico, independientemente de si el email existe o no.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetRequestRequest'
+            example:
+              email: "cliente@example.com"
+      responses:
+        '200':
+          description: Solicitud procesada (el código se envió si el email existe)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Si el email está registrado, se ha enviado un código de restablecimiento."
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/PasswordResetUserData'
+              example:
+                success: true
+                message: "Si el email está registrado, se ha enviado un código de restablecimiento."
+                data:
+                  user:
+                    email: "cliente@example.com"
+                    id: 87
+                    name: "María López"
+        '400':
+          description: Parámetros faltantes o email no encontrado (el controlador lanza excepción si no existe)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    nullable: true
+                  pagination:
+                    type: object
+                    nullable: true
+              examples:
+                parametros_faltantes:
+                  summary: Falta el parámetro email
+                  value:
+                    status: "error"
+                    message: "Falta el parámetro: email"
+                    data: null
+                    pagination: null
+                email_no_encontrado:
+                  summary: No existe usuario con ese email
+                  value:
+                    status: "error"
+                    message: "No se encontró ningún usuario con esa dirección de correo electrónico"
+                    data: null
+                    pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
+  /api_pilates/v1/password_reset_confirm:
+    post:
+      tags:
+        - Usuario
+      summary: Confirmar restablecimiento de contraseña
+      description: |
+        Cambia la contraseña utilizando el código de verificación recibido por email.  
+        **Parámetros requeridos:** `email`, `code`, `new_password`
+        
+        **Validaciones:**  
+        - El código debe ser válido y no haber expirado.  
+        - La nueva contraseña debe cumplir la política de seguridad (mínimo 8 caracteres, mayúsculas, minúsculas, números y caracteres especiales).
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirmRequest'
+            example:
+              email: "cliente@example.com"
+              code: "123456"
+              new_password: "Nueva.Clave1"
+      responses:
+        '200':
+          description: Contraseña cambiada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "La contraseña se ha cambiado correctamente."
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/PasswordResetUserData'
+              example:
+                success: true
+                message: "La contraseña se ha cambiado correctamente."
+                data:
+                  user:
+                    email: "cliente@example.com"
+                    id: 87
+                    name: "María López"
+        '400':
+          description: Error de validación (código inválido, email no encontrado, contraseña débil, etc.)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    nullable: true
+                  pagination:
+                    type: object
+                    nullable: true
+              examples:
+                parametros_faltantes:
+                  summary: Faltan parámetros requeridos
+                  value:
+                    status: "error"
+                    message: "Falta el parámetro: email"
+                    data: null
+                    pagination: null
+                email_no_encontrado:
+                  summary: No existe usuario con ese email
+                  value:
+                    status: "error"
+                    message: "No se encontró ningún usuario con esa dirección de correo electrónico"
+                    data: null
+                    pagination: null
+                codigo_invalido:
+                  summary: Código incorrecto o expirado
+                  value:
+                    status: "error"
+                    message: "El código de restablecimiento no es válido o ha expirado."
+                    data: null
+                    pagination: null
+                password_debil:
+                  summary: La nueva contraseña no cumple los requisitos
+                  value:
+                    status: "error"
+                    message: "La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y caracteres especiales."
+                    data: null
+                    pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
   /api_pilates/v1/branches:
     post:
       tags:
@@ -1784,6 +1982,53 @@ components:
           description: Indica que la cuenta ha sido activada
           example: true
 
+    PasswordResetRequestRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+          description: Correo electrónico de la cuenta
+          example: "cliente@example.com"
+
+    PasswordResetConfirmRequest:
+      type: object
+      required:
+        - email
+        - code
+        - new_password
+      properties:
+        email:
+          type: string
+          format: email
+          description: Correo electrónico de la cuenta
+          example: "cliente@example.com"
+        code:
+          type: string
+          description: Código de restablecimiento recibido por email
+          example: "123456"
+        new_password:
+          type: string
+          format: password
+          description: Nueva contraseña (debe cumplir la política de seguridad)
+          example: "Nueva.Clave1"
+
+    PasswordResetUserData:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          example: "cliente@example.com"
+        id:
+          type: integer
+          example: 87
+        name:
+          type: string
+          example: "María López"
+
     Pagination:
       type: object
       properties:
@@ -1818,4 +2063,4 @@ tags:
   - name: Accesorios
     description: Endpoints para consultar el catálogo de accesorios con paginación y filtro por sucursal
   - name: Usuario
-    description: Endpoints para gestión del perfil de usuario
+    description: Endpoints de registro, activación, perfil y recuperación de contraseña

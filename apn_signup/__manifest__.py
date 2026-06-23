@@ -12,7 +12,7 @@
         'data/ir_config_parameter.xml',
         'data/ir_cron.xml',
         'templates/email_template_user_activation.xml',
-        'templates/email_template_password_reset.xml',
+        'templates/mail_template_password_reset_code.xml',
         'views/res_users_views.xml',
     ],
     "installable": True,

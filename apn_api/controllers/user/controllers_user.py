@@ -39,7 +39,7 @@ class UserAPIController(BaseAPIController):
             return False
         return True
 
-    
+
 
     @http.route("/api_pilates/v1/account_activate_email", type='json', auth="none", methods=['POST'], csrf=False)
     def activate_account(self, **post):
