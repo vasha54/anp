@@ -656,6 +656,112 @@ paths:
                 data: null
                 pagination: null
 
+  /api_pilates/v1/change_password:
+    post:
+      tags:
+        - Usuario
+      summary: Cambiar contraseña (usuario autenticado)
+      description: |
+        Permite a un usuario autenticado cambiar su contraseña actual.
+        
+        **Requerimientos:**
+        - Token JWT válido en `Authorization: Bearer <token>`
+        - `password` y `confirmed_password` deben coincidir
+        - La nueva contraseña debe cumplir la política de seguridad del sistema
+        
+        **Validaciones:**
+        - El usuario debe estar activo y el token vigente.
+        - Se aplican las reglas de complejidad de contraseña (mínimo 8 caracteres, mayúsculas, minúsculas, números y caracteres especiales).
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+            example:
+              password: "Nueva.Clave1"
+              confirmed_password: "Nueva.Clave1"
+      responses:
+        '200':
+          description: Contraseña cambiada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "La contraseña se ha cambiado correctamente."
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/ChangePasswordResponseData'
+              example:
+                success: true
+                message: "La contraseña se ha cambiado correctamente."
+                data:
+                  user:
+                    id: 42
+                    name: "María García"
+                    login: "maria@apnpilates.com"
+        '400':
+          description: Error de validación (contraseñas no coinciden, contraseña débil, etc.)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    nullable: true
+                  pagination:
+                    type: object
+                    nullable: true
+              examples:
+                passwords_no_coinciden:
+                  summary: Las contraseñas no coinciden
+                  value:
+                    status: "error"
+                    message: "Las contraseñas no coinciden"
+                    data: null
+                    pagination: null
+                password_debil:
+                  summary: La nueva contraseña no cumple la política
+                  value:
+                    status: "error"
+                    message: "La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y caracteres especiales."
+                    data: null
+                    pagination: null
+        '401':
+          description: Token no proporcionado, inválido o expirado
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Token inválido o expirado"
+                data: null
+                pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
   /api_pilates/v1/password_reset_request:
     post:
       tags:
@@ -1982,6 +2088,39 @@ components:
           description: Indica que la cuenta ha sido activada
           example: true
 
+    ChangePasswordRequest:
+      type: object
+      required:
+        - password
+        - confirmed_password
+      properties:
+        password:
+          type: string
+          format: password
+          description: Nueva contraseña
+          example: "Nueva.Clave1"
+        confirmed_password:
+          type: string
+          format: password
+          description: Debe coincidir con `password`
+          example: "Nueva.Clave1"
+
+    ChangePasswordResponseData:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID del usuario
+          example: 42
+        name:
+          type: string
+          description: Nombre completo
+          example: "María García"
+        login:
+          type: string
+          description: Email o nombre de usuario
+          example: "maria@apnpilates.com"
+
     PasswordResetRequestRequest:
       type: object
       required:
@@ -2063,4 +2202,4 @@ tags:
   - name: Accesorios
     description: Endpoints para consultar el catálogo de accesorios con paginación y filtro por sucursal
   - name: Usuario
-    description: Endpoints de registro, activación, perfil y recuperación de contraseña
+    description: Endpoints de registro, activación, perfil, cambio y recuperación de contraseña

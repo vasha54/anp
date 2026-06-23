@@ -18,6 +18,40 @@ _logger = logging.getLogger(__name__)
 
 class PasswordResetAPIController(BaseAPIController):
 
+    @http.route('/api_pilates/v1/change_password', type='json', auth='public', methods=['POST'], csrf=False)
+    def change_passwod(self, **kwargs):
+        try:
+            token = self._get_token()
+            user = self._validate_token(token)  # esto ya verifica expiración, activo, etc.
+
+            data = self._get_json_data(request.httprequest.data)
+            self._check_existence_parameters(['password','confirmed_password'], data)
+            password = data['password']
+            confirmed_password = data['confirmed_password']
+
+            if password != confirmed_password:
+                raise Exception(_('Passwords do not match'))
+
+            user._validate_password_security(password)
+            user.sudo().write({
+                'password': password,
+                'confirmed_password': confirmed_password,
+            })
+            return {
+                'success': True,
+                'message': _('Password has been changed successfully.'),
+                'data': {
+                    'user': {
+                        'id': user.id,
+                        'name': user.name,
+                        'login': user.login,
+                    }
+                }
+            }
+
+        except Exception as e:
+            return self._handle_error(e)
+
     @http.route('/api_pilates/v1/password_reset_request', type='json', auth='public', methods=['POST'], csrf=False)
     def request_password_reset(self, **kwargs):
         """Service 1: Request a password reset code."""

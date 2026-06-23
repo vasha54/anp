@@ -125,10 +125,10 @@ class ResUser(models.Model):
 
     def _validate_password_security(self, password):
         if len(password) < 8:
-            raise ValidationError(_("La contraseña debe tener al menos 8 caracteres."))
+            raise ValidationError(_("Password must be at least 8 characters long."))
         if not re.search(r'[A-Za-z]', password) or not re.search(r'\d', password):
-            raise ValidationError(_("La contraseña debe contener letras y números."))
-        if not re.search(r'[!@#$%^&*(),.?":{}|<>_]', password):
-            raise ValidationError(_("La contraseña debe contener al menos un carácter especial."))
+            raise ValidationError(_("Password must contain both letters and numbers."))
+        if not re.search(r'[!@#$%^&*(),.?\":{}|<>_]', password):
+            raise ValidationError(_("Password must contain at least one special character."))
         return True
 
