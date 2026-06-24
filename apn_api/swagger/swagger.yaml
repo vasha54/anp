@@ -29,6 +29,7 @@ security:
   - BearerAuth: []
 
 paths:
+  # --------------------- Sistema ---------------------
   /api_pilates/v1/status:
     get:
       tags:
@@ -64,6 +65,7 @@ paths:
                   odoo_version: "18.0"
                   status: "operational"
 
+  # --------------------- Autenticación ---------------------
   /api_pilates/v1/login:
     post:
       tags:
@@ -331,6 +333,7 @@ paths:
                 data: null
                 pagination: null
 
+  # --------------------- Usuario ---------------------
   /api_pilates/v1/profile_user:
     post:
       tags:
@@ -344,6 +347,7 @@ paths:
         - `apn_groups`: lista de grupos de seguridad a los que pertenece
         - `email`, `mobile`
         - `partner`: datos de la ficha de contacto asociada
+        - `google_profile_picture`: URL de la imagen de perfil de Google (si aplica)
         
         **Requerimientos:**
         - Token JWT válido en `Authorization: Bearer <token>`
@@ -391,6 +395,7 @@ paths:
                       name: "Client"
                   email: false
                   mobile: false
+                  google_profile_picture: null
                   partner:
                     - id: 10
                       name: "Soporte Técnico APN Pilates"
@@ -644,6 +649,133 @@ paths:
                   value:
                     status: "error"
                     message: "Ya existe un usuario con este email."
+                    data: null
+                    pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
+  /api_pilates/v1/register_client_by_google:
+    post:
+      tags:
+        - Usuario
+      summary: Registro de cliente usando Google (OAuth)
+      description: |
+        Permite a un nuevo cliente registrarse utilizando un token de Google.
+        Se envía un correo para restablecer/crear la contraseña.
+
+        **Se debe proporcionar uno de estos parámetros:**
+        - `id_token`: ID Token de Google (recomendado para aplicaciones móviles)
+        - `access_token`: Access Token de Google
+
+        **Comportamiento:**
+        - Verifica el token con Google.
+        - Si es válido, crea un nuevo usuario (o reactiva uno existente inactivo asociado al mismo email de Google).
+        - Se asigna al grupo "Client" y a las sucursales disponibles.
+        - Se envía un email para que el usuario establezca su contraseña.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id_token:
+                  type: string
+                  description: Token ID de Google (para autenticación en móvil)
+                  example: "eyJhbGciOiJSUzI1NiIs..."
+                access_token:
+                  type: string
+                  description: Token de acceso de Google (para autenticación en web)
+                  example: "ya29.a0AfH6S..."
+            examples:
+              con_id_token:
+                summary: Registro con ID Token (móvil)
+                value:
+                  id_token: "eyJhbGciOiJSUzI1NiIs..."
+              con_access_token:
+                summary: Registro con Access Token (web)
+                value:
+                  access_token: "ya29.a0AfH6S..."
+      responses:
+        '200':
+          description: Registro exitoso (se envió email para crear contraseña)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Registro exitoso. Revisa tu email para cambiar tu contraseña, se ha enviado un código de restablecimiento."
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 100
+                      name:
+                        type: string
+                        example: "María García"
+                      email:
+                        type: string
+                        example: "maria@gmail.com"
+                      login:
+                        type: string
+                        example: "maria@gmail.com"
+                      change_password_email_sent:
+                        type: boolean
+                        example: true
+              example:
+                status: "success"
+                message: "Registro exitoso. Revisa tu email para cambiar tu contraseña, se ha enviado un código de restablecimiento."
+                data:
+                  id: 100
+                  name: "María García"
+                  email: "maria@gmail.com"
+                  login: "maria@gmail.com"
+                  change_password_email_sent: true
+        '400':
+          description: Error de validación (token no proporcionado, token inválido, etc.)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    nullable: true
+                  pagination:
+                    type: object
+                    nullable: true
+              examples:
+                token_faltante:
+                  summary: No se envió id_token ni access_token
+                  value:
+                    status: "error"
+                    message: "Proporcione id_token o access_token."
+                    data: null
+                    pagination: null
+                token_invalido:
+                  summary: El token de Google no es válido
+                  value:
+                    status: "error"
+                    message: "Token de Google inválido."
                     data: null
                     pagination: null
         '500':
@@ -960,6 +1092,7 @@ paths:
                 data: null
                 pagination: null
 
+  # --------------------- Sucursales ---------------------
   /api_pilates/v1/branches:
     post:
       tags:
@@ -1108,6 +1241,7 @@ paths:
                 data: null
                 pagination: null
 
+  # --------------------- Accesorios ---------------------
   /api_pilates/v1/accesories/:
     post:
       tags:
@@ -1423,6 +1557,574 @@ paths:
                 data: null
                 pagination: null
 
+  # ======================= NUEVOS ENDPOINTS: APLICACIÓN MÓVIL =======================
+  /api_pilates/v1/mobile_get_platforms:
+    post:
+      tags:
+        - Aplicación Móvil
+      summary: Obtener todas las plataformas móviles
+      description: |
+        Devuelve la lista de plataformas activas registradas en el sistema (iOS, Android, etc.).
+        Este endpoint requiere autenticación (token JWT).
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Sin parámetros obligatorios. Enviar un objeto vacío.
+              example: {}
+      responses:
+        '200':
+          description: Lista de plataformas obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Datos obtenidos correctamente"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MobilePlatform'
+              example:
+                status: "success"
+                message: "Plataformas obtenidas correctamente"
+                data:
+                  - id: 1
+                    name: "iOS"
+                    code: "ios"
+                    active: true
+                  - id: 2
+                    name: "Android"
+                    code: "android"
+                    active: true
+                  - id: 3
+                    name: "Huawei"
+                    code: "huawei"
+                    active: false
+        '401':
+          description: Token no proporcionado, inválido o expirado
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Token inválido o expirado"
+                data: null
+                pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
+  /api_pilates/v1/mobile_get_versions:
+    post:
+      tags:
+        - Aplicación Móvil
+      summary: Obtener versiones (todas o filtradas por plataforma)
+      description: |
+        Devuelve todas las versiones de app registradas, con posibilidad de filtrar por código de plataforma.
+        
+        **Parámetros (opcionales):**
+        - `platform_code`: código de la plataforma (ej: "ios", "android"). Si no se envía, se devuelven todas las versiones.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetVersionsRequest'
+            examples:
+              todas:
+                summary: Sin filtro (todas las versiones)
+                value: {}
+              filtrar_ios:
+                summary: Filtrar por iOS
+                value:
+                  platform_code: "ios"
+      responses:
+        '200':
+          description: Lista de versiones obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Datos obtenidos correctamente"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MobileVersion'
+              example:
+                status: "success"
+                message: "Versiones obtenidas correctamente"
+                data:
+                  - id: 10
+                    version: "2.1.0"
+                    platform_id: 1
+                    platform_code: "ios"
+                    platform_name: "iOS"
+                    release_date: "2024-05-20"
+                    download_url: "https://apps.apple.com/app/id123456"
+                    is_mandatory: true
+                    release_notes: "<p>Corrección de errores y mejoras de rendimiento</p>"
+                    display_name: "Pilates - iOS v2.1.0"
+                    company:
+                      id: 1
+                      name: "Pilates"
+        '401':
+          description: Token no proporcionado, inválido o expirado
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Token inválido o expirado"
+                data: null
+                pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
+  /api_pilates/v1/mobile_get_latest_version:
+    post:
+      tags:
+        - Aplicación Móvil
+      summary: Obtener última versión de una plataforma
+      description: |
+        Devuelve la versión más reciente (por fecha de lanzamiento y número de versión) para una plataforma específica.
+        **Parámetro requerido:** `platform_code`
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetLatestVersionRequest'
+            example:
+              platform_code: "android"
+      responses:
+        '200':
+          description: Última versión obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Última versión obtenida correctamente"
+                  data:
+                    $ref: '#/components/schemas/MobileVersion'
+              example:
+                status: "success"
+                message: "Última versión obtenida correctamente"
+                data:
+                  id: 15
+                  version: "3.0.0"
+                  platform_id: 2
+                  platform_code: "android"
+                  platform_name: "Android"
+                  release_date: "2024-06-10"
+                  download_url: "https://play.google.com/store/apps/details?id=com.apn"
+                  is_mandatory: false
+                  release_notes: "<p>Nuevo diseño y funcionalidades</p>"
+                  display_name: "Pilates - Android v3.0.0"
+                  company:
+                    id: 1
+                    name: "Pilates"
+        '400':
+          description: Falta el parámetro platform_code
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Falta el parámetro: platform_code"
+                data: null
+                pagination: null
+        '401':
+          description: Token no proporcionado, inválido o expirado
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Token inválido o expirado"
+                data: null
+                pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
+  /api_pilates/v1/mobile_get_versions_by_company:
+    post:
+      tags:
+        - Aplicación Móvil
+      summary: Obtener todas las versiones de una compañía
+      description: |
+        Devuelve todas las versiones asociadas a una compañía específica.
+        **Parámetro requerido:** `company_id`
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetVersionsByCompanyRequest'
+            example:
+              company_id: 1
+      responses:
+        '200':
+          description: Lista de versiones de la compañía obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Versiones obtenidas correctamente"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MobileVersion'
+              example:
+                status: "success"
+                message: "Versiones de la compañía obtenidas correctamente"
+                data:
+                  - id: 10
+                    version: "2.1.0"
+                    platform_id: 1
+                    platform_code: "ios"
+                    platform_name: "iOS"
+                    release_date: "2024-05-20"
+                    download_url: "https://apps.apple.com/app/id123456"
+                    is_mandatory: true
+                    release_notes: "<p>Corrección de errores</p>"
+                    display_name: "Pilates - iOS v2.1.0"
+                    company:
+                      id: 1
+                      name: "Pilates"
+        '400':
+          description: Falta el parámetro company_id
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Falta el parámetro: company_id"
+                data: null
+                pagination: null
+        '401':
+          description: Token no proporcionado, inválido o expirado
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Token inválido o expirado"
+                data: null
+                pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
+  /api_pilates/v1/mobile_get_versions_by_company_and_platform:
+    post:
+      tags:
+        - Aplicación Móvil
+      summary: Obtener versiones de una compañía y plataforma específicas
+      description: |
+        Devuelve todas las versiones asociadas a una compañía y una plataforma determinada.
+        **Parámetros requeridos:** `company_id`, `platform_code`
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetVersionsByCompanyAndPlatformRequest'
+            example:
+              company_id: 1
+              platform_code: "ios"
+      responses:
+        '200':
+          description: Lista de versiones filtradas obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Versiones obtenidas correctamente"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MobileVersion'
+              example:
+                status: "success"
+                message: "Versiones obtenidas correctamente"
+                data:
+                  - id: 10
+                    version: "2.1.0"
+                    platform_id: 1
+                    platform_code: "ios"
+                    platform_name: "iOS"
+                    release_date: "2024-05-20"
+                    download_url: "https://apps.apple.com/app/id123456"
+                    is_mandatory: true
+                    release_notes: "<p>Actualización de seguridad</p>"
+                    display_name: "Pilates - iOS v2.1.0"
+                    company:
+                      id: 1
+                      name: "Pilates"
+        '400':
+          description: Faltan parámetros requeridos
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Falta el parámetro: company_id"
+                data: null
+                pagination: null
+        '401':
+          description: Token no proporcionado, inválido o expirado
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Token inválido o expirado"
+                data: null
+                pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
+  /api_pilates/v1/mobile_get_latest_versions_by_company:
+    post:
+      tags:
+        - Aplicación Móvil
+      summary: Obtener la última versión de cada plataforma para una compañía
+      description: |
+        Para una compañía determinada, devuelve la versión más reciente de cada plataforma (una por plataforma).
+        **Parámetro requerido:** `company_id`
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetLatestVersionsByCompanyRequest'
+            example:
+              company_id: 1
+      responses:
+        '200':
+          description: Últimas versiones por plataforma obtenidas correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Últimas versiones obtenidas correctamente"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MobileVersion'
+              example:
+                status: "success"
+                message: "Últimas versiones por plataforma obtenidas correctamente"
+                data:
+                  - id: 10
+                    version: "2.1.0"
+                    platform_id: 1
+                    platform_code: "ios"
+                    platform_name: "iOS"
+                    release_date: "2024-05-20"
+                    download_url: "https://apps.apple.com/app/id123456"
+                    is_mandatory: true
+                    release_notes: "<p>Actualización iOS</p>"
+                    display_name: "Pilates - iOS v2.1.0"
+                    company:
+                      id: 1
+                      name: "Pilates"
+                  - id: 15
+                    version: "3.0.0"
+                    platform_id: 2
+                    platform_code: "android"
+                    platform_name: "Android"
+                    release_date: "2024-06-10"
+                    download_url: "https://play.google.com/store/apps/details?id=com.apn"
+                    is_mandatory: false
+                    release_notes: "<p>Nuevo diseño Android</p>"
+                    display_name: "Pilates - Android v3.0.0"
+                    company:
+                      id: 1
+                      name: "Pilates"
+        '400':
+          description: Falta el parámetro company_id
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Falta el parámetro: company_id"
+                data: null
+                pagination: null
+        '401':
+          description: Token no proporcionado, inválido o expirado
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Token inválido o expirado"
+                data: null
+                pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
+  /api_pilates/v1/mobile_get_latest_version_by_company_and_platform:
+    post:
+      tags:
+        - Aplicación Móvil
+      summary: Obtener la última versión de una plataforma en una compañía
+      description: |
+        Devuelve la versión más reciente para una compañía y plataforma específicas.
+        **Parámetros requeridos:** `company_id`, `platform_code`
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetLatestVersionByCompanyAndPlatformRequest'
+            example:
+              company_id: 1
+              platform_code: "android"
+      responses:
+        '200':
+          description: Última versión obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Última versión obtenida correctamente"
+                  data:
+                    $ref: '#/components/schemas/MobileVersion'
+              example:
+                status: "success"
+                message: "Última versión obtenida correctamente"
+                data:
+                  id: 15
+                  version: "3.0.0"
+                  platform_id: 2
+                  platform_code: "android"
+                  platform_name: "Android"
+                  release_date: "2024-06-10"
+                  download_url: "https://play.google.com/store/apps/details?id=com.apn"
+                  is_mandatory: false
+                  release_notes: "<p>Nuevo diseño</p>"
+                  display_name: "Pilates - Android v3.0.0"
+                  company:
+                    id: 1
+                    name: "Pilates"
+        '400':
+          description: Faltan parámetros requeridos
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Falta el parámetro: company_id"
+                data: null
+                pagination: null
+        '401':
+          description: Token no proporcionado, inválido o expirado
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Token inválido o expirado"
+                data: null
+                pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
 components:
   securitySchemes:
     BearerAuth:
@@ -1432,6 +2134,7 @@ components:
       description: Token obtenido mediante el endpoint de login
 
   schemas:
+    # --------------------- Esquemas existentes ---------------------
     Error:
       type: object
       properties:
@@ -1474,71 +2177,51 @@ components:
       properties:
         id:
           type: integer
-          description: ID único de la sucursal
           example: 3
         name:
           type: string
-          description: Nombre de la sucursal
           example: "Sucursal A"
         latitude:
           type: number
-          format: float
-          description: Latitud geográfica
           example: 20.6648948
         longitude:
           type: number
-          format: float
-          description: Longitud geográfica
           example: -103.3938723
         map_url:
           type: string
-          format: uri
-          description: URL de Google Maps con la ubicación
           example: "https://www.google.com/maps?q=20.6648948,-103.3938723"
         city:
           type: string
-          description: Ciudad donde se ubica la sucursal
           example: "Guadalajara"
         phone:
           type: string
-          description: Número de teléfono
           example: "(33) 1598 2647"
         email:
           type: string
           nullable: true
-          description: Correo electrónico de contacto
-          example: "sucursal@ejemplo.com"
+          example: false
         website:
           type: string
           nullable: true
-          description: Sitio web de la sucursal
-          example: "https://sucursal.ejemplo.com"
+          example: false
         street:
           type: string
-          description: Calle y número
           example: "Av. López Mateos Sur 4450"
         street2:
           type: string
           nullable: true
-          description: Información adicional de dirección
-          example: "Col. Jardines del Sol"
+          example: false
         logo:
           type: boolean
-          description: Indica si la sucursal tiene un logo configurado
           example: true
         logo_url:
           type: string
-          format: uri
           nullable: true
-          description: |
-            URL completa para descargar la imagen del logo de la sucursal.
-            Es null cuando la sucursal no tiene logo configurado.
           example: "http://localhost:8069/public/image/branch/3"
         state:
           $ref: '#/components/schemas/State'
         zip:
           type: string
-          description: Código postal
           example: "45040"
         country:
           $ref: '#/components/schemas/Country'
@@ -1547,20 +2230,16 @@ components:
         reference:
           type: string
           nullable: true
-          description: Referencias o puntos de referencia cercanos
-          example: "Frente al parque central"
+          example: false
         room_count:
           type: integer
-          description: Número total de salas en la sucursal
           example: 3
         rooms:
           type: array
-          description: Lista de salas disponibles
           items:
             $ref: '#/components/schemas/Room'
         schedules:
           type: array
-          description: Horarios de operación de la sucursal
           items:
             $ref: '#/components/schemas/Schedule'
 
@@ -1569,11 +2248,9 @@ components:
       properties:
         id:
           type: integer
-          description: ID del estado/provincia
           example: 498
         name:
           type: string
-          description: Nombre del estado/provincia
           example: "Jalisco"
 
     Country:
@@ -1581,11 +2258,9 @@ components:
       properties:
         id:
           type: integer
-          description: ID del país
           example: 156
         name:
           type: string
-          description: Nombre del país
           example: "Mexico"
 
     ParentCompany:
@@ -1593,11 +2268,9 @@ components:
       properties:
         id:
           type: integer
-          description: ID de la compañía padre
           example: 1
         name:
           type: string
-          description: Nombre de la compañía padre
           example: "Pilates"
 
     Room:
@@ -1605,194 +2278,130 @@ components:
       properties:
         id:
           type: integer
-          description: ID único de la sala
           example: 2
         name:
           type: string
-          description: Nombre de la sala
           example: "Sala Cadillac"
         capacity:
           type: integer
-          description: Capacidad máxima de personas
           example: 40
-          minimum: 1
 
     Schedule:
       type: object
       properties:
         id:
           type: integer
-          description: ID único del horario
           example: 1
         day_of_week_from:
           type: string
-          description: |
-            Día de inicio del horario.
-            0=Lunes, 1=Martes, 2=Miércoles, 3=Jueves, 4=Viernes, 5=Sábado, 6=Domingo
           example: "0"
           enum: ["0", "1", "2", "3", "4", "5", "6"]
         day_of_week_from_label:
           type: string
-          description: Etiqueta legible del día de inicio
           example: "Monday"
-          enum: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
         day_of_week_to:
           type: string
-          description: |
-            Día de fin del horario.
-            Puede ser igual que day_of_week_from si es un solo día
           example: "4"
           enum: ["0", "1", "2", "3", "4", "5", "6"]
         day_of_week_to_label:
           type: string
-          description: Etiqueta legible del día de fin
           example: "Friday"
-          enum: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
         hour_from:
           type: number
-          format: float
-          description: |
-            Hora de inicio en formato 24h decimal.
-            Ejemplos: 6.0 = 06:00, 13.5 = 13:30, 17.0 = 17:00
           example: 6
-          minimum: 0
-          maximum: 23.99
         hour_to:
           type: number
-          format: float
-          description: |
-            Hora de fin en formato 24h decimal.
-            Si es menor que hour_from, indica que cruza al día siguiente
           example: 7
-          minimum: 0
-          maximum: 23.99
 
     ProductAccessory:
       type: object
       properties:
         id:
           type: integer
-          description: ID del producto
           example: 42
         name:
           type: string
-          description: Nombre del producto
           example: "Mat Pilates Premium"
         display_name:
           type: string
-          description: Nombre completo mostrado (incluye variante)
           example: "Mat Pilates Premium (Azul)"
         default_code:
           type: string
-          description: Código interno del producto
           example: "MAT001"
         list_price:
           type: number
-          format: float
-          description: Precio de venta
           example: 35.0
         lst_price:
           type: number
-          format: float
-          description: Precio de lista (igual a list_price)
           example: 35.0
         description:
           type: string
-          description: Descripción del producto (HTML)
           example: "<p>Mat de pilates de alta densidad</p>"
         sale_ok:
           type: boolean
-          description: Permite venta
           example: true
         purchase_ok:
           type: boolean
-          description: Permite compra
           example: false
         type:
           type: string
-          description: Tipo de producto (código)
           example: "product"
-          enum: ["product", "consu", "service"]
         type_str:
           type: string
-          description: Tipo de producto legible
           example: "Storable Product"
         uom_id:
           type: integer
-          description: ID de la unidad de medida
           example: 1
         uom_name:
           type: string
-          description: Nombre de la unidad de medida
           example: "Units"
         image_1920:
           type: boolean
-          description: Indica si el producto tiene imagen
           example: true
         image_1920_url:
           type: string
-          format: uri
           nullable: true
-          description: URL de la imagen del producto
           example: "http://localhost:8069/public/image/product_accesorie/42"
         is_favorite:
           type: boolean
-          description: Producto marcado como favorito
           example: false
         product_tags:
           type: array
-          nullable: true
-          description: Etiquetas del producto
           items:
             $ref: '#/components/schemas/ProductTag'
         tax_string:
           type: string
-          description: Resumen de impuestos
           example: "IVA 16%"
         standard_price:
           type: number
-          format: float
-          description: Costo estándar
           example: 20.0
         taxes:
           type: array
-          nullable: true
-          description: Lista de impuestos aplicables
           items:
             $ref: '#/components/schemas/Tax'
         categ:
           $ref: '#/components/schemas/Category'
         barcode:
           type: string
-          description: Código de barras
           example: "7501234567890"
         companies:
           type: array
-          nullable: true
-          description: Compañías a las que está asignado el producto
           items:
             $ref: '#/components/schemas/CompanySimple'
         attribute_lines:
           type: array
-          nullable: true
-          description: Líneas de atributos de la plantilla
           items:
             $ref: '#/components/schemas/AttributeLine'
         product_tmpl:
           $ref: '#/components/schemas/ProductTemplate'
         description_sale:
           type: string
-          description: Descripción de venta
           example: "Mat de pilates profesional"
         qty_available:
           type: number
-          format: float
-          description: Cantidad disponible
           example: 25
         variant_values:
           type: array
-          nullable: true
-          description: Valores de atributos de esta variante
           items:
             $ref: '#/components/schemas/VariantValue'
 
@@ -1807,7 +2416,6 @@ components:
           example: "Nuevo"
         color:
           type: integer
-          description: Índice de color (1-12)
           example: 4
 
     Tax:
@@ -1824,14 +2432,12 @@ components:
           example: 16.0
         type_tax_use:
           type: string
-          enum: ["sale", "purchase", "none"]
           example: "sale"
         description:
           type: string
           example: ""
         amount_type:
           type: string
-          enum: ["percent", "fixed", "division", "group"]
           example: "percent"
         price_include:
           type: boolean
@@ -1929,7 +2535,6 @@ components:
           example: 4
         price_extra:
           type: number
-          format: float
           example: 0.0
 
     UserProfile:
@@ -1937,23 +2542,18 @@ components:
       properties:
         id:
           type: integer
-          description: ID del usuario
           example: 9
         name:
           type: string
-          description: Nombre completo
           example: "Soporte Técnico APN Pilates"
         login:
           type: string
-          description: Email o nombre de usuario
           example: "soporte@apnpilates.com"
         active:
           type: boolean
-          description: Indica si el usuario está activo
           example: true
         apn_groups:
           type: array
-          description: Grupos de seguridad del usuario
           items:
             type: object
             properties:
@@ -1966,16 +2566,17 @@ components:
         email:
           type: string
           nullable: true
-          description: Correo electrónico adicional
           example: false
         mobile:
           type: string
           nullable: true
-          description: Número de móvil
           example: false
+        google_profile_picture:
+          type: string
+          nullable: true
+          example: null
         partner:
           type: array
-          description: Datos del contacto asociado (res.partner)
           items:
             type: object
             properties:
@@ -1997,40 +2598,30 @@ components:
         email:
           type: string
           format: email
-          description: Correo electrónico del nuevo usuario
           example: "cliente@example.com"
         password:
           type: string
           format: password
-          description: Contraseña (mínimo 8 caracteres, mayúscula, minúscula, número y carácter especial)
           example: "Clave.123"
         confirmed_password:
           type: string
           format: password
-          description: Debe coincidir con `password`
           example: "Clave.123"
         name:
           type: string
-          description: Nombre completo
           example: "María López"
         login:
           type: string
-          description: Nombre de usuario (opcional, si no se envía se usará el email)
           example: "maria.lopez"
         mobile:
           type: string
-          description: Número de teléfono móvil
           example: "+34600123456"
 
     UserRegistrationData:
       type: object
-      description: |
-        Datos de la respuesta de registro. Los campos presentes dependen de si se creó un usuario nuevo 
-        o se reenvió la activación a uno existente no activado.
       properties:
         id:
           type: integer
-          description: ID del usuario (nuevo o existente)
           example: 87
         name:
           type: string
@@ -2038,19 +2629,15 @@ components:
         email:
           type: string
           format: email
-          description: Email del usuario (solo en registro nuevo)
           example: "cliente@example.com"
         is_activated:
           type: boolean
-          description: Indica si la cuenta ya ha sido activada (solo en registro nuevo)
           example: false
         activation_email_sent:
           type: boolean
-          description: Confirmación de envío de email de activación (solo en registro nuevo)
           example: true
         login:
           type: string
-          description: Nombre de usuario (presente en reenvío de activación)
           example: "maria.lopez"
 
     AccountActivateRequest:
@@ -2062,11 +2649,9 @@ components:
         email:
           type: string
           format: email
-          description: Email de la cuenta a activar
           example: "cliente@example.com"
         token:
           type: string
-          description: Token de activación recibido por email
           example: "abc123def456..."
 
     AccountActivateData:
@@ -2074,7 +2659,6 @@ components:
       properties:
         id:
           type: integer
-          description: ID del usuario activado
           example: 87
         name:
           type: string
@@ -2085,7 +2669,6 @@ components:
           example: "cliente@example.com"
         is_activated:
           type: boolean
-          description: Indica que la cuenta ha sido activada
           example: true
 
     ChangePasswordRequest:
@@ -2097,12 +2680,10 @@ components:
         password:
           type: string
           format: password
-          description: Nueva contraseña
           example: "Nueva.Clave1"
         confirmed_password:
           type: string
           format: password
-          description: Debe coincidir con `password`
           example: "Nueva.Clave1"
 
     ChangePasswordResponseData:
@@ -2110,15 +2691,12 @@ components:
       properties:
         id:
           type: integer
-          description: ID del usuario
           example: 42
         name:
           type: string
-          description: Nombre completo
           example: "María García"
         login:
           type: string
-          description: Email o nombre de usuario
           example: "maria@apnpilates.com"
 
     PasswordResetRequestRequest:
@@ -2129,7 +2707,6 @@ components:
         email:
           type: string
           format: email
-          description: Correo electrónico de la cuenta
           example: "cliente@example.com"
 
     PasswordResetConfirmRequest:
@@ -2142,16 +2719,13 @@ components:
         email:
           type: string
           format: email
-          description: Correo electrónico de la cuenta
           example: "cliente@example.com"
         code:
           type: string
-          description: Código de restablecimiento recibido por email
           example: "123456"
         new_password:
           type: string
           format: password
-          description: Nueva contraseña (debe cumplir la política de seguridad)
           example: "Nueva.Clave1"
 
     PasswordResetUserData:
@@ -2173,24 +2747,159 @@ components:
       properties:
         page:
           type: integer
-          description: Página actual
           example: 1
         limit:
           type: integer
-          description: Elementos por página
           example: 80
         total_items:
           type: integer
-          description: Total de registros encontrados
           example: 120
         total_pages:
           type: integer
-          description: Total de páginas
           example: 2
         offset:
           type: integer
-          description: Desplazamiento aplicado
           example: 0
+
+    # --------------------- NUEVOS ESQUEMAS: Aplicación Móvil ---------------------
+    MobilePlatform:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID de la plataforma
+          example: 1
+        name:
+          type: string
+          description: Nombre de la plataforma (iOS, Android, etc.)
+          example: "iOS"
+        code:
+          type: string
+          description: Código interno único
+          example: "ios"
+        active:
+          type: boolean
+          description: Indica si la plataforma está activa
+          example: true
+
+    MobileVersion:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID único de la versión
+          example: 10
+        version:
+          type: string
+          description: Número de versión (ej. "2.1.0")
+          example: "2.1.0"
+        platform_id:
+          type: integer
+          description: ID de la plataforma asociada
+          example: 1
+        platform_code:
+          type: string
+          description: Código de la plataforma
+          example: "ios"
+        platform_name:
+          type: string
+          description: Nombre de la plataforma
+          example: "iOS"
+        release_date:
+          type: string
+          format: date
+          description: Fecha de lanzamiento (YYYY-MM-DD)
+          example: "2024-05-20"
+        download_url:
+          type: string
+          format: uri
+          description: URL de descarga de la app
+          example: "https://apps.apple.com/app/id123456"
+        is_mandatory:
+          type: boolean
+          description: Indica si la actualización es obligatoria
+          example: true
+        release_notes:
+          type: string
+          description: Notas de la versión (HTML)
+          example: "<p>Corrección de errores y mejoras de rendimiento</p>"
+        display_name:
+          type: string
+          description: Nombre completo para mostrar
+          example: "Pilates - iOS v2.1.0"
+        company:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: "Pilates"
+
+    # Request schemas for mobile endpoints
+    GetVersionsRequest:
+      type: object
+      properties:
+        platform_code:
+          type: string
+          description: Código de plataforma para filtrar (opcional)
+          example: "ios"
+
+    GetLatestVersionRequest:
+      type: object
+      required:
+        - platform_code
+      properties:
+        platform_code:
+          type: string
+          description: Código de la plataforma
+          example: "android"
+
+    GetVersionsByCompanyRequest:
+      type: object
+      required:
+        - company_id
+      properties:
+        company_id:
+          type: integer
+          description: ID de la compañía (res.company)
+          example: 1
+
+    GetVersionsByCompanyAndPlatformRequest:
+      type: object
+      required:
+        - company_id
+        - platform_code
+      properties:
+        company_id:
+          type: integer
+          example: 1
+        platform_code:
+          type: string
+          example: "ios"
+
+    GetLatestVersionsByCompanyRequest:
+      type: object
+      required:
+        - company_id
+      properties:
+        company_id:
+          type: integer
+          example: 1
+
+    GetLatestVersionByCompanyAndPlatformRequest:
+      type: object
+      required:
+        - company_id
+        - platform_code
+      properties:
+        company_id:
+          type: integer
+          example: 1
+        platform_code:
+          type: string
+          example: "android"
 
 tags:
   - name: Sistema
@@ -2203,3 +2912,5 @@ tags:
     description: Endpoints para consultar el catálogo de accesorios con paginación y filtro por sucursal
   - name: Usuario
     description: Endpoints de registro, activación, perfil, cambio y recuperación de contraseña
+  - name: Aplicación Móvil
+    description: Endpoints para consultar plataformas y versiones de la aplicación móvil

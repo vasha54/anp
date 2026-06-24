@@ -10,6 +10,7 @@ from odoo import _, http
 from odoo.http import Response, request
 from odoo.exceptions import AccessDenied
 from odoo.modules.registry import Registry
+from odoo.addons.apn_signup.services.google_auth_service import GoogleAuthService
 
 from ..base_api_controller import BaseAPIController
 
@@ -39,7 +40,63 @@ class UserAPIController(BaseAPIController):
             return False
         return True
 
+    @http.route("/api_pilates/v1/register_client_by_google", type='json', auth="none", methods=['POST'], csrf=False)
+    def register_client_by_gmail(self, **post):
+        """
+            Registro público de usuarios (clientes) con Google
 
+            Parámetros requeridos (uno de estos):
+            - id_token: ID Token de Google (recomendado para móvil)
+            - access_token: Access Token de Google
+        """
+        try:
+            data = self._get_json_data(request.httprequest.data)
+            id_token = data.get('id_token')
+            access_token = data.get('access_token')
+            if not id_token and not access_token:
+                raise Exception(_('Provide either id_token or access_token.'))
+
+            # Verificar token de Google
+            google_service = GoogleAuthService(request.env)
+            google_data = google_service.verify_google_token(
+                id_token=id_token,
+                access_token=access_token
+            )
+
+            if not google_data:
+                raise Exception(_('Invalid Google token.'))
+
+            # Agregar tokens al google_data si existen
+            if access_token:
+                google_data['access_token'] = access_token
+
+            # Crear usuario
+            user = google_service.create_user(google_data)
+
+            token, code = user.generate_password_reset_token()
+            user.write({
+                'password_reset_ip': request.httprequest.remote_addr,
+                'password_reset_user_agent': request.httprequest.headers.get('User-Agent', ''),
+            })
+            user._send_reset_code_email()
+
+            response = {
+                'status': 'success',
+                'message': _(
+                    'Registration successful. Please check your email to change your password, a reset code has been sent.'
+                ),
+                'data': {
+                    'id': user.id,
+                    'name': user.name,
+                    'email': user.email,
+                    'login': user.login,
+                    'change_password_email_sent': True
+                },
+            }
+            return response
+
+        except Exception as e:
+            return self._handle_error(e)
 
     @http.route("/api_pilates/v1/account_activate_email", type='json', auth="none", methods=['POST'], csrf=False)
     def activate_account(self, **post):
@@ -211,7 +268,7 @@ class UserAPIController(BaseAPIController):
                 # Leemos los campos necesarios con el id del usuario validado
                 user_data = env['res.users'].sudo().search_read(
                     domain=[("id", "=", user.id)],
-                    fields=["id", "name", "login", "active", "apn_groups", "email", "mobile", "partner"],
+                    fields=["id", "name", "login", "active", "apn_groups", "email", "mobile", "partner", "google_profile_picture"],
                     limit=1,
                 )
                 if not user_data:

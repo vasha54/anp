@@ -1,0 +1,243 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* dc_mobile_app_versioning
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0-20260305\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-23 19:09+0000\n"
+"PO-Revision-Date: 2026-06-23 19:09+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+"Language: en\n"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.model.fields,field_description:dc_mobile_app_versioning.field_mobile_platform__active
+msgid "Active"
+msgstr "Active"
+
+#. module: dc_mobile_app_versioning
+#: model_terms:ir.actions.act_window,help:dc_mobile_app_versioning.action_mobile_version
+msgid "Add a new version for your mobile apps."
+msgstr "Add a new version for your mobile apps."
+
+#. module: dc_mobile_app_versioning
+#: model:mobile.platform,name:dc_mobile_app_versioning.platform_android
+msgid "Android"
+msgstr "Android"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.ui.menu,name:dc_mobile_app_versioning.menu_mobile_app_root
+msgid "App versions"
+msgstr "App versions"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.model.fields,field_description:dc_mobile_app_versioning.field_mobile_platform__code
+msgid "Code"
+msgstr "Code"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.ui.menu,name:dc_mobile_app_versioning.menu_mobile_configuration
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: dc_mobile_app_versioning
+#: model_terms:ir.actions.act_window,help:dc_mobile_app_versioning.action_mobile_platform
+msgid "Create and manage mobile platforms."
+msgstr "Create and manage mobile platforms."
+
+#. module: dc_mobile_app_versioning
+#: model:ir.model.fields,field_description:dc_mobile_app_versioning.field_mobile_platform__create_uid
+#: model:ir.model.fields,field_description:dc_mobile_app_versioning.field_mobile_version__create_uid
+msgid "Created by"
+msgstr "Created by"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.model.fields,field_description:dc_mobile_app_versioning.field_mobile_platform__create_date
+#: model:ir.model.fields,field_description:dc_mobile_app_versioning.field_mobile_version__create_date
+msgid "Created on"
+msgstr "Created on"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.model.fields,help:dc_mobile_app_versioning.field_mobile_platform__code
+msgid "Código interno (ej: ios, android, huawei)"
+msgstr "Internal code (e.g., ios, android, huawei)"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.model.fields,field_description:dc_mobile_app_versioning.field_mobile_platform__display_name
+#: model:ir.model.fields,field_description:dc_mobile_app_versioning.field_mobile_version__display_name
+msgid "Display Name"
+msgstr "Display Name"
+
+#. module: dc_mobile_app_versioning
+#: model_terms:ir.ui.view,arch_db:dc_mobile_app_versioning.view_mobile_version_form
+msgid "Distribution"
+msgstr "Distribution"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.model.fields,field_description:dc_mobile_app_versioning.field_mobile_version__download_url
+msgid "Download URL"
+msgstr "Download URL"
+
+#. module: dc_mobile_app_versioning
+#: model_terms:ir.ui.view,arch_db:dc_mobile_app_versioning.view_mobile_version_form
+msgid "Ej: 2.1.0"
+msgstr "E.g.: 2.1.0"
+
+#. module: dc_mobile_app_versioning
+#: model_terms:ir.ui.view,arch_db:dc_mobile_app_versioning.view_mobile_platform_form
+msgid "Ej: iOS"
+msgstr "E.g.: iOS"
+
+#. module: dc_mobile_app_versioning
+#: model_terms:ir.ui.view,arch_db:dc_mobile_app_versioning.view_mobile_platform_form
+msgid "Ej: ios"
+msgstr "E.g.: ios"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.model.constraint,message:dc_mobile_app_versioning.constraint_mobile_platform_unique_code
+msgid "El código de la plataforma debe ser único."
+msgstr "The platform code must be unique."
+
+#. module: dc_mobile_app_versioning
+#: model_terms:ir.ui.view,arch_db:dc_mobile_app_versioning.view_mobile_version_form
+msgid "Escribe las novedades de esta versión..."
+msgstr "Write the release notes for this version..."
+
+#. module: dc_mobile_app_versioning
+#: model_terms:ir.ui.view,arch_db:dc_mobile_app_versioning.view_mobile_version_search
+msgid "Group By"
+msgstr "Group By"
+
+#. module: dc_mobile_app_versioning
+#: model:mobile.platform,name:dc_mobile_app_versioning.platform_harmonyos
+msgid "HarmonyOS"
+msgstr "HarmonyOS"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.model.fields,field_description:dc_mobile_app_versioning.field_mobile_platform__id
+#: model:ir.model.fields,field_description:dc_mobile_app_versioning.field_mobile_version__id
+msgid "ID"
+msgstr "ID"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.model.fields,field_description:dc_mobile_app_versioning.field_mobile_version__is_mandatory
+msgid "Is Mandatory?"
+msgstr "Is Mandatory?"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.model.fields,field_description:dc_mobile_app_versioning.field_mobile_platform__write_uid
+#: model:ir.model.fields,field_description:dc_mobile_app_versioning.field_mobile_version__write_uid
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.model.fields,field_description:dc_mobile_app_versioning.field_mobile_platform__write_date
+#: model:ir.model.fields,field_description:dc_mobile_app_versioning.field_mobile_version__write_date
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: dc_mobile_app_versioning
+#: model_terms:ir.ui.view,arch_db:dc_mobile_app_versioning.view_mobile_version_search
+msgid "Mandatory"
+msgstr "Mandatory"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.model,name:dc_mobile_app_versioning.model_mobile_version
+msgid "Mobile App Version"
+msgstr "Mobile App Version"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.model,name:dc_mobile_app_versioning.model_mobile_platform
+msgid "Mobile Platform"
+msgstr "Mobile Platform"
+
+#. module: dc_mobile_app_versioning
+#: model_terms:ir.ui.view,arch_db:dc_mobile_app_versioning.view_mobile_version_form
+msgid "Mobile Version"
+msgstr "Mobile Version"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.model.fields,field_description:dc_mobile_app_versioning.field_mobile_version__platform_id
+#: model_terms:ir.ui.view,arch_db:dc_mobile_app_versioning.view_mobile_platform_form
+#: model_terms:ir.ui.view,arch_db:dc_mobile_app_versioning.view_mobile_version_search
+msgid "Platform"
+msgstr "Platform"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.model.fields,field_description:dc_mobile_app_versioning.field_mobile_platform__name
+msgid "Platform Name"
+msgstr "Platform Name"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.actions.act_window,name:dc_mobile_app_versioning.action_mobile_platform
+#: model:ir.ui.menu,name:dc_mobile_app_versioning.menu_mobile_platform
+#: model_terms:ir.ui.view,arch_db:dc_mobile_app_versioning.view_mobile_platform_tree
+msgid "Platforms"
+msgstr "Platforms"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.model.fields,field_description:dc_mobile_app_versioning.field_mobile_version__release_date
+msgid "Release Date"
+msgstr "Release Date"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.model.fields,field_description:dc_mobile_app_versioning.field_mobile_version__release_notes
+#: model_terms:ir.ui.view,arch_db:dc_mobile_app_versioning.view_mobile_version_form
+msgid "Release Notes"
+msgstr "Release Notes"
+
+#. module: dc_mobile_app_versioning
+#: model_terms:ir.ui.view,arch_db:dc_mobile_app_versioning.view_mobile_version_search
+msgid "Search Versions"
+msgstr "Search Versions"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.model.fields,help:dc_mobile_app_versioning.field_mobile_version__is_mandatory
+msgid "Si está marcado, la app forzará la actualización."
+msgstr "If checked, the app will force the update."
+
+#. module: dc_mobile_app_versioning
+#. odoo-python
+#: code:addons/dc_mobile_app_versioning/models/mobile_version.py:0
+#, python-format
+msgid "Unknown"
+msgstr "Unknown"
+
+#. module: dc_mobile_app_versioning
+#: model:ir.model.fields,field_description:dc_mobile_app_versioning.field_mobile_version__version
+#: model_terms:ir.ui.view,arch_db:dc_mobile_app_versioning.view_mobile_version_tree
+msgid "Version"
+msgstr "Version"
+
+#. module: dc_mobile_app_versioning
+#: model_terms:ir.ui.view,arch_db:dc_mobile_app_versioning.view_mobile_version_form
+msgid "Version Details"
+msgstr "Version Details"
+
+#. module: dc_mobile_app_versioning
+#: model_terms:ir.ui.view,arch_db:dc_mobile_app_versioning.view_mobile_version_form
+msgid "Version name..."
+msgstr "Version name..."
+
+#. module: dc_mobile_app_versioning
+#: model:ir.actions.act_window,name:dc_mobile_app_versioning.action_mobile_version
+#: model:ir.ui.menu,name:dc_mobile_app_versioning.menu_mobile_version
+#: model_terms:ir.ui.view,arch_db:dc_mobile_app_versioning.view_mobile_version_tree
+msgid "Versions"
+msgstr "Versions"
+
+#. module: dc_mobile_app_versioning
+#: model_terms:ir.ui.view,arch_db:dc_mobile_app_versioning.view_mobile_version_form
+msgid "https://..."
+msgstr "https://..."
+
+#. module: dc_mobile_app_versioning
+#: model:mobile.platform,name:dc_mobile_app_versioning.platform_ios
+msgid "iOS"
+msgstr "iOS"

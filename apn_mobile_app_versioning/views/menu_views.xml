@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menú raíz -->
+    <menuitem id="menu_mobile_app_root"
+              name="App versions"
+              sequence="-1"
+              web_icon="apn_mobile_app_versioning,static/src/img/menu_mobile_app_item.png"
+    />
+
+    <!-- Menú principal de versiones -->
+    <menuitem id="menu_mobile_version" name="Versions" parent="menu_mobile_app_root"
+              action="action_mobile_version" sequence="10"/>
+
+    <!-- Menú de configuración (Plataformas) -->
+    <menuitem id="menu_mobile_configuration" name="Configuration" parent="menu_mobile_app_root" sequence="20"/>
+    <menuitem id="menu_mobile_platform" name="Platforms" parent="menu_mobile_configuration"
+              action="action_mobile_platform" sequence="10"/>
+</odoo>

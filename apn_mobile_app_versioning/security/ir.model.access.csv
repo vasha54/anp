@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mobile_platform_admin_apn,mobile.platform.admin.apn,model_mobile_platform,apn_group.group_admin_apn_pilates,1,1,1,1
+access_mobile_platform_support_apn,mobile.platform.support.apn,model_mobile_platform,apn_group.group_support_anp_pilates,1,1,1,1
+access_mobile_platform_admin_company,mobile.platform.admin.company,model_mobile_platform,apn_group.group_admin_company,1,1,1,1
+access_mobile_platform_admin_branch,mobile.platform.admin.branch,model_mobile_platform,apn_group.group_admin_branch,1,0,0,0
+access_mobile_platform_receptionist_branch,mobile.platform.receptionist.branch,model_mobile_platform,apn_group.group_receptionist_branch,1,0,0,0
+access_mobile_platform_operator_branch,mobile.platform.operator.branch,model_mobile_platform,apn_group.group_operator_branch,1,0,0,0
+access_mobile_platform_instructor,mobile.platform.instructor,model_mobile_platform,apn_group.group_instructor,1,0,0,0
+access_mobile_platform_client,mobile.platform.client,model_mobile_platform,apn_group.group_client,1,0,0,0
+access_mobile_version_admin_apn,mobile.version.admin.apn,model_mobile_version,apn_group.group_admin_apn_pilates,1,1,1,1
+access_mobile_version_support_apn,mobile.version.support.apn,model_mobile_version,apn_group.group_support_anp_pilates,1,1,1,1
+access_mobile_version_admin_company,mobile.version.admin.company,model_mobile_version,apn_group.group_admin_company,1,1,1,1
+access_mobile_version_admin_branch,mobile.version.admin.branch,model_mobile_version,apn_group.group_admin_branch,1,0,0,0
+access_mobile_version_receptionist_branch,mobile.version.receptionist.branch,model_mobile_version,apn_group.group_receptionist_branch,1,0,0,0
+access_mobile_version_operator_branch,mobile.version.operator.branch,model_mobile_version,apn_group.group_operator_branch,1,0,0,0
+access_mobile_version_instructor,mobile.version.instructor,model_mobile_version,apn_group.group_instructor,1,0,0,0
+access_mobile_version_client,mobile.version.client,model_mobile_version,apn_group.group_client,1,0,0,0
