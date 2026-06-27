@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Lista (tree) para product.product -->
+    <record id="view_product_product_rating_list" model="ir.ui.view">
+        <field name="name">product.product.rating.tree</field>
+        <field name="model">product.product</field>
+        <field name="arch" type="xml">
+            <list string="Top Rated Variants" default_order="vote_average desc, vote_count desc"
+                  create="false" edit="false" delete="false">
+                <field name="display_name" string="Variant" width="100"/>
+                <field name="product_tmpl_id" string="Template" width="100"/>
+                <field name="favorite_count" width="100"/>
+                <field name="comment_count" width="100"/>
+                <field name="vote_count" string="Votes" width="100"/>
+                <field name="vote_average" widget="float" string="Avg. Rating" width="100"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista Kanban para product.product -->
+    <record id="view_product_product_rating_kanban" model="ir.ui.view">
+        <field name="name">product.product.rating.kanban</field>
+        <field name="model">product.product</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_variant_rating" default_order="vote_average desc, vote_count desc"
+                    create="false" edit="false" delete="false">
+                <field name="display_name"/>
+                <field name="product_tmpl_id"/>
+                <field name="vote_count"/>
+                <field name="vote_average"/>
+                <field name="comment_count"/>
+                <field name="favorite_count"/>   <!-- nuevo campo -->
+                <field name="image_1920"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card">
+                            <div class="o_kanban_image">
+                                <img t-att-src="kanban_image('product.product', 'image_1920', record.id.raw_value)"
+                                     alt="Variant Image" class="img img-fluid"/>
+                            </div>
+                            <div class="o_kanban_details">
+                                <strong>
+                                    <field name="display_name"/>
+                                </strong>
+                                <small class="text-muted">
+                                    <field name="product_tmpl_id"/>
+                                </small>
+                                <!-- Contenedor flex: estrellas (izq) y grupo derecha (favoritos + comentarios) -->
+                                <div class="d-flex justify-content-between align-items-center mt-1">
+                                    <!-- Grupo izquierdo: estrellas y contadores -->
+                                    <div>
+                                        <t t-foreach="Array.from({length: 5}, (_, i) => i)" t-as="i">
+                                            <i t-attf-class="fa fa-star{{ i &lt; Math.floor(record.vote_average.raw_value || 0) ? '' : '-o' }} text-primary ms-1"/>
+                                        </t>
+                                        <span class="badge bg-primary ms-1">
+                                            <field name="vote_average" widget="float"/>
+                                        </span>
+                                        <span class="text-muted ms-2">
+                                            (<field name="vote_count"/> votes)
+                                        </span>
+                                    </div>
+                                    <!-- Grupo derecho: favoritos a la izquierda de comentarios -->
+                                    <div class="d-flex align-items-center">
+                                        <span class="text-muted small me-3">
+                                            <i class="fa fa-heart text-danger me-1"/>
+                                            <field name="favorite_count"/>
+                                        </span>
+                                        <span class="text-muted small">
+                                            <i class="fa fa-comments me-1"/>
+                                            <field name="comment_count"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_product_product_rating_form" model="ir.ui.view">
+        <field name="name">product.product.rating.form</field>
+        <field name="model">product.product</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false" delete="false" readonly="1">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="display_name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="product_tmpl_id" readonly="1"/>
+                            <field name="vote_average" widget="float" readonly="1"/>
+                            <field name="vote_count" readonly="1"/>
+                            <field name="comment_count" readonly="1"/>
+                            <field name="favorite_count" readonly="1"/>
+                        </group>
+                        <group>
+                            <field nolabel="1" name="image_1920" widget="image" class="oe_avatar" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Ratings &amp; Comments">
+                            <field name="rating_ids" readonly="1" nolabel="1">
+                                <list create="false" edit="false" delete="false">
+                                    <field name="partner_id" readonly="1"/>
+                                    <field name="rating" widget="rating" readonly="1"/>
+                                    <field name="feedback" readonly="1"/>
+                                    <field name="create_date" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <!-- Nueva página de clientes favoritos -->
+                        <page string="Favorite Customers">
+                            <field name="favorite_partner_ids" readonly="1" nolabel="1">
+                                <list create="false" edit="false" delete="false">
+                                    <field name="name" readonly="1"/>
+                                    <field name="email" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción de ventana para product.product top ratings -->
+    <record id="action_product_product_ratings" model="ir.actions.act_window">
+        <field name="name">Top Rated Variants Products</field>
+        <field name="res_model">product.product</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_id" ref="view_product_product_rating_kanban"/>
+         <field name="view_ids" eval="[ (5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_product_product_rating_kanban')}),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_product_product_rating_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_product_product_rating_form')})]"/>
+        <field name="search_view_id" ref="product.product_search_form_view"/>
+        <field name="context">{'create': False}</field>
+        <field name="domain">['|', '|', ('vote_count', '>', 0), ('favorite_count', '>', 0), ('comment_count', '>', 0)]</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent">
+                No rated product variants found.
+            </p>
+        </field>
+    </record>
+</odoo>

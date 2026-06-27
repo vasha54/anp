@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="nearby_branches_default_distance_meters" model="ir.config_parameter">
+        <field name="key">apn_company.nearby_branches_default_distance_meters</field>
+        <field name="value">350</field>
+    </record>
+
+</odoo>

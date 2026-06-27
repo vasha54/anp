@@ -18,6 +18,10 @@ _logger = logging.getLogger(__name__)
 
 class CatalogAccesorieProductAPIController(BaseAPIController):
 
+    def _get_template_products_format(self,template_products_db):
+        #TODO Falta implementar
+        pass
+
     def _get_products_format(self, products_db):
         # --- Obtención correcta del mapeo de selección del campo 'type' ---
         model = request.env['product.product']  # el modelo, no solo el entorno
@@ -67,9 +71,16 @@ class CatalogAccesorieProductAPIController(BaseAPIController):
             'description_sale': p.description_sale,
             'qty_available': p.qty_available,
             'variant_values': p.variant_values,
+            'vote_count': p.vote_count,
+            'vote_average': p.vote_average,
         } for p in products_db]
 
         return product_data
+
+    @http.route('/api_pilates/v1/template_accesories/', type='json', auth='public', methods=['POST'], csrf=False)
+    def get_template_accesories_general(self, **kwargs):
+        # TODO Falta implementar
+        pass
 
     @http.route('/api_pilates/v1/accesories/', type='json', auth='public', methods=['POST'], csrf=False)
     def get_accesories_general(self, **kwargs):
@@ -110,7 +121,7 @@ class CatalogAccesorieProductAPIController(BaseAPIController):
 
             answer = {
                 "status": "success",
-                "message": "Datos obtenidos correctamente",
+                "message": _('Data obtained correctly'),
                 "data": product_data,
                 "pagination": {
                     "page": page,
@@ -124,6 +135,11 @@ class CatalogAccesorieProductAPIController(BaseAPIController):
 
         except Exception as e:
             return self._handle_error(e)
+
+    @http.route('/api_pilates/v1/template_accesories_branch', type='json', auth='public', methods=['POST'], csrf=False)
+    def get_template_accesories_branch(self, **kwargs):
+        # TODO Falta implementar
+        pass
 
     @http.route('/api_pilates/v1/accesories_branch', type='json', auth='public', methods=['POST'], csrf=False)
     def get_accesories_branch(self, **kwargs):
@@ -167,7 +183,7 @@ class CatalogAccesorieProductAPIController(BaseAPIController):
 
             answer = {
                 "status": "success",
-                "message": "Datos obtenidos correctamente",
+                "message": _('Data obtained correctly'),
                 "data": product_data,
                 "pagination": {
                     "page": page,

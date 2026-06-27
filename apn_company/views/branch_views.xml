@@ -137,6 +137,16 @@
 
                             </page>
 
+                            <page name="instructors" string="Instructors">
+                                <field name="instructor_user_ids" >
+                                    <list create="false" remove="false" edit="false">
+                                        <field string="Active" name="active" widget="boolean_toggle" readonly="1"/>
+                                        <field string="Name" name="name" />
+                                        <field string="User" name="login" />
+                                        <field string="Email" name="email"/>
+                                    </list>
+                                </field>
+                            </page>
 
 
                         </notebook>

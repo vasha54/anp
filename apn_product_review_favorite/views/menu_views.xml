@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+     <menuitem id="menu_product_reviews_favorites"
+               name="Product Reviews &amp; Favorites"
+               web_icon="apn_product_review_favorite,static/src/img/menu_item_product_review_favorite.png"
+                sequence="-94"/>
+
+    <!-- Menú para plantillas -->
+    <menuitem id="menu_product_template_ratings"
+              name="Top Rated Templates Products"
+              parent="menu_product_reviews_favorites"
+              action="action_product_template_ratings"
+              sequence="10"/>
+
+    <menuitem id="menu_product_product_ratings"
+              name="Top Rated Variants Products"
+              parent="menu_product_reviews_favorites"
+              action="action_product_product_ratings"
+              sequence="20"/>
+
+</odoo>

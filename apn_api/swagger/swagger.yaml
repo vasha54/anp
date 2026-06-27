@@ -1241,6 +1241,159 @@ paths:
                 data: null
                 pagination: null
 
+  # Sucursales cercanas
+  /api_pilates/v1/nearby_branches:
+    post:
+      tags:
+        - Sucursales
+      summary: Obtener sucursales cercanas a una coordenada
+      description: |
+        Devuelve una lista paginada de sucursales activas que se encuentran dentro de un radio de distancia
+        respecto a una latitud y longitud proporcionadas.
+
+        **Parámetros requeridos:**
+        - `latitude`: latitud del punto de referencia (obligatorio)
+        - `longitude`: longitud del punto de referencia (obligatorio)
+
+        **Parámetros opcionales:**
+        - `max_distance`: distancia máxima en metros para considerar una sucursal como cercana.
+          Si no se envía, se usa el valor configurado en el sistema (por defecto 350).
+        - `page`: número de página a devolver (por defecto 1)
+        - `limit`: cantidad de sucursales por página (por defecto 80)
+
+        **Estructura de cada sucursal cercana:**  
+        Además de los campos estándar de sucursal, se incluye:
+        - `distance_meters`: distancia en metros desde el punto de referencia hasta la sucursal,
+          redondeada a 2 decimales.
+        La lista se ordena de menor a mayor distancia.
+
+        **Comportamiento:**
+        - Solo se consideran sucursales activas que tengan latitud y longitud definidas.
+        - Si la página solicitada excede el total de páginas, se devuelve la última página disponible.
+        - El objeto `pagination` incluye el total de sucursales cercanas encontradas (sin paginar),
+          permitiendo al cliente manejar la navegación.
+      security: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NearbyBranchesRequest'
+            examples:
+              coordenadas_basicas:
+                summary: Sólo coordenadas (usa distancia por defecto y paginación por defecto)
+                value:
+                  latitude: 20.6648948
+                  longitude: -103.3938723
+              con_distancia_y_paginacion:
+                summary: Con distancia máxima personalizada y paginación
+                value:
+                  latitude: 20.6648948
+                  longitude: -103.3938723
+                  max_distance: 1000
+                  page: 1
+                  limit: 20
+      responses:
+        '200':
+          description: Lista de sucursales cercanas obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Datos obtenidos correctamente"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/NearbyBranch'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+              example:
+                status: "success"
+                message: "Datos obtenidos correctamente"
+                data:
+                  - id: 3
+                    name: "Sucursal A"
+                    latitude: 20.6648948
+                    longitude: -103.3938723
+                    distance_meters: 0.00
+                    street: "Av. López Mateos Sur 4450"
+                    zip: "45040"
+                    city: "Guadalajara"
+                    state: "Jalisco"
+                    country: "Mexico"
+                  - id: 5
+                    name: "Sucursal B"
+                    latitude: 20.6712345
+                    longitude: -103.3890123
+                    distance_meters: 320.45
+                    street: "Calle Independencia 123"
+                    zip: "45050"
+                    city: "Zapopan"
+                    state: "Jalisco"
+                    country: "Mexico"
+                pagination:
+                  page: 1
+                  limit: 80
+                  total_items: 4
+                  total_pages: 1
+                  offset: 0
+        '400':
+          description: Error en la solicitud (parámetros faltantes o inválidos)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "Falta el parámetro: latitude"
+                  data:
+                    type: object
+                    nullable: true
+                  pagination:
+                    type: object
+                    nullable: true
+              examples:
+                falta_coordenada:
+                  summary: Falta latitude o longitude
+                  value:
+                    status: "error"
+                    message: "Falta el parámetro: latitude"
+                    data: null
+                    pagination: null
+                valor_no_numerico:
+                  summary: Valor no numérico para coordenada o max_distance
+                  value:
+                    status: "error"
+                    message: "latitude y longitude deben ser números válidos"
+                    data: null
+                    pagination: null
+                pagina_invalida:
+                  summary: page o limit no son enteros positivos
+                  value:
+                    status: "error"
+                    message: "page y limit deben ser enteros mayores que 0"
+                    data: null
+                    pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
   # --------------------- Accesorios ---------------------
   /api_pilates/v1/accesories/:
     post:
@@ -1557,7 +1710,7 @@ paths:
                 data: null
                 pagination: null
 
-  # ======================= NUEVOS ENDPOINTS: APLICACIÓN MÓVIL =======================
+  # ======================= APLICACIÓN MÓVIL =======================
   /api_pilates/v1/mobile_get_platforms:
     post:
       tags:
@@ -2125,6 +2278,434 @@ paths:
                 data: null
                 pagination: null
 
+  # ======================= PRODUCT REVIEWS =======================
+  /api_pilates/v1/register_review_product_template:
+    post:
+      tags:
+        - Product Reviews
+      summary: Registrar una valoración para una plantilla de producto
+      description: |
+        Permite a un usuario autenticado enviar una puntuación (0-5) y un comentario opcional 
+        para una plantilla de producto específica.
+        La valoración queda asociada al usuario y actualiza las estadísticas de la plantilla.
+        **Cada usuario puede valorar una plantilla una sola vez**; si intenta hacerlo de nuevo, se devuelve un error.
+        Requiere token JWT válido.
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewTemplateRequest'
+            example:
+              product_template_id: 42
+              rating: 4.5
+              comment: "¡Producto excelente!"
+      responses:
+        '200':
+          description: Valoración registrada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewResponse'
+              example:
+                status: "success"
+                message: "Datos obtenidos correctamente"
+                data:
+                  rating_id: 123
+                  rating: 4.5
+                  user:
+                    id: 9
+                    name: "Juan Pérez"
+                    partner: 10
+        '400':
+          description: Solicitud incorrecta (parámetros faltantes, puntuación inválida, producto no encontrado, valoración duplicada)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "Falta el parámetro: rating"
+                  data:
+                    type: object
+                    nullable: true
+                  pagination:
+                    type: object
+                    nullable: true
+              examples:
+                parametros_faltantes:
+                  summary: Falta un parámetro obligatorio
+                  value:
+                    status: "error"
+                    message: "Falta el parámetro: rating"
+                    data: null
+                    pagination: null
+                rating_fuera_rango:
+                  summary: Puntuación fuera del rango permitido
+                  value:
+                    status: "error"
+                    message: "La puntuación debe estar entre 0 y 5"
+                    data: null
+                    pagination: null
+                producto_no_encontrado:
+                  summary: Plantilla de producto no encontrada
+                  value:
+                    status: "error"
+                    message: "No se encontró la plantilla de producto con ID 999."
+                    data: null
+                    pagination: null
+                review_duplicada:
+                  summary: El usuario ya valoró esta plantilla
+                  value:
+                    status: "error"
+                    message: "Ya has enviado una valoración para este producto."
+                    data: null
+                    pagination: null
+        '401':
+          description: No autorizado (token inválido o faltante)
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Token de autenticación inválido."
+                data: null
+                pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
+  /api_pilates/v1/register_review_product_product:
+    post:
+      tags:
+        - Product Reviews
+      summary: Registrar una valoración para una variante de producto
+      description: |
+        Permite a un usuario autenticado enviar una puntuación (0-5) y un comentario opcional 
+        para una variante de producto específica.
+        La valoración se asocia directamente a la variante y actualiza sus estadísticas.
+        **Cada usuario puede valorar una variante una sola vez**; si intenta hacerlo de nuevo, se devuelve un error.
+        Requiere token JWT válido.
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewProductRequest'
+            example:
+              product_product_id: 101
+              rating: 4.0
+              comment: "Buena variante, queda perfecta"
+      responses:
+        '200':
+          description: Valoración registrada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewResponse'
+              example:
+                status: "success"
+                message: "Datos obtenidos correctamente"
+                data:
+                  rating_id: 124
+                  rating: 4.0
+                  user:
+                    id: 9
+                    name: "Juan Pérez"
+                    partner: 10
+        '400':
+          description: Solicitud incorrecta (parámetros faltantes, puntuación inválida, variante no encontrada, valoración duplicada)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "Falta el parámetro: product_product_id"
+                  data:
+                    type: object
+                    nullable: true
+                  pagination:
+                    type: object
+                    nullable: true
+              examples:
+                parametros_faltantes:
+                  summary: Falta un parámetro obligatorio
+                  value:
+                    status: "error"
+                    message: "Falta el parámetro: product_product_id"
+                    data: null
+                    pagination: null
+                rating_fuera_rango:
+                  summary: Puntuación fuera del rango permitido
+                  value:
+                    status: "error"
+                    message: "La puntuación debe estar entre 0 y 5"
+                    data: null
+                    pagination: null
+                variante_no_encontrada:
+                  summary: Variante de producto no encontrada
+                  value:
+                    status: "error"
+                    message: "No se encontró la variante de producto con ID 999."
+                    data: null
+                    pagination: null
+                review_duplicada:
+                  summary: El usuario ya valoró esta variante
+                  value:
+                    status: "error"
+                    message: "Ya has enviado una valoración para este producto."
+                    data: null
+                    pagination: null
+        '401':
+          description: No autorizado (token inválido o faltante)
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Token de autenticación inválido."
+                data: null
+                pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
+  /api_pilates/v1/toggle_favorite_product_template:
+    post:
+      tags:
+        - Favorites
+      summary: Alternar favorito de una plantilla de producto
+      description: |
+        Si la plantilla no está en favoritos del usuario autenticado, la agrega.
+        Si ya lo está, la quita. Retorna el nuevo estado.
+        Requiere token JWT válido.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - product_template_id
+              properties:
+                product_template_id:
+                  type: integer
+                  description: ID de la plantilla de producto
+                  example: 42
+      responses:
+        '200':
+          description: Operación de favorito realizada con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Favorite toggled successfully"
+                  data:
+                    type: object
+                    properties:
+                      product_template_id:
+                        type: integer
+                        example: 42
+                      is_favorite:
+                        type: boolean
+                        description: Nuevo estado (true = favorito, false = no favorito)
+                        example: true
+                example:
+                  status: "success"
+                  message: "Favorite toggled successfully"
+                  data:
+                    product_template_id: 42
+                    is_favorite: true
+          '400':
+            description: Error en los parámetros (p.ej. falta product_template_id o no existe)
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: "error"
+                    message:
+                      type: string
+                      example: "Falta el parámetro: product_template_id"
+                    data:
+                      type: object
+                      nullable: true
+                    pagination:
+                      type: object
+                      nullable: true
+                examples:
+                  parametro_faltante:
+                    summary: Falta product_template_id
+                    value:
+                      status: "error"
+                      message: "Falta el parámetro: product_template_id"
+                      data: null
+                      pagination: null
+                  producto_no_encontrado:
+                    summary: Plantilla no encontrada
+                    value:
+                      status: "error"
+                      message: "Product template not found."
+                      data: null
+                      pagination: null
+          '401':
+            description: Token no proporcionado, inválido o expirado
+            content:
+              application/json:
+                example:
+                  status: "error"
+                  message: "Token de autenticación inválido."
+                  data: null
+                  pagination: null
+          '500':
+            description: Error interno del servidor
+            content:
+              application/json:
+                example:
+                  status: "error"
+                  message: "Error interno del servidor"
+                  data: null
+                  pagination: null
+
+  /api_pilates/v1/toggle_favorite_product_product:
+    post:
+      tags:
+        - Favorites
+      summary: Alternar favorito de una variante de producto
+      description: |
+        Si la variante no está en favoritos del usuario autenticado, la agrega.
+        Si ya lo está, la quita. Retorna el nuevo estado.
+        Requiere token JWT válido.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - product_product_id
+              properties:
+                product_product_id:
+                  type: integer
+                  description: ID de la variante de producto
+                  example: 101
+      responses:
+        '200':
+          description: Operación de favorito realizada con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Favorite toggled successfully"
+                  data:
+                    type: object
+                    properties:
+                      product_product_id:
+                        type: integer
+                        example: 101
+                      is_favorite:
+                        type: boolean
+                        example: false
+              example:
+                status: "success"
+                message: "Favorite toggled successfully"
+                data:
+                  product_product_id: 101
+                  is_favorite: false
+        '400':
+          description: Error en los parámetros (falta product_product_id o no existe)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "Falta el parámetro: product_product_id"
+                  data:
+                    type: object
+                    nullable: true
+                  pagination:
+                    type: object
+                    nullable: true
+              examples:
+                parametro_faltante:
+                  summary: Falta product_product_id
+                  value:
+                    status: "error"
+                    message: "Falta el parámetro: product_product_id"
+                    data: null
+                    pagination: null
+                variante_no_encontrada:
+                  summary: Variante no encontrada
+                  value:
+                    status: "error"
+                    message: "Product variant not found."
+                    data: null
+                    pagination: null
+        '401':
+          description: Token no proporcionado, inválido o expirado
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Token de autenticación inválido."
+                data: null
+                pagination: null
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              example:
+                status: "error"
+                message: "Error interno del servidor"
+                data: null
+                pagination: null
+
 components:
   securitySchemes:
     BearerAuth:
@@ -2242,6 +2823,72 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Schedule'
+
+    NearbyBranch:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 3
+        name:
+          type: string
+          example: "Sucursal A"
+        latitude:
+          type: number
+          example: 20.6648948
+        longitude:
+          type: number
+          example: -103.3938723
+        distance_meters:
+          type: number
+          description: Distancia desde el punto de referencia en metros, redondeada a 2 decimales
+          example: 320.45
+        street:
+          type: string
+          example: "Av. López Mateos Sur 4450"
+        zip:
+          type: string
+          example: "45040"
+        city:
+          type: string
+          example: "Guadalajara"
+        state:
+          type: string
+          description: Nombre del estado/provincia
+          example: "Jalisco"
+        country:
+          type: string
+          description: Nombre del país
+          example: "Mexico"
+
+    NearbyBranchesRequest:
+      type: object
+      required:
+        - latitude
+        - longitude
+      properties:
+        latitude:
+          type: number
+          description: Latitud del punto de referencia (obligatorio)
+          example: 20.6648948
+        longitude:
+          type: number
+          description: Longitud del punto de referencia (obligatorio)
+          example: -103.3938723
+        max_distance:
+          type: number
+          description: Distancia máxima en metros. Si no se envía, se usa el valor por defecto del sistema (350).
+          example: 1000
+        page:
+          type: integer
+          description: Número de página (por defecto 1)
+          example: 1
+          minimum: 1
+        limit:
+          type: integer
+          description: Cantidad de elementos por página (por defecto 80)
+          example: 20
+          minimum: 1
 
     State:
       type: object
@@ -2761,7 +3408,6 @@ components:
           type: integer
           example: 0
 
-    # --------------------- NUEVOS ESQUEMAS: Aplicación Móvil ---------------------
     MobilePlatform:
       type: object
       properties:
@@ -2837,7 +3483,6 @@ components:
               type: string
               example: "Pilates"
 
-    # Request schemas for mobile endpoints
     GetVersionsRequest:
       type: object
       properties:
@@ -2901,6 +3546,81 @@ components:
           type: string
           example: "android"
 
+    # ======================= ESQUEMAS: Product Reviews =======================
+    ReviewTemplateRequest:
+      type: object
+      required:
+        - product_template_id
+        - rating
+      properties:
+        product_template_id:
+          type: integer
+          description: ID de la plantilla de producto a valorar
+          example: 42
+        rating:
+          type: number
+          description: Puntuación entre 0 y 5
+          minimum: 0
+          maximum: 5
+          example: 4.5
+        comment:
+          type: string
+          description: Comentario opcional de la valoración
+          example: "¡Producto excelente!"
+
+    ReviewProductRequest:
+      type: object
+      required:
+        - product_product_id
+        - rating
+      properties:
+        product_product_id:
+          type: integer
+          description: ID de la variante de producto a valorar
+          example: 101
+        rating:
+          type: number
+          description: Puntuación entre 0 y 5
+          minimum: 0
+          maximum: 5
+          example: 4.0
+        comment:
+          type: string
+          description: Comentario opcional de la valoración
+          example: "Buena variante, queda perfecta"
+
+    ReviewResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "success"
+        message:
+          type: string
+          example: "Datos obtenidos correctamente"
+        data:
+          type: object
+          properties:
+            rating_id:
+              type: integer
+              example: 123
+            rating:
+              type: number
+              example: 4.5
+            user:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 9
+                name:
+                  type: string
+                  example: "Juan Pérez"
+                partner:
+                  type: integer
+                  description: ID del contacto asociado
+                  example: 10
+
 tags:
   - name: Sistema
     description: Endpoints del sistema
@@ -2914,3 +3634,7 @@ tags:
     description: Endpoints de registro, activación, perfil, cambio y recuperación de contraseña
   - name: Aplicación Móvil
     description: Endpoints para consultar plataformas y versiones de la aplicación móvil
+  - name: Product Reviews
+    description: Endpoints para registrar valoraciones y comentarios de productos (plantillas y variantes)
+  - name: Favorites
+    description: Endpoints para gestionar productos favoritos del cliente
